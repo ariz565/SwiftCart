@@ -75,7 +75,21 @@ export default function Signin(providers) {
                 </Form>
               )}
             </Formik>
-           
+            <div className={styles.login__socials}>
+              <span className={styles.or}>Or continue with </span>
+              <div className={styles.login__socials_wrap}>
+                {providers.map((provider) => (
+                  <div key={provider.name}>
+                    <button
+                      className={styles.social__btn}
+                      onClick={() => signIn(provider.id)}
+                    >
+                      Sign in with {provider.name}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
