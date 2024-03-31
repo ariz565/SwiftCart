@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <>
       <Head>
-        <title>SwiftCart</title>
+        <title>Swift Cart - All in One</title>
         <meta name="description" content="SwiftCart-CMS" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
