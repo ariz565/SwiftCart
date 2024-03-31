@@ -20,7 +20,7 @@ const initialvalues = {
   confirm_password: "",
 };
 
-export default function Signin(providers) {
+export default function Signin({providers}) {
   const [user, setUser] = useState(initialvalues);
   const {
     login_email,
