@@ -145,7 +145,11 @@ export default function Signin({ providers, callbackUrl, csrfToken }) {
             >
               {(form) => (
                 <Form method="post" action="/api/auth/signin/email">
-                  <input type="hidden" name="csrfToken" defaultValue={csrfToken} />
+                  <input
+                    type="hidden"
+                    name="csrfToken"
+                    defaultValue={csrfToken}
+                  />
 
                   <LoginInput
                     type="text"
@@ -166,7 +170,7 @@ export default function Signin({ providers, callbackUrl, csrfToken }) {
                     <span className={styles.error}>{login_error}</span>
                   )}
                   <div className={styles.forgot}>
-                    <Link href="/forget">Forgot Password ?</Link>
+                    <Link href="/auth/forgot">Forgot Password ?</Link>
                   </div>
                 </Form>
               )}
