@@ -259,4 +259,20 @@ export default function Signin({ providers, callbackUrl, csrfToken }) {
   );
 }
 
-
+export async function getServerSideProps(context) {
+  const { req, query } = context;
+  const session = await getSession({ req });
+  const { callbackUrl } = query;
+  if (session) {
+    return {
+      redirect: {
+        destination: callbackUrl,
+      },
+    };
+  }
+  const csrfToken = await getCsrfToken(context);
+  const providers = Object.values(await getProviders());
+  return {
+    props: { providers, csrfToken, callbackUrl },
+  };
+}
