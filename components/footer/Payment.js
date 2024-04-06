@@ -8,6 +8,7 @@ export default function Payment() {
         <img src="../../../images/payment/visa.webp" alt="" />
         <img src="../../../images/payment/mastercard.webp" alt="" />
         <img src="../../../images/payment/paypal.webp" alt="" />
+        <img src="../../../images/payment/bank-cards.webp" alt="" />
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ export default function Links() {
           {" "}
           {/* Key for outer list */}
           {i === 0 ? (
-            <img src="../../../logo.png" alt="" />
+            <img src="../../../logo2.png" alt="" />
           ) : (
             <b>{link.heading}</b>
           )}
