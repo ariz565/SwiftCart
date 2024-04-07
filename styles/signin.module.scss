@@ -72,6 +72,7 @@
       color: #666;
       padding-top: 1rem;
       font-size: 14px;
+      width: -moz-fit-content;
       width: fit-content;
       height: 40px;
       &:hover {
@@ -129,4 +130,3 @@
   border: 1px solid #66666683;
   cursor: pointer;
 }
-

@@ -1,4 +1,5 @@
 import styles from "./styles.module.scss";
+import Image from "next/image";
 import { offersAarray } from "../../../data/home";
 import { useRef, useState } from "react";
 // Import Swiper React components

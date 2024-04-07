@@ -1,5 +1,5 @@
 import styles from "./styles.module.scss";
-
+import Image from "next/image";
 import { useRef, useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -32,7 +32,12 @@ export default function MainSwiper() {
       >
         {[...Array(10).keys()].map((i) => (
           <SwiperSlide key={i}>
-            <img src={`../../../images/swiper/${i + 1}.jpg`} alt="" />
+            <Image
+              src={`/images/swiper/${i + 1}.jpg`}
+              alt="main banner"
+              width={500}
+              height={300}
+            />
           </SwiperSlide>
         ))}
       </Swiper>
