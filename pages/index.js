@@ -7,8 +7,17 @@ import Main from "@/components/home/main";
 import FlashDeals from "@/components/home/flashDeals";
 import Category from "@/components/home/category";
 import { BsArrowRight } from "react-icons/bs";
-import { women_accessories, women_dresses, women_shoes } from "@/data/home";
+import {
+  homeImprovSwiper,
+  women_accessories,
+  women_dresses,
+  women_shoes,
+  women_swiper,
+  gamingSwiper,
+} from "@/data/home";
+
 import { useMediaQuery } from "react-responsive";
+import ProductsSwiper from "@/components/productsSwiper";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -47,6 +56,17 @@ export default function Home() {
               background="#000"
             />
           </div>
+          <ProductsSwiper products={women_swiper} />
+          <ProductsSwiper
+            products={gamingSwiper}
+            header="For Gamers"
+            bg="#5a31f4"
+          />
+          <ProductsSwiper
+            products={homeImprovSwiper}
+            header="House Improvement"
+            bg=""
+          />
         </div>
       </div>
       <Footer />

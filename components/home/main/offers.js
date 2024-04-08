@@ -4,8 +4,6 @@ import { offersAarray } from "../../../data/home";
 import { useRef, useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
-
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 
@@ -37,7 +35,7 @@ export default function Offers() {
             <Link href="">
               <img src={offer.image} alt="" />
             </Link>
-            <span>{offer.price}$</span>
+            <span>Rs. {offer.price}</span>
             <span>-{offer.discount}%</span>
           </SwiperSlide>
         ))}
