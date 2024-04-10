@@ -6,7 +6,7 @@ import { HiOutlineClipboardList } from "react-icons/hi";
 import { BsHeart } from "react-icons/bs";
 import { AiOutlineMessage } from "react-icons/ai";
 import React, { useRef, useState } from "react";
-// Import Swiper React components
+import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -16,14 +16,15 @@ import "swiper/css/effect-cards";
 import { EffectCards, Navigation } from "swiper/modules";
 import { userSwiperArray } from "../../../data/home";
 
-
 export default function User() {
   const { data: session } = useSession();
   return (
     <div className={styles.user}>
-      <img
-        src="../../../images/userHeader.jpg"
-        alt=""
+      <Image
+        src="/images/userHeader.jpg"
+        alt="Default Img"
+        width={500}
+        height={140}
         className={styles.user__header}
       />
       <div className={styles.user__container}>

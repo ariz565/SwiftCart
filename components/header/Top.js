@@ -7,7 +7,7 @@ import { useState } from "react";
 import UserMenu from "./UserMenu";
 import { useSession } from "next-auth/react";
 
-export default function Top() {
+export default function Top({ country }) {
   const { data: session } = useSession();
   const [visible, setVisible] = useState(false);
 
@@ -17,11 +17,8 @@ export default function Top() {
         <div></div>
         <ul className={styles.top__list}>
           <li className={styles.li}>
-            <img
-              src="https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png?20230723002237"
-              alt="India Flag"
-            />
-            <span>India / INR</span>
+            <img src={country?.flag} alt="Flag" />
+            <span>{country?.name} /IN</span>
           </li>
           <li className={styles.li}>
             <MdSecurity />

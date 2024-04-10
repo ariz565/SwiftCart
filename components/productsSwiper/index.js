@@ -3,9 +3,9 @@ import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-
 import { Navigation } from "swiper/modules";
 
+//---- ProductsSwiper Component ----//
 export default function ProductsSwiper({ header, products, bg }) {
   return (
     <div className={styles.wrapper}>
@@ -62,3 +62,5 @@ export default function ProductsSwiper({ header, products, bg }) {
     </div>
   );
 }
+
+// Mapping through the products array and displaying them in the swiper

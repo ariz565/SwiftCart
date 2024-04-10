@@ -2,12 +2,9 @@ import styles from "./styles.module.scss";
 import Image from "next/image";
 import { offersAarray } from "../../../data/home";
 import { useRef, useState } from "react";
-// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-
-// import required modules
 import { Pagination, Navigation } from "swiper/modules";
 import Link from "next/link";
 
