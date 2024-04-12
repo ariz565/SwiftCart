@@ -25,12 +25,12 @@ export default function MainSwiper() {
         modules={[Autoplay, Pagination, Navigation]}
         className="mainSwiper"
       >
-        {[...Array(10).keys()].map((i) => (
+        {[...Array(11).keys()].map((i) => (
           <SwiperSlide key={i}>
             <Image
               src={`/images/swiper/${i + 1}.jpg`}
               alt="main banner"
-              width={500}
+              width={5000}
               height={300}
             />
           </SwiperSlide>

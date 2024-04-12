@@ -56,34 +56,34 @@ export default function ProductCard({ product }) {
           </h1>
           <span>
             {prices.length === 1
-              ? `USD${prices[0]}$`
-              : `USD${prices[0]}-${prices[prices.length - 1]}$`}
+              ? `Rs. {prices[0]}`
+              : `Rs. ${prices[0]}-${prices[prices.length - 1]}`}
           </span>
           <div className={styles.product__colors}>
             {styless &&
-                styless.map((style, i) =>
-                    style.image ? (
-                        <img
-                            key={i} // Add a unique "key" prop
-                            src={style.image}
-                            className={i == active && styles.active}
-                            onMouseOver={() => {
-                                setImages(product.subProducts[i].images);
-                                setActive(i);
-                            }}
-                            alt=""
-                        />
-                    ) : (
-                        <span
-                            key={i} // Add a unique "key" prop
-                            style={{ backgroundColor: `${style.color}` }}
-                            onMouseOver={() => {
-                                setImages(product.subProducts[i].images);
-                                setActive(i);
-                            }}
-                        ></span>
-                    )
-                )}
+              styless.map((style, i) =>
+                style.image ? (
+                  <img
+                    key={i} // Add a unique "key" prop
+                    src={style.image}
+                    className={i == active && styles.active}
+                    onMouseOver={() => {
+                      setImages(product.subProducts[i].images);
+                      setActive(i);
+                    }}
+                    alt=""
+                  />
+                ) : (
+                  <span
+                    key={i} // Add a unique "key" prop
+                    style={{ backgroundColor: `${style.color}` }}
+                    onMouseOver={() => {
+                      setImages(product.subProducts[i].images);
+                      setActive(i);
+                    }}
+                  ></span>
+                )
+              )}
           </div>
         </div>
       </div>
