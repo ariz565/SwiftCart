@@ -7,8 +7,9 @@ import SubCategory from "@/models/SubCategory";
 import Head from "next/head";
 import { useState } from "react";
 import MainSwiper from "../../components/productPage/mainSwiper";
+import Infos from "@/components/productPage/infos";
 
-export default function product({ product }) {
+export default function Products({ product }) {
   const [activeImg, setActiveImg] = useState("");
   const country = {
     name: "India",
@@ -24,13 +25,13 @@ export default function product({ product }) {
         <div className={styles.product__container}>
           <div className={styles.path}>
             Home / {product.category.name}
-            {product.subCategories.map((sub) => (
-              <span>/{sub.name}</span>
+            {product.subCategories.map((sub, index) => (
+              <span key={index}>/{sub.name}</span>
             ))}
           </div>
           <div className={styles.product__main}>
             <MainSwiper images={product.images} activeImg={activeImg} />
-            {/* <Infos product={product} setActiveImg={setActiveImg} /> */}
+            <Infos product={product} setActiveImg={setActiveImg} />
           </div>
           {/* <Reviews product={product} /> */}
           {/*
@@ -71,10 +72,12 @@ export async function getServerSideProps(context) {
     colors: product.subProducts.map((p) => {
       return p.color;
     }),
-    priceRange:
-      prices.length > 1
-        ? `From ${prices[0]} to ${prices[prices.length - 1]}Rs.`
-        : "",
+    priceRange: subProduct.discount
+      ? `From ${(prices[0] - prices[0] / subProduct.discount).toFixed(2)} to ${(
+          prices[prices.length - 1] -
+          prices[prices.length - 1] / subProduct.discount
+        ).toFixed(2)}$`
+      : `From ${prices[0]} to ${prices[prices.length - 1]}$`,
     price:
       subProduct.discount > 0
         ? (
