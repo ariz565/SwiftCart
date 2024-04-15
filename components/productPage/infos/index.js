@@ -4,12 +4,11 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { TbMinus, TbPlus } from "react-icons/tb";
-import Share from "../share";
+import Share from "./share";
 import { BsHandbagFill, BsHeart } from "react-icons/bs";
 import Accordian from "./Accordian";
 import SimillarSwiper from "./SimillarSwiper";
-import HalfRating from "./Ratings";
-import { Rating } from "@mui/material";
+import Ratings from "./Ratings";
 
 export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
@@ -20,6 +19,7 @@ export default function Infos({ product, setActiveImg }) {
     setSize("");
     setQty(1);
   }, [router.query.style]);
+
   useEffect(() => {
     if (qty > product.quantity) {
       setQty(product.quantity);
@@ -31,7 +31,7 @@ export default function Infos({ product, setActiveImg }) {
       <h1 className={styles.infos__name}>{product.name}</h1>
       <h2 className={styles.infos__sku}>{product.sku}</h2>
       <div className={styles.infos__rating}>
-        <HalfRating />({product.numReviews}
+        <Ratings defaultRating={product.rating} />({product.numReviews}
         {product.numReviews == 1 ? " review" : " reviews"})
       </div>
       <div className={styles.infos__price}>

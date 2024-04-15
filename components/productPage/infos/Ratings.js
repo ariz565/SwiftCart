@@ -1,18 +1,17 @@
 import * as React from "react";
 import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
 
-export default function HalfRating() {
+const Ratings = ({ defaultRating, value }) => {
   return (
-    <Stack spacing={1}>
-      <Rating name="half-rating" defaultValue={Product.rating} precision={0.5} />
-      <Rating
-        name="half-rating-read"
-        defaultValue={2.5}
-        precision={0.5}
-        readOnly
-        style={{ color: "#FACF19" }}
-      />
-    </Stack>
+    <Rating
+      name="half-rating-read"
+      defaultValue={defaultRating}
+      precision={0.5}
+      readOnly
+      value={value}
+      style={{ color: "#FACF19" }}
+    />
   );
-}
+};
+
+export default Ratings;
