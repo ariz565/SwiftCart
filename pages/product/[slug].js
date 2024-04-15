@@ -1,12 +1,13 @@
-import Header from "@/components/header";
-import styles from "../../styles/product.module.scss";
-import db from "../../utils/db";
 import Product from "@/models/Product";
 import Category from "@/models/Category";
 import SubCategory from "@/models/SubCategory";
+import styles from "../../styles/product.module.scss";
+import db from "@/utils/db";
 import Head from "next/head";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import MainSwiper from "@/components/productPage/mainSwiper";
 import { useState } from "react";
-import MainSwiper from "../../components/productPage/mainSwiper";
 import Infos from "@/components/productPage/infos";
 
 export default function Products({ product }) {
@@ -15,8 +16,9 @@ export default function Products({ product }) {
     name: "India",
     flag: "https://cdn.ipregistry.co/flags/emojitwo/in.svg",
   };
+
   return (
-    <>
+    <div>
       <Head>
         <title>{product.name}</title>
       </Head>
@@ -24,7 +26,7 @@ export default function Products({ product }) {
       <div className={styles.product}>
         <div className={styles.product__container}>
           <div className={styles.path}>
-            Home / {product.category.name}
+            Home/ {product.category.name}/
             {product.subCategories.map((sub, index) => (
               <span key={index}>/{sub.name}</span>
             ))}
@@ -33,26 +35,22 @@ export default function Products({ product }) {
             <MainSwiper images={product.images} activeImg={activeImg} />
             <Infos product={product} setActiveImg={setActiveImg} />
           </div>
-          {/* <Reviews product={product} /> */}
-          {/*
-          <ProductsSwiper products={related} />
-          */}
         </div>
       </div>
-    </>
+      {/* <Footer country={country.name} /> */}
+    </div>
   );
 }
-
 export async function getServerSideProps(context) {
   const { query } = context;
   const slug = query.slug;
   const style = query.style;
   const size = query.size || 0;
   db.connectDb();
-  // ------
+  // ...........
   let product = await Product.findOne({ slug })
     .populate({ path: "category", model: Category })
-    .populate({ path: "subCategories._id", model: SubCategory })
+    .populate({ path: "subCategories", model: SubCategory })
     .lean();
   let subProduct = product.subProducts[style];
   let prices = subProduct.sizes
@@ -88,8 +86,8 @@ export async function getServerSideProps(context) {
     priceBefore: subProduct.sizes[size].price,
     quantity: subProduct.sizes[size].qty,
   };
-  //   console.log("newProduct", newProduct);
-  //------
+  // ...........
+  // console.log("newProduct",newProduct);
   db.disconnectDb();
   return {
     props: {
