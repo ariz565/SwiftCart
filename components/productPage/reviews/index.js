@@ -3,6 +3,7 @@ import styles from "./styles.module.scss";
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
 import AddReview from "./AddReview";
+import Table from "./Table";
 
 export default function Reviews({ product }) {
   const { data: session } = useSession();
@@ -19,7 +20,7 @@ export default function Reviews({ product }) {
                 defaultValue={product.rating}
                 precision={0.5}
                 readOnly
-                style={{ color: "#FACF19" }}
+                style={{ color: "#FACF19", width: "100px" }}
               />
               {product.rating == 0 ? "No review yet" : product.rating}
             </div>
@@ -31,7 +32,7 @@ export default function Reviews({ product }) {
                   name="half-rating-read"
                   defaultValue={5 - i}
                   readOnly
-                  style={{ color: "#FACF19" }}
+                  style={{ color: "#FACF19", width: "100px" }}
                 />
                 <div className={styles.bar}>
                   <div
@@ -51,7 +52,10 @@ export default function Reviews({ product }) {
             Login to Add Reviews
           </button>
         )}
+        <Table reviews={product.reviews} />
       </div>
     </div>
   );
 }
+
+const ratings = ["Poor", "Fair", "Good", "Very Good", "Excellent"];

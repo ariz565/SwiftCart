@@ -8,7 +8,7 @@ import Share from "./share";
 import { BsHandbagFill, BsHeart } from "react-icons/bs";
 import Accordian from "./Accordian";
 import SimillarSwiper from "./SimillarSwiper";
-import Ratings from "./Ratings";
+import { Rating } from "@mui/material";
 
 export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
@@ -31,14 +31,21 @@ export default function Infos({ product, setActiveImg }) {
       <h1 className={styles.infos__name}>{product.name}</h1>
       <h2 className={styles.infos__sku}>{product.sku}</h2>
       <div className={styles.infos__rating}>
-        <Ratings defaultRating={product.rating} />({product.numReviews}
+        <Rating
+          name="half-rating-read"
+          value={product.rating}
+          precision={0.5}
+          readOnly
+          style={{ width: "100px", color: "#FACF19", fontSize: "1.5rem" }}
+        />
+        ({product.numReviews}
         {product.numReviews == 1 ? " review" : " reviews"})
       </div>
       <div className={styles.infos__price}>
-        {!size ? <h2>{product.priceRange}</h2> : <h1>{product.price}$</h1>}
+        {!size ? <h2>{product.priceRange}</h2> : <h1>{product.price} Rs.</h1>}
         {product.discount > 0 ? (
           <h3>
-            {size && <span>{product.priceBefore}$</span>}
+            {size && <span>{product.priceBefore} Rs.</span>}
             <span>(-{product.discount}%)</span>
           </h3>
         ) : (
@@ -65,7 +72,7 @@ export default function Infos({ product, setActiveImg }) {
               href={`/product/${product.slug}?style=${router.query.style}&size=${i}`}
             >
               <div
-                className={`${styles.infos__sizes_size} ${
+                className={`${styles.infos__sizes_size} Rs.{
                   i == router.query.size && styles.active_size
                 }`}
                 onClick={() => setSize(size.size)}

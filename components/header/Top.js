@@ -1,11 +1,13 @@
 import styles from "./styles.module.scss";
 import { MdSecurity } from "react-icons/md";
-import { BsSuitHeart } from "react-icons/bs";
+import { HiHeart } from "react-icons/hi";
 import { RiAccountPinCircleLine, RiArrowDropDownFill } from "react-icons/ri";
 import Link from "next/link";
 import { useState } from "react";
 import UserMenu from "./UserMenu";
 import { useSession } from "next-auth/react";
+import { FaHandsHelping } from "react-icons/fa";
+import { RiCustomerServiceFill, RiAccountPinCircleFill } from "react-icons/ri";
 
 export default function Top({ country }) {
   const { data: session } = useSession();
@@ -25,13 +27,15 @@ export default function Top({ country }) {
             <span>Buyer Protection</span>
           </li>
           <li className={styles.li}>
+            <RiCustomerServiceFill />
             <span>Customer Service</span>
           </li>
           <li className={styles.li}>
+            <FaHandsHelping />
             <span>Help</span>
           </li>
           <li className={styles.li}>
-            <BsSuitHeart />
+            <HiHeart />
             <Link href="/profile/wishlist">
               <span>Wishlist</span>
             </Link>

@@ -1,4 +1,5 @@
 import Product from "@/models/Product";
+import User from "../../models/User";
 import Category from "@/models/Category";
 import SubCategory from "@/models/SubCategory";
 import styles from "../../styles/product.module.scss";
@@ -53,6 +54,7 @@ export async function getServerSideProps(context) {
   let product = await Product.findOne({ slug })
     .populate({ path: "category", model: Category })
     .populate({ path: "subCategories", model: SubCategory })
+    .populate({ path: "reviews.reviewBy", model: User })
     .lean();
   let subProduct = product.subProducts[style];
   let prices = subProduct.sizes
