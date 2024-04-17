@@ -52,10 +52,8 @@ export default function Reviews({ product }) {
             Login to Add Reviews
           </button>
         )}
-        <Table reviews={product.reviews} />
+        <Table reviews={product.reviews} allSizes={product.allSizes} colors={product.colors} />
       </div>
     </div>
   );
 }
-
-const ratings = ["Poor", "Fair", "Good", "Very Good", "Excellent"];

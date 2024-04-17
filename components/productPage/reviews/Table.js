@@ -3,8 +3,9 @@ import { Pagination } from "@mui/material";
 import { useState } from "react";
 import usePagination from "./Pagination";
 import Review from "./Review";
+import TableHeader from "./TableHeader";
 
-export default function Table({ reviews }) {
+export default function Table({ reviews, allSizes, colors }) {
   const [page, setPage] = useState(1);
   const PER_PAGE = 3;
   const count = Math.ceil(reviews.length / PER_PAGE);
@@ -16,12 +17,14 @@ export default function Table({ reviews }) {
 
   return (
     <div className={styles.table}>
-      <div className={styles.table__header}></div>
+      <TableHeader
+        reviews={reviews}
+        allSizes={[{ size: "All" }, ...allSizes]}
+        colors={[{ color: "", image: "" }, ...colors]}
+      />
       <div className={styles.table__data}>
         {_DATA.currentData().map((review, i) => (
-          <>
-            <Review review={review} key={i} />
-          </>
+          <Review review={review} key={i} />
         ))}
       </div>
       <div className={styles.pagination}>
