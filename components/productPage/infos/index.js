@@ -2,6 +2,7 @@ import * as React from "react";
 import styles from "./styles.module.scss";
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 import Link from "next/link";
 import { TbMinus, TbPlus } from "react-icons/tb";
 import Share from "./share";
@@ -9,6 +10,7 @@ import { BsHandbagFill, BsHeart } from "react-icons/bs";
 import Accordian from "./Accordian";
 import SimillarSwiper from "./SimillarSwiper";
 import { Rating } from "@mui/material";
+import { addToCart, updateCart } from "../../../store/cartSlice";
 
 export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
@@ -24,7 +26,14 @@ export default function Infos({ product, setActiveImg }) {
     if (qty > product.quantity) {
       setQty(product.quantity);
     }
-  }, [router.query.size]);
+  }, [router.query.size, product.quantity, qty]);
+
+  const addToCartHandler = async () => {
+    const { data } = await axios.get(
+      `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
+    );
+    // console.log("data -------->", data);
+  };
 
   return (
     <div className={styles.infos__container}>
@@ -114,6 +123,7 @@ export default function Infos({ product, setActiveImg }) {
           <button
             disabled={product.quantity < 1}
             style={{ cursor: `${product.quantity < 1 ? "not-allowed" : ""}` }}
+            onClick={() => addToCartHandler()}
           >
             <BsHandbagFill />
             <b>ADD TO CART</b>
