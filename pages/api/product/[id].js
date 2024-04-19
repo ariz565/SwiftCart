@@ -1,6 +1,7 @@
 import { createRouter } from "next-connect";
 import db from "@/utils/db";
 import Product from "@/models/Product";
+
 const router = createRouter();
 
 router.get(async (req, res) => {
@@ -9,15 +10,15 @@ router.get(async (req, res) => {
     const id = req.query.id;
     const style = req.query.style || 0;
     const size = req.query.size || 0;
-    console.log("id -------->", id),
-      console.log("style -------->", style),
-      console.log("size -------->", size);
+    // console.log("id -------->", id),
+    //   console.log("style -------->", style),
+    //   console.log("size -------->", size);
     const product = await Product.findById(id).lean();
     let discount = product.subProducts[style].discount;
     let priceBefore = product.subProducts[style].sizes[size].price;
     let price = discount ? priceBefore - priceBefore / discount : priceBefore;
     db.disconnectDb();
-    return res.json({
+    return res.status(200).json({
       _id: product._id,
       style: Number(style),
       name: product.name,

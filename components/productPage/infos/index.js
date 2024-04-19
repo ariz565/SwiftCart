@@ -2,6 +2,7 @@ import * as React from "react";
 import styles from "./styles.module.scss";
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Link from "next/link";
 import { TbMinus, TbPlus } from "react-icons/tb";
@@ -14,8 +15,15 @@ import { addToCart, updateCart } from "../../../store/cartSlice";
 
 export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [size, setSize] = useState(router.query.size);
   const [qty, setQty] = useState(1);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const { cart } = useSelector((state) => ({ ...state }));
+  const cartItems = useSelector((store) => store.cart.cartItems);
+  console.log(cartItems);
 
   useEffect(() => {
     setSize("");
@@ -29,10 +37,46 @@ export default function Infos({ product, setActiveImg }) {
   }, [router.query.size, product.quantity, qty]);
 
   const addToCartHandler = async () => {
+    if (!router.query.size) {
+      setError("Please select a size!");
+      return;
+    }
+
     const { data } = await axios.get(
       `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
     );
-    // console.log("data -------->", data);
+    // console.log(data);
+    if (qty > data.quantity) {
+      setError(
+        "The Quantity you have Choosed is more than in stock! Try a lower QTy!"
+      );
+    } else if (data.quantity < 1) {
+      setError("This Product is out of stock!");
+      return;
+    } else {
+      let _uid = `${data._id}_${product.style}_${router.query.size}`;
+      let exist = cart.cartItems.find((p) => p._uid === _uid);
+      console.log(exist);
+      if (exist) {
+        let newCart = cart.cartItems.map((p) => {
+          if (p._uid == exist._uid) {
+            // return { ...p, qty: qty };
+            return { ...p, qty: p.qty + 1 };
+          }
+          return p;
+        });
+        dispatch(updateCart(newCart));
+      } else {
+        dispatch(
+          addToCart({
+            ...data,
+            qty: 1,
+            size: data.size,
+            _uid,
+          })
+        );
+      }
+    }
   };
 
   return (
@@ -133,6 +177,8 @@ export default function Infos({ product, setActiveImg }) {
             <b>WISHLIST</b>
           </button>
         </div>
+        {error && <span className={styles.error}>{error}</span>}
+        {success && <span className={styles.success}>{success}</span>}
         <Share />
         <Accordian details={[product.description, ...product.details]} />
         <SimillarSwiper />
