@@ -1,3 +1,4 @@
+import CartHeader from "@/components/cart/cartHeader";
 import Empty from "@/components/cart/empty";
 import Header from "@/components/cart/header";
 import Product from "@/components/cart/product";
@@ -12,6 +13,7 @@ export default function Cart() {
       <div className={styles.cart}>
         {cart.cartItems && cart.cartItems.length > 0 ? (
           <div className={styles.cart__container}>
+            <CartHeader cartItems={cart.cartItems} />
             <div className={styles.cart__product}>
               {cart.cartItems.map((product) => (
                 <Product product={product} key={product._uid} />

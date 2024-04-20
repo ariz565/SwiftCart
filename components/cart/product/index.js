@@ -6,17 +6,58 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateCart } from "../../../store/cartSlice";
 import { useState, useEffect } from "react";
 
-export default function Product({ product }) {
+export default function Product({ product, selected, setSelected }) {
   const { cart } = useSelector((state) => ({ ...state }));
+  const [active, setActive] = useState();
+  console.log(active);
+
+  useEffect(() => {
+    const check = selected.find((p) => p._uid == product._uid);
+    setActive(check);
+  }, [selected]);
+
+  const dispatch = useDispatch();
+
+  // Update product quantity
+  const updateQty = (type) => {
+    let newCart = cart.cartItems.map((p) => {
+      if (p._uid == product._uid) {
+        return {
+          ...p,
+          qty: type == "plus" ? product.qty + 1 : product.qty - 1,
+        };
+      }
+      return p;
+    });
+    dispatch(updateCart(newCart));
+  };
+  // Remove product from cart
+  const removeProduct = (id) => {
+    let newCart = cart.cartItems.filter((p) => {
+      return p._uid != id;
+    });
+    dispatch(updateCart(newCart));
+  };
+  // Select product
+  const handleSelect = () => {
+    if (active) {
+      setSelected(selected.filter((p) => p._uid !== product._uid));
+    } else {
+      setSelected([...selected, product]);
+    }
+  };
   return (
     <div className={`${styles.card} ${styles.product}`}>
       {product.quantity < 1 && <div className={styles.blur}></div>}
       <div className={styles.product__header}>
         <img src="../../../images/store.webp" alt="" />
-        Official Store of SwiftCart
+        M74JJI Official Store
       </div>
       <div className={styles.product__image}>
-        <div className={styles.checkbox}></div>
+        <div
+          className={`${styles.checkbox} ${active ? styles.active : ""}`}
+          onClick={() => handleSelect()}
+        ></div>
         <img src={product.images[0].url} alt="" />
         <div className={styles.col}>
           <div className={styles.grid}>
@@ -28,7 +69,10 @@ export default function Product({ product }) {
             <div style={{ zIndex: "2" }}>
               <BsHeart />
             </div>
-            <div style={{ zIndex: "2" }}>
+            <div
+              style={{ zIndex: "2" }}
+              onClick={() => removeProduct(product._uid)}
+            >
               <AiOutlineDelete />
             </div>
           </div>

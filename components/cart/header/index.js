@@ -6,12 +6,12 @@ export default function Header() {
     <div className={styles.header}>
       <div className={styles.header__container}>
         <div className={styles.header__left}>
-          <Link href="/" legacyBehavior>
+          <Link href="/">
             <img src="../../../logo2.png" alt="" />
           </Link>
         </div>
         <div className={styles.header__right}>
-          <Link href="/browse" legacyBehavior>
+          <Link href="/browse">
             <a>
               Continue Shopping
               <MdPlayArrow />
