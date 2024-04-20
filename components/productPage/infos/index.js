@@ -55,7 +55,7 @@ export default function Infos({ product, setActiveImg }) {
       return;
     } else {
       let _uid = `${data._id}_${product.style}_${router.query.size}`;
-      let exist = cart.cartItems?.find((p) => p._uid === _uid);
+      let exist = cart.cartItems.find((p) => p._uid === _uid);
       console.log(exist);
       if (exist) {
         let newCart = cart.cartItems.map((p) => {

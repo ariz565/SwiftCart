@@ -17,12 +17,12 @@ const reducer = persistReducer(config, reducers);
 
 const store = configureStore({
   reducer: reducer,
-  devTools: process.env.NODE_ENV !== "production",
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware(),
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({
+      serializableCheck: false,
+    });
+  },
+  devTools: true,
 });
-
-
-
 
 export default store;
