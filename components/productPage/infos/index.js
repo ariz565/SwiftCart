@@ -36,7 +36,9 @@ export default function Infos({ product, setActiveImg }) {
     }
   }, [router.query.size, product.quantity, qty]);
 
-  const addToCartHandler = async () => {
+  const addToCartHandler = async (e, id, style, size, cart, dispatch) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!router.query.size) {
       setError("Please select a size!");
       return;
@@ -166,7 +168,16 @@ export default function Infos({ product, setActiveImg }) {
           <button
             disabled={product.quantity < 1}
             style={{ cursor: `${product.quantity < 1 ? "not-allowed" : ""}` }}
-            onClick={() => addToCartHandler()}
+            onClick={(e) =>
+              addToCartHandler(
+                e,
+                product._id,
+                product.style,
+                router.query.size,
+                cart,
+                dispatch
+              )
+            }
           >
             <BsHandbagFill />
             <b>ADD TO CART</b>

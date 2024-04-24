@@ -3,15 +3,16 @@ import db from "@/utils/db";
 import Product from "@/models/Product";
 import User from "@/models/User";
 import Cart from "@/models/Cart";
+import auth from "@/middleware/auth";
 
-const router = createRouter();
+const router = createRouter().use(auth);
 
 router.post(async (req, res) => {
   try {
     db.connectDb();
-    const { cart, user_id } = req.body;
+    const { cart } = req.body;
     let products = [];
-    let user = await User.findById(user_id);
+    let user = await User.findById(req.user);
     let existing_cart = await Cart.findOne({ user: user_id });
     if (existing_cart) {
       await existing_cart.remove();

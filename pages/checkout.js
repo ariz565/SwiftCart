@@ -32,14 +32,14 @@ export async function getServerSideProps(context) {
   const user = await User.findById(session.user.id);
   const cart = await Cart.findOne({ user: user._id });
   db.disconnectDb();
-  //   if (!cart) {
-  //     return {
-  //       redirect: {
-  //         destination: "/cart",
-  //       },
-  //     };
-  //   }
-  //   console.log(session);
+  // if (!cart) {
+  //   return {
+  //     redirect: {
+  //       destination: "/cart",
+  //     },
+  //   };
+  // }
+  console.log(session);
   return {
     props: {
       cart: JSON.parse(JSON.stringify(cart)),
