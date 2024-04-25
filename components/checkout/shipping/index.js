@@ -6,7 +6,11 @@ import ShippingInput from "@/components/inputs/shippingInput";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { countries } from "@/data/countries";
 import SingularSelect from "@/components/selects/SingularSelect";
-import { saveAddress } from "@/requests/user";
+import {
+  deleteAddress,
+  saveAddress,
+  changeActiveAddress,
+} from "@/requests/user";
 
 import { FaIdCard } from "react-icons/fa";
 import { GiPhone } from "react-icons/gi";
@@ -14,6 +18,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import { IoMdArrowDropupCircle } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
+import { FaMapMarkedAlt } from "react-icons/fa";
 
 const initialValues = {
   firstName: "",
@@ -27,12 +32,7 @@ const initialValues = {
   country: "",
 };
 //
-export default function Shipping({
-  selectedAddress,
-  setSelectedAddress,
-  user,
-}) {
-  const [addresses, setAddresses] = useState(user?.address || []);
+export default function Shipping({ user, addresses, setAddresses }) {
   const [shipping, setShipping] = useState(initialValues);
   const [visible, setVisible] = useState(user?.address.length ? false : true);
 
@@ -101,53 +101,76 @@ export default function Shipping({
   /// Save shipping address handler
   const saveShippingHandler = async () => {
     const res = await saveAddress(shipping);
-    setAddresses([...addresses, res]);
-    setSelectedAddress(res);
+    setAddresses(res.addresses);
+  };
+
+  // change active address handler
+  const changeActiveHandler = async (id) => {
+    const res = await changeActiveAddress(id);
+    setAddresses(res.addresses);
+  };
+
+  // delete address handler
+  const deleteHandler = async (id) => {
+    const res = await deleteAddress(id);
+    setAddresses(res.addresses);
   };
 
   // ----------------------------------------
   return (
     <div className={styles.shipping}>
+      <div className={styles.header}>
+        <h3>Shipping Informations</h3>
+      </div>
+
       <div className={styles.addresses}>
         {addresses.map((address) => (
-          <div
-            className={`${styles.address} ${address.active && styles.active}`}
-            key={address._id}
-          >
-            <div className={styles.address__side}>
-              <img src={user.image} alt="" />
-            </div>
-            <div className={styles.address__col}>
-              <span>
-                <FaIdCard />
-                {address.firstName.toUpperCase()}
-                {""}
-                {address.lastName.toUpperCase()}
-              </span>
-              <span>
-                <GiPhone />
-                {address.phoneNumber}
-              </span>
-            </div>
-            <div className={styles.address__col}>
-              <span>
-                <FaMapMarkedAlt />
-                {address.address1}
-              </span>
-              <span>{address.address2}</span>
-              <span>
-                {address.city},{address.state},{address.country}
-              </span>
-              <span>{address.zipCode}</span>
-            </div>
-            <span
-              className={styles.active__text}
-              style={{
-                display: `${!address.active && "none"}`,
-              }}
+          <div key={address._id} style={{ position: "relative" }}>
+            <div
+              className={styles.address__delete}
+              onClick={() => deleteHandler(address._id)}
             >
-              Active
-            </span>
+              <IoIosRemoveCircleOutline />
+            </div>
+
+            <div
+              className={`${styles.address} ${address.active && styles.active}`}
+              onClick={() => changeActiveHandler(address._id)}
+            >
+              <div className={styles.address__side}>
+                <img src={profile ? user.user.image : user.image} alt="" />
+              </div>
+              <div className={styles.address__col}>
+                <span>
+                  <FaIdCard />
+                  {address.firstName.toUpperCase()}{" "}
+                  {address.lastName.toUpperCase()}
+                </span>
+                <span>
+                  <GiPhone />
+                  {address.phoneNumber}
+                </span>
+              </div>
+              <div className={styles.address__col}>
+                <span>
+                  <FaMapMarkerAlt />
+                  {address.address1}
+                </span>
+                <span>{address.address2}</span>
+                <span>
+                  {address.city},{address.state},{address.country}
+                </span>
+                <span>{address.zipCode}</span>
+              </div>
+              <span
+                className={styles.active__text}
+                style={{
+                  display: `${!address.active && "none"}`,
+                }}
+              >
+                Active
+              </span>
+            </div>
           </div>
         ))}
       </div>
@@ -162,7 +185,6 @@ export default function Shipping({
           </span>
         )}
       </button>
-
       {visible && (
         <Formik
           enableReinitialize
@@ -175,6 +197,7 @@ export default function Shipping({
             zipCode,
             address1,
             address2,
+            country,
           }}
           validationSchema={validate}
           onSubmit={() => {
