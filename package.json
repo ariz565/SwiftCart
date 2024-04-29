@@ -38,6 +38,7 @@
     "react-responsive": "^10.0.0",
     "react-share": "^5.1.0",
     "react-spinners": "^0.13.8",
+    "react-toastify": "^10.0.5",
     "redux": "^5.0.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-persist": "^6.0.0",
