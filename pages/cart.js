@@ -30,7 +30,7 @@ export default function Cart() {
   //----
   useEffect(() => {
     const update = async () => {
-      const { data } = await axios.post("/api/updateCart", {
+      const { data } = await axios.post("/api/user/saveCart", {
         products: cart.cartItems,
       });
       dispatch(updateCart(data));
