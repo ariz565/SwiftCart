@@ -3,6 +3,7 @@ import db from "@/utils/db";
 import Category from "@/models/Category";
 import { useState } from "react";
 import Create from "@/components/admin/categories/Create";
+import List from "@/components/admin/categories/List";
 
 export default function Categories({ categories }) {
   const [data, setData] = useState(categories);
@@ -11,6 +12,7 @@ export default function Categories({ categories }) {
     <Layout>
       <div>
         <Create setCategories={setData} />
+        <List categories={data} setCategories={setData} /> 
       </div>
     </Layout>
   );

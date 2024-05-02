@@ -28,17 +28,17 @@ export default function Cart() {
   //-------
 
   //----
-  useEffect(() => {
-    const update = async () => {
-      const { data } = await axios.post("/api/user/saveCart", {
-        products: cart.cartItems,
-      });
-      dispatch(updateCart(data));
-    };
-    if (cart.cartItems.length > 0) {
-      update();
-    }
-  }, [cart, dispatch]);
+  // useEffect(() => {
+  //   const update = async () => {
+  //     const { data } = await axios.post("/api/user/saveCart", {
+  //       products: cart.cartItems,
+  //     });
+  //     dispatch(updateCart(data));
+  //   };
+  //   if (cart.cartItems.length > 0) {
+  //     update();
+  //   }
+  // }, [cart, dispatch]);
   //----
 
   // ------

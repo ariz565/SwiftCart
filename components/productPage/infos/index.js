@@ -1,7 +1,8 @@
-import * as React from "react";
 import styles from "./styles.module.scss";
-import { use, useEffect, useState } from "react";
+import { Rating } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { signIn, useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Link from "next/link";
@@ -10,20 +11,20 @@ import Share from "./share";
 import { BsHandbagFill, BsHeart } from "react-icons/bs";
 import Accordian from "./Accordian";
 import SimillarSwiper from "./SimillarSwiper";
-import { Rating } from "@mui/material";
 import { addToCart, updateCart } from "../../../store/cartSlice";
 import { toast } from "react-toastify";
 
 export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { data: session } = useSession();
   const [size, setSize] = useState(router.query.size);
   const [qty, setQty] = useState(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const { cart } = useSelector((state) => ({ ...state }));
-  const cartItems = useSelector((store) => store.cart.cartItems);
+  // const cartItems = useSelector((store) => store.cart.cartItems);
   // console.log(cartItems);
 
   useEffect(() => {
@@ -38,57 +39,41 @@ export default function Infos({ product, setActiveImg }) {
   }, [router.query.size, product.quantity, qty]);
 
   const addToCartHandler = async () => {
-    try {
-      if (!router.query.size) {
-        setError("Please select a size!");
-        return;
-      }
-
-      const { data } = await axios.get(
-        `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
+    if (!router.query.size) {
+      setError("Please Select a size");
+      return;
+    }
+    const { data } = await axios.get(
+      `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
+    );
+    if (qty > data.quantity) {
+      setError(
+        "The Quantity you have choosed is more than in stock. Try and lower the Qty"
       );
-
-      if (!data || !data.quantity) {
-        setError("Failed to fetch product information.");
-        return;
-      }
-
-      toast.success(data.message);
-      console.log(data);
-
-      // Move subsequent logic inside the try block
-      if (qty > data.quantity) {
-        setError(
-          "The Quantity you have Choosed is more than in stock! Try a lower QTy!"
-        );
-      } else if (data.quantity < 1) {
-        setError("This Product is out of stock!");
-        return;
+    } else if (data.quantity < 1) {
+      setError("This Product is out of stock.");
+      return;
+    } else {
+      let _uid = `${data._id}_${product.style}_${router.query.size}`;
+      let exist = cart.cartItems.find((p) => p._uid === _uid);
+      if (exist) {
+        let newCart = cart.cartItems.map((p) => {
+          if (p._uid == exist._uid) {
+            return { ...p, qty: qty };
+          }
+          return p;
+        });
+        dispatch(updateCart(newCart));
       } else {
-        let _uid = `${data._id}_${product.style}_${router.query.size}`;
-        let exist = cart.cartItems.find((p) => p._uid === _uid);
-        console.log(exist);
-        if (exist) {
-          let newCart = cart.cartItems.map((p) => {
-            if (p._uid == exist._uid) {
-              return { ...p, qty: qty };
-            }
-            return p;
-          });
-          dispatch(updateCart(newCart));
-        } else {
-          dispatch(
-            addToCart({
-              ...data,
-              qty: 1,
-              size: data.size,
-              _uid,
-            })
-          );
-        }
+        dispatch(
+          addToCart({
+            ...data,
+            qty,
+            size: data.size,
+            _uid,
+          })
+        );
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred.");
     }
   };
 

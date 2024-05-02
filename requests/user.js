@@ -7,7 +7,7 @@ export const saveCart = async (cart) => {
     });
     return data;
   } catch (error) {
-    return response.data.error.message;
+    return error.response.data.message;
   }
 };
 export const saveAddress = async (address, userId) => {

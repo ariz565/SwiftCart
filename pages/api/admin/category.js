@@ -35,7 +35,7 @@ router.delete(async (req, res) => {
   try {
     const { id } = req.body;
     db.connectDb();
-    await Category.findByIdAndRemove(id);
+    await Category.findByIdAndDelete(id);
     db.disconnectDb();
     return res.json({
       message: "Category has been deleted successfuly",
