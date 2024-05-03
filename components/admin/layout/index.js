@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import Sidebar from "./sidebar";
 import styles from "./styles.module.scss";
 
+// Layout component
 export default function Layout({ children }) {
   const { expandSidebar } = useSelector((state) => ({ ...state }));
   const showSidebar = expandSidebar.expandSidebar;

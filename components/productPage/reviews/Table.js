@@ -5,6 +5,7 @@ import usePagination from "./Pagination";
 import Review from "./Review";
 import TableHeader from "./TableHeader";
 
+// Table component--------------------------------
 export default function Table({ reviews, allSizes, colors }) {
   const [page, setPage] = useState(1);
   const PER_PAGE = 3;
@@ -14,7 +15,7 @@ export default function Table({ reviews, allSizes, colors }) {
     setPage(p);
     _DATA.jump(p);
   };
-
+  // Return--------------------------------
   return (
     <div className={styles.table}>
       <TableHeader

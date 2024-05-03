@@ -1,6 +1,8 @@
-import { Rating } from "@mui/material";
 import styles from "./styles.module.scss";
+import { Rating } from "@mui/material";
 import { AiOutlineLike } from "react-icons/ai";
+
+// Review component
 export default function Review({ review }) {
   const { name, image } = review.reviewBy
     ? review.reviewBy

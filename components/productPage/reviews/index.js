@@ -1,9 +1,9 @@
-import { Rating } from "@mui/material";
-import styles from "./styles.module.scss";
-import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import styles from "./styles.module.scss";
 import AddReview from "./AddReview";
 import Table from "./Table";
+import { Rating } from "@mui/material";
 
 export default function Reviews({ product }) {
   const { data: session } = useSession();
