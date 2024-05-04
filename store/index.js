@@ -5,8 +5,9 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import cart from "./cartSlice";
 import expandSidebar from "./ExpandSlice";
+import dialog from "./DialogSlice";
 
-const reducers = combineReducers({ cart, expandSidebar });
+const reducers = combineReducers({ cart, expandSidebar, dialog });
 
 const config = {
   key: "root",
