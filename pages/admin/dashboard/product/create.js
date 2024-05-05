@@ -14,6 +14,7 @@ import MultipleSelect from "@/components/selects/MultipleSelect";
 import AdminInput from "@/components/inputs/adminInput";
 import DialogModal from "@/components/dialogModal";
 import { showDialog } from "@/store/DialogSlice";
+import Images from "@/components/admin/createProduct/images";
 
 // ---------Initial State----------------
 const initialState = {
@@ -155,14 +156,14 @@ export default function Create({ parents, categories }) {
       >
         {(formik) => (
           <Form>
-            {/* <Images
+            <Images
               name="imageInputFile"
               header="Product Carousel Images"
               text="Add images"
               images={images}
               setImages={setImages}
               setColorImage={setColorImage}
-            /> */}
+            />
             <div className={styles.flex}>
               {product.color.image && (
                 <img
