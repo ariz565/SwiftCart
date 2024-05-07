@@ -15,6 +15,8 @@ import AdminInput from "@/components/inputs/adminInput";
 import DialogModal from "@/components/dialogModal";
 import { showDialog } from "@/store/DialogSlice";
 import Images from "@/components/admin/createProduct/images";
+import Colors from "@/components/admin/createProduct/colors";
+import Style from "@/components/admin/createProduct/style";
 
 // ---------Initial State----------------
 const initialState = {
@@ -179,18 +181,18 @@ export default function Create({ parents, categories }) {
                 ></span>
               )}
             </div>
-            {/* <Colors 
+            <Colors
               name="color"
               product={product}
               setProduct={setProduct}
               colorImage={colorImage}
-              />
-              <Style
+            />
+            <Style
               name="styleInput"
-                product={product}
-                setProduct={setProduct}
-                colorImage={colorImage}
-                /> */}
+              product={product}
+              setProduct={setProduct}
+              colorImage={colorImage}
+            />
             <SingularSelect
               name="parent"
               value={product.parent}
