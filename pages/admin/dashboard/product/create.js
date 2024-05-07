@@ -17,6 +17,12 @@ import { showDialog } from "@/store/DialogSlice";
 import Images from "@/components/admin/createProduct/images";
 import Colors from "@/components/admin/createProduct/colors";
 import Style from "@/components/admin/createProduct/style";
+import Sizes from "@/components/admin/createProduct/clickToAdd/Sizes";
+import Details from "@/components/admin/createProduct/clickToAdd/Details";
+import Questions from "@/components/admin/createProduct/clickToAdd/Questions";
+import { validateCreateProduct } from "../../../../utils/validation";
+import dataURItoBlob from "../../../../utils/dataURItoBlob";
+import { uploadImages } from "../../../../requests/upload";
 
 // ---------Initial State----------------
 const initialState = {
@@ -129,7 +135,60 @@ export default function Create({ parents, categories }) {
     description: Yup.string().required("Please add a description"),
   });
   // ---------Create Product----------------
-  const createProduct = async () => {};
+  const createProduct = async () => {
+    let test = validateCreateProduct(product, images);
+    if (test == "valid") {
+      createProductHandler();
+    } else {
+      dispatch(
+        showDialog({
+          header: "Please follow our instructions.",
+          msgs: test,
+        })
+      );
+    }
+  };
+  let uploaded_images = [];
+  let style_img = "";
+  const createProductHandler = async () => {
+    setLoading(true);
+    if (images) {
+      let temp = images.map((img) => {
+        return dataURItoBlob(img);
+      });
+      const path = "product images";
+      let formData = new FormData();
+      formData.append("path", path);
+      temp.forEach((image) => {
+        formData.append("file", image);
+      });
+      uploaded_images = await uploadImages(formData);
+    }
+    if (product.color.image) {
+      let temp = dataURItoBlob(product.color.image);
+      let path = "product style images";
+      let formData = new FormData();
+      formData.append("path", path);
+      formData.append("file", temp);
+      let cloudinary_style_img = await uploadImages(formData);
+      style_img = cloudinary_style_img[0].url;
+    }
+    try {
+      const { data } = await axios.post("/api/admin/product", {
+        ...product,
+        images: uploaded_images,
+        color: {
+          image: style_img,
+          color: product.color.color,
+        },
+      });
+      setLoading(false);
+      toast.success(data.message);
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.response.data.message);
+    }
+  };
 
   //------------------------------------------
   return (
@@ -256,11 +315,12 @@ export default function Create({ parents, categories }) {
               placholder="Product discount"
               onChange={handleChange}
             />
-            {/* <Sizes
+            <Sizes
               sizes={product.sizes}
               product={product}
               setProduct={setProduct}
             />
+
             <Details
               details={product.details}
               product={product}
@@ -270,7 +330,7 @@ export default function Create({ parents, categories }) {
               questions={product.questions}
               product={product}
               setProduct={setProduct}
-            /> */}
+            />
             {/*
             <Images
               name="imageDescInputFile"
