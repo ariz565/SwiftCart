@@ -2,12 +2,12 @@ import styles from "./styles.module.scss";
 import { Rating } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Link from "next/link";
 import { TbMinus, TbPlus } from "react-icons/tb";
-import Share from "./share";
+import Share from "./Share";
 import { BsHandbagFill, BsHeart } from "react-icons/bs";
 import Accordian from "./Accordian";
 import SimillarSwiper from "./SimillarSwiper";
@@ -18,64 +18,64 @@ export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { data: session } = useSession();
-  const [size, setSize] = useState(router.query.size);
-  const [qty, setQty] = useState(1);
+  const [selectedSize, setSelectedSize] = useState(router.query.size);
+  const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const { cart } = useSelector((state) => ({ ...state }));
-  // const cartItems = useSelector((store) => store.cart.cartItems);
-  // console.log(cartItems);
+  const { cart } = useSelector((state) => state);
 
   useEffect(() => {
-    setSize("");
-    setQty(1);
-  }, [router.query.style]);
-
-  useEffect(() => {
-    if (qty > product.quantity) {
-      setQty(product.quantity);
+    if (quantity > product.quantity) {
+      setQuantity(product.quantity);
     }
-  }, [router.query.size, product.quantity, qty]);
+  }, [product.quantity, quantity]);
 
-  const addToCartHandler = async () => {
+  const handleAddToCart = async () => {
     if (!router.query.size) {
-      setError("Please Select a size");
+      setError("Please select a size.");
       return;
     }
-    const { data } = await axios.get(
-      `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
-    );
-    if (qty > data.quantity) {
-      setError(
-        "The Quantity you have choosed is more than in stock. Try and lower the Qty"
+
+    try {
+      const { data } = await axios.get(
+        `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
       );
-    } else if (data.quantity < 1) {
-      setError("This Product is out of stock.");
-      return;
-    } else {
-      let _uid = `${data._id}_${product.style}_${router.query.size}`;
-      let exist = cart.cartItems.find((p) => p._uid === _uid);
-      if (exist) {
-        let newCart = cart.cartItems.map((p) => {
-          if (p._uid == exist._uid) {
-            return { ...p, qty: qty };
-          }
-          return p;
-        });
-        dispatch(updateCart(newCart));
+      console.log(data);
+
+      if (quantity > data.quantity) {
+        setError("The selected quantity exceeds our stock. Please adjust.");
+      } else if (data.quantity < 1) {
+        setError("This product is out of stock.");
       } else {
-        dispatch(
-          addToCart({
-            ...data,
-            qty,
-            size: data.size,
-            _uid,
-          })
-        );
+        const _uid = `${data._id}_${product.style}_${router.query.size}`;
+        const existingItem = cart.cartItems?.find((p) => p._uid === _uid);
+        console.log(existingItem);
+
+        if (existingItem) {
+          const newCart = cart.cartItems.map((p) =>
+            p._uid === existingItem._uid ? { ...p, qty: quantity } : p
+          );
+          dispatch(updateCart(newCart));
+        } else {
+          dispatch(
+            addToCart({ ...data, qty: quantity, size: data.size, _uid })
+          );
+        }
+
+        setError("");
+        setSuccess("Added to cart!");
       }
+    } catch (error) {
+      setError("Failed to add to cart. Please try again.");
+      console.error(error);
     }
   };
+
+  const productQuantity = product.sizes.reduce(
+    (total, size) => total + size.qty,
+    0
+  );
 
   return (
     <div className={styles.infos__container}>
@@ -89,33 +89,33 @@ export default function Infos({ product, setActiveImg }) {
           readOnly
           style={{ width: "100px", color: "#FACF19", fontSize: "1.5rem" }}
         />
-        ({product.numReviews}
-        {product.numReviews == 1 ? " review" : " reviews"})
+        ({product.numReviews} {product.numReviews === 1 ? "review" : "reviews"})
       </div>
       <div className={styles.infos__price}>
-        {!size ? <h2>{product.priceRange}</h2> : <h1>{product.price} Rs.</h1>}
-        {product.discount > 0 ? (
-          <h3>
-            {size && <span>{product.priceBefore} Rs.</span>}
-            <span>(-{product.discount}%)</span>
-          </h3>
+        {!selectedSize ? (
+          <h2>{product.priceRange}</h2>
         ) : (
-          ""
+          <>
+            <h1>{product.price} Rs.</h1>
+            {product.discount > 0 && (
+              <h3>
+                {selectedSize && <span>{product.priceBefore} Rs.</span>}
+                <span>(-{product.discount}%)</span>
+              </h3>
+            )}
+          </>
         )}
       </div>
       <span className={styles.infos__shipping}>
         {product.shipping
           ? `+${product.shipping} Rs. shipping fee`
-          : `Free shipping`}
+          : "Free shipping"}
       </span>
       <span>
-        {!size
-          ? product.quantity
-          : product.sizes.reduce((start, next) => start + next.qty, 0)}{" "}
-        pieces available
+        {!selectedSize ? product.quantity : productQuantity} pieces available
       </span>
       <div className={styles.infos__sizes}>
-        <h4>Select a Size : </h4>
+        <h4>Select a Size:</h4>
         <div className={styles.infos__sizes_wrap}>
           {product.sizes.map((size, i) => (
             <Link
@@ -123,10 +123,10 @@ export default function Infos({ product, setActiveImg }) {
               href={`/product/${product.slug}?style=${router.query.style}&size=${i}`}
             >
               <div
-                className={`${styles.infos__sizes_size} Rs.{
-                  i == router.query.size && styles.active_size
+                className={`${styles.infos__sizes_size} ${
+                  i === parseInt(router.query.size) && styles.active_size
                 }`}
-                onClick={() => setSize(size.size)}
+                onClick={() => setSelectedSize(size.size)}
               >
                 {size.size}
               </div>
@@ -138,7 +138,9 @@ export default function Infos({ product, setActiveImg }) {
             product.colors.map((color, i) => (
               <span
                 key={i}
-                className={i == router.query.style ? styles.active_color : ""}
+                className={
+                  i === parseInt(router.query.style) ? styles.active_color : ""
+                }
                 onMouseOver={() =>
                   setActiveImg(product.subProducts[i].images[0].url)
                 }
@@ -151,21 +153,25 @@ export default function Infos({ product, setActiveImg }) {
             ))}
         </div>
         <div className={styles.infos__qty}>
-          <button onClick={() => qty > 1 && setQty((prev) => prev - 1)}>
+          <button
+            onClick={() => quantity > 1 && setQuantity((prev) => prev - 1)}
+          >
             <TbMinus />
           </button>
-          <span>{qty}</span>
+          <span>{quantity}</span>
           <button
-            onClick={() => qty < product.quantity && setQty((prev) => prev + 1)}
+            onClick={() =>
+              quantity < product.quantity && setQuantity((prev) => prev + 1)
+            }
           >
             <TbPlus />
           </button>
         </div>
         <div className={styles.infos__actions}>
           <button
-            disabled={product.quantity < 1}
-            style={{ cursor: `${product.quantity < 1 ? "not-allowed" : ""}` }}
-            onClick={(e) => addToCartHandler()}
+            disabled={productQuantity < 1}
+            style={{ cursor: `${productQuantity < 1 ? "not-allowed" : ""}` }}
+            onClick={handleAddToCart}
           >
             <BsHandbagFill />
             <b>ADD TO CART</b>
