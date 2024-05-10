@@ -2,7 +2,7 @@ import { getToken } from "next-auth/jwt";
 import User from "../models/User";
 import db from "../utils/db";
 
-export default async (req, res, next) => {
+export default async function admin(req, res, next) {
   const token = await getToken({
     req,
     secret: process.env.JWT_SECRET,
@@ -16,4 +16,4 @@ export default async (req, res, next) => {
   } else {
     res.status(401).json({ message: "Access denied, Admin resourses." });
   }
-};
+}

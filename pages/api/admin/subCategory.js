@@ -1,10 +1,10 @@
 import { createRouter } from "next-connect";
-import auth from "../../../middleware/auth";
-import Category from "../../../models/Category";
+import auth from "@/middleware/auth";
+import admin from "@/middleware/admin";
+import Category from "@/models/Category";
 import SubCategory from "../../../models/SubCategory";
 import db from "../../../utils/db";
 import slugify from "slugify";
-import admin from "../../../middleware/admin";
 
 // ------------------- Category Model -------------------
 const router = createRouter().use(auth).use(admin);

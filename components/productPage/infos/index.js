@@ -7,12 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Link from "next/link";
 import { TbMinus, TbPlus } from "react-icons/tb";
-import Share from "./Share";
-import { BsHandbagFill, BsHeart } from "react-icons/bs";
+import { BiHeart } from "react-icons/bi";
+import { FaOpencart } from "react-icons/fa";
 import Accordian from "./Accordian";
-import SimillarSwiper from "./SimillarSwiper";
 import { addToCart, updateCart } from "../../../store/cartSlice";
 import { toast } from "react-toastify";
+// import Share from "./share";
+// import SimillarSwiper from "./SimillarSwiper";
 
 export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
@@ -173,19 +174,19 @@ export default function Infos({ product, setActiveImg }) {
             style={{ cursor: `${productQuantity < 1 ? "not-allowed" : ""}` }}
             onClick={handleAddToCart}
           >
-            <BsHandbagFill />
+            <FaOpencart />
             <b>ADD TO CART</b>
           </button>
           <button>
-            <BsHeart />
+            <BiHeart />
             <b>WISHLIST</b>
           </button>
         </div>
         {error && <span className={styles.error}>{error}</span>}
         {success && <span className={styles.success}>{success}</span>}
-        <Share />
+        {/* <Share /> */}
         <Accordian details={[product.description, ...product.details]} />
-        <SimillarSwiper />
+        {/* <SimillarSwiper /> */}
       </div>
     </div>
   );

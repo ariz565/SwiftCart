@@ -5,6 +5,12 @@ import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import styles from "./styles.module.scss";
+import Share from "./share";
+import { FaCopy, FaShareAlt } from "react-icons/fa";
+import SimillarSwiper from "./SimillarSwiper";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
@@ -42,7 +48,8 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: "1px solid rgba(0, 0, 0, .125)",
 }));
 
-export default function Accordian({ details }) {
+export default function Accordian({ details, product }) {
+  const url = window.location.href;
   const [expanded, setExpanded] = React.useState("");
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -88,7 +95,89 @@ export default function Accordian({ details }) {
           Size & Fit
         </AccordionSummary>
         <AccordionDetails>
+          <table className={styles.sizes}>
+            <thead>
+              <tr>
+                <th scope="col">Size</th>
+                <th scope="col">Chest</th>
+                <th scope="col">Neek</th>
+                <th scope="col">Sleev</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Small</td>
+                <td>36-38&quot;</td>
+                <td>14-14.5&quot;</td>
+                <td>32.5&quot;</td>
+              </tr>
+              <tr>
+                <td>Medium</td>
+                <td>39-41&quot;</td>
+                <td>15-15.5&quot;</td>
+                <td>33.5&quot;</td>
+              </tr>
+              <tr>
+                <td>Large</td>
+                <td>42-44&quot;</td>
+                <td>16-16.5&quot;</td>
+                <td>34.5&quot;</td>
+              </tr>
+            </tbody>
+          </table>
+        </AccordionDetails>
+        <AccordionDetails>
           <div className={styles.infos__accordian_grid}></div>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        expanded={expanded === "panel3"}
+        onChange={handleChange("panel3")}
+        className={styles.accordian}
+      >
+        <AccordionSummary
+          className={styles.accordian__summary}
+          aria-controls="panel3d-content"
+          id="panel3d-header"
+        >
+          Share this product
+        </AccordionSummary>
+
+        <AccordionDetails>
+          <div className={styles.button_wrapper}>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(url);
+                toast.success("Copied product link successfully!");
+              }}
+            >
+              <FaCopy /> Click here to get Product Link
+            </button>
+          </div>
+        </AccordionDetails>
+        <AccordionDetails className="scrollbar">
+          <div className={styles.socials_share}>
+            <span>
+              <FaShareAlt /> Share on Socials
+            </span>
+          </div>
+          <Share />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        expanded={expanded === "panel4"}
+        onChange={handleChange("panel4")}
+        className={styles.accordian}
+      >
+        <AccordionSummary
+          className={styles.accordian__summary}
+          aria-controls="panel4d-content"
+          id="panel4d-header"
+        >
+          Similar products
+        </AccordionSummary>
+        <AccordionDetails className="scrollbar">
+          <SimillarSwiper />
         </AccordionDetails>
       </Accordion>
     </div>
