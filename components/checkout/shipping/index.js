@@ -32,7 +32,7 @@ const initialValues = {
   country: "",
 };
 //
-export default function Shipping({ user, addresses, setAddresses }) {
+export default function Shipping({ user, addresses, setAddresses, profile }) {
   const [shipping, setShipping] = useState(initialValues);
   const [visible, setVisible] = useState(user?.address.length ? false : true);
 
@@ -119,9 +119,11 @@ export default function Shipping({ user, addresses, setAddresses }) {
   // ----------------------------------------
   return (
     <div className={styles.shipping}>
-      <div className={styles.header}>
-        <h3>Shipping Informations</h3>
-      </div>
+      {!profile && (
+        <div className={styles.header}>
+          <h3>Shipping Informations</h3>
+        </div>
+      )}
 
       <div className={styles.addresses}>
         {addresses.map((address) => (

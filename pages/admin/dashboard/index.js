@@ -70,7 +70,8 @@ export default function Dashboard({ users, orders, products }) {
                 -
                 {orders
                   .filter((o) => !o.isPaid)
-                  .reduce((a, val) => a + val.total, 0)} Rs. Unpaid yet.
+                  .reduce((a, val) => a + val.total, 0)}{" "}
+                Rs. Unpaid yet.
               </h5>
               <span>Total Earnings</span>
             </div>
@@ -94,7 +95,7 @@ export default function Dashboard({ users, orders, products }) {
               </thead>
               <tbody>
                 {orders.map((order) => (
-                  <tr>
+                  <tr key={user._id}>
                     <td>{order.user.name}</td>
                     <td>{order.total} $</td>
                     <td>
@@ -141,7 +142,7 @@ export default function Dashboard({ users, orders, products }) {
             <table>
               <tbody>
                 {users.map((user) => (
-                  <tr>
+                  <tr key={user._id}>
                     <td className={styles.user}>
                       <div className={styles.user__img}>
                         <img src={user.image} alt="" />
