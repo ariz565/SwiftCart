@@ -50,7 +50,7 @@ export async function getServerSideProps(context) {
   const style = query.style;
   const size = query.size || 0;
   db.connectDb();
-  // ...........
+  //------------
   let product = await Product.findOne({ slug })
     .populate({ path: "category", model: Category })
     .populate({ path: "subCategories", model: SubCategory })
@@ -64,7 +64,6 @@ export async function getServerSideProps(context) {
     .sort((a, b) => {
       return a - b;
     });
-
   let newProduct = {
     ...product,
     style,
@@ -92,21 +91,22 @@ export async function getServerSideProps(context) {
     quantity: subProduct.sizes[size].qty,
     ratings: [
       {
-        percentage: "76",
+        percentage: calculatePercentage("5"),
       },
       {
-        percentage: "14",
+        percentage: calculatePercentage("4"),
       },
       {
-        percentage: "6",
+        percentage: calculatePercentage("3"),
       },
       {
-        percentage: "4",
+        percentage: calculatePercentage("2"),
       },
       {
-        percentage: "0",
+        percentage: calculatePercentage("1"),
       },
     ],
+    reviews: product.reviews.reverse(),
     allSizes: product.subProducts
       .map((p) => {
         return p.sizes;
@@ -120,12 +120,28 @@ export async function getServerSideProps(context) {
           array.findIndex((el2) => el2.size === element.size) === index
       ),
   };
-  // ...........
-  // console.log("newProduct",newProduct);
+  const related = await Product.find({ category: product.category._id }).lean();
+  //------------
+  function calculatePercentage(num) {
+    return (
+      (product.reviews.reduce((a, review) => {
+        return (
+          a +
+          (review.rating == Number(num) || review.rating == Number(num) + 0.5)
+        );
+      }, 0) *
+        100) /
+      product.reviews.length
+    ).toFixed(1);
+  }
   db.disconnectDb();
+  console.log("related", related);
   return {
     props: {
       product: JSON.parse(JSON.stringify(newProduct)),
+      related: JSON.parse(JSON.stringify(related)),
     },
   };
 }
+
+

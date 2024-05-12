@@ -8,10 +8,13 @@ import axios from "axios";
 import Link from "next/link";
 import { TbMinus, TbPlus } from "react-icons/tb";
 import { BiHeart } from "react-icons/bi";
+import DialogModal from "@/components/dialogModal";
 import { FaOpencart } from "react-icons/fa";
 import Accordian from "./Accordian";
-import { addToCart, updateCart } from "../../../store/cartSlice";
+import { addToCart, updateCart } from "@/store/cartSlice";
 import { toast } from "react-toastify";
+import { hideDialog, showDialog } from "@/store/DialogSlice";
+import { signIn } from "next-auth/react";
 // import Share from "./share";
 // import SimillarSwiper from "./SimillarSwiper";
 
@@ -21,6 +24,8 @@ export default function Infos({ product, setActiveImg }) {
   const { data: session } = useSession();
   const [selectedSize, setSelectedSize] = useState(router.query.size);
   const [quantity, setQuantity] = useState(1);
+  const [size, setSize] = useState(router.query.size);
+  const [qty, setQty] = useState(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -32,116 +37,145 @@ export default function Infos({ product, setActiveImg }) {
     }
   }, [product.quantity, quantity]);
 
-  const handleAddToCart = async () => {
+  // -----------------Handle Add to Cart-----------------
+  const addToCartHandler = async () => {
     if (!router.query.size) {
-      setError("Please select a size.");
+      setError("Please Select a size");
       return;
     }
-
-    try {
-      const { data } = await axios.get(
-        `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
+    const { data } = await axios.get(
+      `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
+    );
+    if (qty > data.quantity) {
+      setError(
+        "The Quantity you have choosed is more than in stock. Try and lower the Qty"
       );
-      console.log(data);
-
-      if (quantity > data.quantity) {
-        setError("The selected quantity exceeds our stock. Please adjust.");
-      } else if (data.quantity < 1) {
-        setError("This product is out of stock.");
+    } else if (data.quantity < 1) {
+      setError("This Product is out of stock.");
+      return;
+    } else {
+      let _uid = `${data._id}_${product.style}_${router.query.size}`;
+      let exist = cart.cartItems.find((p) => p._uid === _uid);
+      if (exist) {
+        let newCart = cart.cartItems.map((p) => {
+          if (p._uid == exist._uid) {
+            return { ...p, qty: qty };
+          }
+          return p;
+        });
+        dispatch(updateCart(newCart));
       } else {
-        const _uid = `${data._id}_${product.style}_${router.query.size}`;
-        const existingItem = cart.cartItems?.find((p) => p._uid === _uid);
-        console.log(existingItem);
-
-        if (existingItem) {
-          const newCart = cart.cartItems.map((p) =>
-            p._uid === existingItem._uid ? { ...p, qty: quantity } : p
-          );
-          dispatch(updateCart(newCart));
-        } else {
-          dispatch(
-            addToCart({ ...data, qty: quantity, size: data.size, _uid })
-          );
-        }
-
-        setError("");
-        setSuccess("Added to cart!");
+        dispatch(
+          addToCart({
+            ...data,
+            qty,
+            size: data.size,
+            _uid,
+          })
+        );
       }
-    } catch (error) {
-      setError("Failed to add to cart. Please try again.");
-      console.error(error);
     }
   };
-
-  const productQuantity = product.sizes.reduce(
-    (total, size) => total + size.qty,
-    0
-  );
+  /// --------------------Handle Wishlist--------------------
+  const handleWishlist = async () => {
+    try {
+      if (!session) {
+        return signIn();
+      }
+      const { data } = await axios.put("/api/user/wishlist", {
+        product_id: product._id,
+        style: product.style,
+      });
+      dispatch(
+        showDialog({
+          header: "Product Added to Whishlist Successfully",
+          msgs: [
+            {
+              msg: data.message,
+              type: "success",
+            },
+          ],
+        })
+      );
+    } catch (error) {
+      dispatch(
+        showDialog({
+          header: "Whishlist Error",
+          msgs: [
+            {
+              msg: error.response.data.message,
+              type: "error",
+            },
+          ],
+        })
+      );
+    }
+  };
+  // --------------------------------------------------
 
   return (
-    <div className={styles.infos__container}>
-      <h1 className={styles.infos__name}>{product.name}</h1>
-      <h2 className={styles.infos__sku}>{product.sku}</h2>
-      <div className={styles.infos__rating}>
-        <Rating
-          name="half-rating-read"
-          value={product.rating}
-          precision={0.5}
-          readOnly
-          style={{ width: "100px", color: "#FACF19", fontSize: "1.5rem" }}
-        />
-        ({product.numReviews} {product.numReviews === 1 ? "review" : "reviews"})
-      </div>
-      <div className={styles.infos__price}>
-        {!selectedSize ? (
-          <h2>{product.priceRange}</h2>
-        ) : (
-          <>
-            <h1>{product.price} Rs.</h1>
-            {product.discount > 0 && (
-              <h3>
-                {selectedSize && <span>{product.priceBefore} Rs.</span>}
-                <span>(-{product.discount}%)</span>
-              </h3>
-            )}
-          </>
-        )}
-      </div>
-      <span className={styles.infos__shipping}>
-        {product.shipping
-          ? `+${product.shipping} Rs. shipping fee`
-          : "Free shipping"}
-      </span>
-      <span>
-        {!selectedSize ? product.quantity : productQuantity} pieces available
-      </span>
-      <div className={styles.infos__sizes}>
-        <h4>Select a Size:</h4>
-        <div className={styles.infos__sizes_wrap}>
-          {product.sizes.map((size, i) => (
-            <Link
-              key={i}
-              href={`/product/${product.slug}?style=${router.query.style}&size=${i}`}
-            >
-              <div
-                className={`${styles.infos__sizes_size} ${
-                  i === parseInt(router.query.size) && styles.active_size
-                }`}
-                onClick={() => setSelectedSize(size.size)}
+    <div className={styles.infos}>
+      <DialogModal />
+      <div className={styles.infos__container}>
+        <h1 className={styles.infos__name}>{product.name}</h1>
+        <h2 className={styles.infos__sku}>{product.sku}</h2>
+        <div className={styles.infos__rating}>
+          <Rating
+            name="half-rating-read"
+            defaultValue={product.rating}
+            precision={0.5}
+            readOnly
+            style={{ width: "100px", color: "#FACF19", fontSize: "1.5rem" }}
+          />
+          ({product.numReviews}
+          {product.numReviews == 1 ? " review" : " reviews"})
+        </div>
+        <div className={styles.infos__price}>
+          {!size ? <h2>{product.priceRange}</h2> : <h1>{product.price}$</h1>}
+          {product.discount > 0 ? (
+            <h3>
+              {size && <span>{product.priceBefore}$</span>}
+              <span>(-{product.discount}%)</span>
+            </h3>
+          ) : (
+            ""
+          )}
+        </div>
+        <span className={styles.infos__shipping}>
+          {product.shipping
+            ? `+${product.shipping}$ Shipping fee`
+            : "Free Shipping"}
+        </span>
+        <span>
+          {size
+            ? product.quantity
+            : product.sizes.reduce((start, next) => start + next.qty, 0)}{" "}
+          pieces available.
+        </span>
+        <div className={styles.infos__sizes}>
+          <h4>Select a Size : </h4>
+          <div className={styles.infos__sizes_wrap}>
+            {product.sizes.map((size, i) => (
+              <Link
+                href={`/product/${product.slug}?style=${router.query.style}&size=${i}`}
               >
-                {size.size}
-              </div>
-            </Link>
-          ))}
+                <div
+                  className={`${styles.infos__sizes_size} ${
+                    i == router.query.size && styles.active_size
+                  }`}
+                  onClick={() => setSize(size.size)}
+                >
+                  {size.size}
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
         <div className={styles.infos__colors}>
           {product.colors &&
             product.colors.map((color, i) => (
               <span
-                key={i}
-                className={
-                  i === parseInt(router.query.style) ? styles.active_color : ""
-                }
+                className={i == router.query.style ? styles.active_color : ""}
                 onMouseOver={() =>
                   setActiveImg(product.subProducts[i].images[0].url)
                 }
@@ -154,32 +188,28 @@ export default function Infos({ product, setActiveImg }) {
             ))}
         </div>
         <div className={styles.infos__qty}>
-          <button
-            onClick={() => quantity > 1 && setQuantity((prev) => prev - 1)}
-          >
+          <button onClick={() => qty > 1 && setQty((prev) => prev - 1)}>
             <TbMinus />
           </button>
-          <span>{quantity}</span>
+          <span>{qty}</span>
           <button
-            onClick={() =>
-              quantity < product.quantity && setQuantity((prev) => prev + 1)
-            }
+            onClick={() => qty < product.quantity && setQty((prev) => prev + 1)}
           >
             <TbPlus />
           </button>
         </div>
         <div className={styles.infos__actions}>
           <button
-            disabled={productQuantity < 1}
-            style={{ cursor: `${productQuantity < 1 ? "not-allowed" : ""}` }}
-            onClick={handleAddToCart}
+            disabled={product.quantity < 1}
+            style={{ cursor: `${product.quantity < 1 ? "not-allowed" : ""}` }}
+            onClick={() => addToCartHandler()}
           >
             <FaOpencart />
             <b>ADD TO CART</b>
           </button>
-          <button>
+          <button onClick={() => handleWishlist()}>
             <BiHeart />
-            <b>WISHLIST</b>
+            WISHLIST
           </button>
         </div>
         {error && <span className={styles.error}>{error}</span>}
