@@ -153,6 +153,7 @@ export default function Create({ parents, categories }) {
   };
   let uploaded_images = [];
   let style_img = "";
+  
   const createProductHandler = async () => {
     setLoading(true);
     if (images) {

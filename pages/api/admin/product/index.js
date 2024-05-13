@@ -2,13 +2,12 @@ import { createRouter } from "next-connect";
 import db from "@/utils/db";
 import auth from "@/middleware/auth";
 import admin from "@/middleware/admin";
-import Category from "@/models/Category";
 import Product from "@/models/Product";
 import slugify from "slugify";
 
 const router = createRouter().use(auth).use(admin);
 
-// ------------------- CREATE PRODUCT POST REQUEST -------------------
+// Created post request to create product............................................................
 router.post(async (req, res) => {
   try {
     db.connectDb();
@@ -64,5 +63,5 @@ router.post(async (req, res) => {
   }
 });
 
-// ------------------- Export Default -------------------
+
 export default router.handler();

@@ -19,7 +19,7 @@ export default function Sizes({ sizes, product, setProduct }) {
   };
   return (
     <div>
-      <div className={styles.header}>Sizes / Quantity /Price</div>
+      <div className={styles.header}>Sizes / Quantity / Price</div>
       <button
         type="reset"
         className={styles.click_btn}
