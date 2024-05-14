@@ -8,8 +8,26 @@ import Header from "@/components/header";
 import Link from "next/link";
 import ProductCard from "@/components/productCard";
 import CategoryFilter from "@/components/browse/categoryFilter";
+import SizesFilter from "@/components/browse/sizesFilter";
+import ColorsFilter from "@/components/browse/colorsFilter";
+import BrandsFilter from "@/components/browse/brandsFilter";
+import StylesFilter from "@/components/browse/stylesFilter";
+import PatternsFilter from "@/components/browse/patternsFilter";
+import MaterialsFilter from "@/components/browse/materialsFilter";
+import GenderFilter from "@/components/browse/genderFilter";
+import HeadingFilters from "@/components/browse/headingFilters";
 
-export default function browse({ categories, subCategories, products }) {
+export default function browse({
+  categories,
+  subCategories,
+  products,
+  sizes,
+  colors,
+  brands,
+  stylesData,
+  patterns,
+  materials,
+}) {
   return (
     <div className={styles.browse}>
       <Header />
@@ -32,8 +50,15 @@ export default function browse({ categories, subCategories, products }) {
               subCategories={subCategories}
             />
             <SizesFilter sizes={sizes} />
+            <ColorsFilter colors={colors} />
+            <BrandsFilter brands={brands} />
+            <StylesFilter data={stylesData} />
+            <PatternsFilter patterns={patterns} />
+            <MaterialsFilter materials={materials} />
+            <GenderFilter />
           </div>
           <div className={styles.browse__store_products_wrap}>
+            <HeadingFilters />
             <div className={styles.browse__store_products}>
               {products.map((product) => (
                 <ProductCard product={product} key={product._id} />
@@ -67,6 +92,7 @@ export async function getServerSideProps(ctx) {
   let styles = removeDuplicates(stylesDb);
   let patterns = removeDuplicates(patternsDb);
   let materials = removeDuplicates(materialsDb);
+  let brands = removeDuplicates(brandsDb);
   // console.log(materials);
   return {
     props: {
@@ -74,6 +100,11 @@ export async function getServerSideProps(ctx) {
       subCategories: JSON.parse(JSON.stringify(subCategories)),
       products: JSON.parse(JSON.stringify(productsDb)),
       sizes,
+      colors,
+      brands,
+      stylesData: styles,
+      patterns,
+      materials,
     },
   };
 }
