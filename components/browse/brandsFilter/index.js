@@ -16,8 +16,10 @@ export default function BrandsFilter({ brands, brandHandler, replaceQuery }) {
         <div className={styles.filter__sizes}>
           {brands.map((brand, i) => {
             const check = replaceQuery("brand", brand);
+
             return (
               <button
+                key={i}
                 className={`${styles.filter__brand} ${
                   check.active ? styles.activeFilter : ""
                 }`}

@@ -136,7 +136,7 @@ export default function HeadingFilters({
               ? "Recommend"
               : sortingOptions.find((x) => x.value == sortQuery).name}
             <div
-              style={{ tarnsform: `${show ? "rotate(180deg)" : "rotate(0"}` }}
+              style={{ transform: `${show ? "rotate(180deg)" : "rotate(0"}` }}
             >
               <IoIosArrowDown />
             </div>
