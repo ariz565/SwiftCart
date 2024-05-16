@@ -1,6 +1,5 @@
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
-
 // Middleware to check if user is authenticated
 export async function middleware(req) {
   const { pathname, origin } = req.nextUrl;
