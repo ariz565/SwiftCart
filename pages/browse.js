@@ -1,29 +1,27 @@
-import styles from "../styles/browse.module.scss";
-import db from "../utils/db";
-import Product from "../models/Product";
-import Category from "../models/Category";
-import Header from "../components/header";
-import SubCategory from "../models/SubCategory";
-import {
-  filterArray,
-  randomize,
-  removeDuplicates,
-} from "../utils/arrays_utils";
+import styles from "@/styles/browse.module.scss";
+import db from "@/utils/db";
+import Product from "@/models/Product";
+import Category from "@/models/Category";
+import Header from "@/components/header";
+import SubCategory from "@/models/SubCategory";
+import { filterArray, randomize, removeDuplicates } from "@/utils/arrays_utils";
 import Link from "next/link";
-import ProductCard from "../components/productCard";
-import CategoryFilter from "../components/browse/categoryFilter";
-import SizesFilter from "../components/browse/sizesFilter";
-import ColorsFilter from "../components/browse/colorsFilter";
-import BrandsFilter from "../components/browse/brandsFilter";
+import ProductCard from "@/components/productCard";
+import CategoryFilter from "@/components/browse/categoryFilter";
+import SizesFilter from "@/components/browse/sizesFilter";
+import ColorsFilter from "@/components/browse/colorsFilter";
+import BrandsFilter from "@/components/browse/brandsFilter";
 import StylesFilter from "@/components/browse/stylesFilter.js";
-import PatternsFilter from "../components/browse/patternsFilter";
-import MaterialsFilter from "../components/browse/materialsFilter";
-import GenderFilter from "../components/browse/genderFilter";
-import HeadingFilters from "../components/browse/headingFilters";
+import PatternsFilter from "@/components/browse/patternsFilter";
+import MaterialsFilter from "@/components/browse/materialsFilter";
+import GenderFilter from "@/components/browse/genderFilter";
+import HeadingFilters from "@/components/browse/headingFilters";
 import { useRouter } from "next/router";
 import { Pagination } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+
+// ----------------- Browse Page -----------------
 export default function Browse({
   categories,
   subCategories,
