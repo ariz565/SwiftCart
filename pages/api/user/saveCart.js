@@ -6,6 +6,7 @@ import Cart from "@/models/Cart";
 import auth from "@/middleware/auth";
 
 const router = createRouter().use(auth);
+
 router.post(async (req, res) => {
   try {
     db.connectDb();

@@ -60,7 +60,7 @@ export default function Cart() {
 
   const saveCartToDbHandler = async () => {
     if (session) {
-      const res = saveCart(selected);
+      const res = saveCart(selected, session.user.id);
       Router.push("/checkout");
     } else {
       signIn();

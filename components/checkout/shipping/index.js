@@ -100,8 +100,9 @@ export default function Shipping({ user, addresses, setAddresses, profile }) {
 
   /// Save shipping address handler
   const saveShippingHandler = async () => {
-    const res = await saveAddress(shipping);
-    setAddresses(res.addresses);
+    const res = await saveAddress(shipping, user._id || user.user.id);
+    setAddresses(res);
+    setShipping(initialValues);
   };
 
   // change active address handler
@@ -126,8 +127,8 @@ export default function Shipping({ user, addresses, setAddresses, profile }) {
       )}
 
       <div className={styles.addresses}>
-        {addresses.map((address) => (
-          <div key={address._id} style={{ position: "relative" }}>
+        {addresses?.map((address, index) => (
+          <div key={index} style={{ position: "relative" }}>
             <div
               className={styles.address__delete}
               onClick={() => deleteHandler(address._id)}
