@@ -15,8 +15,6 @@ import { addToCart, updateCart } from "@/store/cartSlice";
 import { toast } from "react-toastify";
 import { hideDialog, showDialog } from "@/store/DialogSlice";
 import { signIn } from "next-auth/react";
-// import Share from "./share";
-// import SimillarSwiper from "./SimillarSwiper";
 
 export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
@@ -29,7 +27,7 @@ export default function Infos({ product, setActiveImg }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const { cart } = useSelector((state) => state);
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     if (quantity > product.quantity) {
@@ -39,43 +37,62 @@ export default function Infos({ product, setActiveImg }) {
 
   // -----------------Handle Add to Cart-----------------
   const addToCartHandler = async () => {
+    setError(null); // Reset error state before new operation
+
     if (!router.query.size) {
-      setError("Please Select a size");
+      setError("Please select a size.");
       return;
     }
-    const { data } = await axios.get(
-      `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
-    );
-    if (qty > data.quantity) {
-      setError(
-        "The Quantity you have choosed is more than in stock. Try and lower the Qty"
+
+    try {
+      const { data } = await axios.get(
+        `/api/product/${product._id}?style=${router.query.style}&size=${router.query.size}`
       );
-    } else if (data.quantity < 1) {
-      setError("This Product is out of stock.");
-      return;
-    } else {
-      let _uid = `${data._id}_${product.style}_${router.query.size}`;
-      let exist = cart.cartItems.find((p) => p._uid === _uid);
-      if (exist) {
-        let newCart = cart.cartItems.map((p) => {
-          if (p._uid == exist._uid) {
-            return { ...p, qty: qty };
-          }
-          return p;
-        });
-        dispatch(updateCart(newCart));
+
+      console.log("API Response Data:", data); // Debug log
+
+      if (qty > data.quantity) {
+        setError(
+          "The quantity you have chosen is more than in stock. Try lowering the quantity."
+        );
+      } else if (data.quantity < 1) {
+        setError("This product is out of stock.");
       } else {
-        dispatch(
-          addToCart({
+        const _uid = `${data._id}_${product.style}_${router.query.size}`;
+        console.log("Generated UID:", _uid); // Debug log
+
+        console.log("Current Cart State:", cart); // Debug log
+        const cartItems = cart?.cartItems || [];
+        console.log("Current Cart Items:", cartItems); // Debug log
+
+        const exist = cartItems.find((p) => p._uid === _uid);
+        console.log("Existing Cart Item:", exist); // Debug log
+
+        if (exist) {
+          const newCart = cartItems.map((p) =>
+            p._uid === exist._uid ? { ...p, qty } : p
+          );
+          console.log("Updated Cart Items:", newCart); // Debug log
+          dispatch(updateCart(newCart));
+        } else {
+          const newItem = {
             ...data,
             qty,
             size: data.size,
             _uid,
-          })
-        );
+          };
+          console.log("New Cart Item:", newItem); // Debug log
+          dispatch(addToCart(newItem));
+        }
       }
+    } catch (error) {
+      setError(
+        "There was an error adding the product to the cart. Please try again."
+      );
+      console.error("Error adding to cart:", error);
     }
   };
+
   /// --------------------Handle Wishlist--------------------
   const handleWishlist = async () => {
     try {
@@ -88,7 +105,7 @@ export default function Infos({ product, setActiveImg }) {
       });
       dispatch(
         showDialog({
-          header: "Product Added to Whishlist Successfully",
+          header: "Product Added to Wishlist Successfully",
           msgs: [
             {
               msg: data.message,
@@ -100,7 +117,7 @@ export default function Infos({ product, setActiveImg }) {
     } catch (error) {
       dispatch(
         showDialog({
-          header: "Whishlist Error",
+          header: "Wishlist Error",
           msgs: [
             {
               msg: error.response.data.message,
@@ -111,6 +128,7 @@ export default function Infos({ product, setActiveImg }) {
       );
     }
   };
+
   // --------------------------------------------------
 
   return (

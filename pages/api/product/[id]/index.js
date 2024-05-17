@@ -1,4 +1,3 @@
-// pages/api/product/[id].js
 import { createRouter } from "next-connect";
 import db from "@/utils/db";
 import Product from "@/models/Product";
