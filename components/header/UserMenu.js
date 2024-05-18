@@ -5,10 +5,14 @@ import { signOut, signIn } from "next-auth/react";
 export default function UserMenu({ session }) {
   return (
     <div className={styles.menu}>
-      <h4>Welcome to Swift Cart !</h4>
+      <h4>Welcome to SwiftCart !</h4>
       {session ? (
         <div className={styles.flex}>
-          <img src={session.user.image} alt="" className={styles.menu__img} />
+          <img
+            src={session.user.image}
+            alt="Avatar"
+            className={styles.menu__img}
+          />
           <div className={styles.col}>
             <span>Welcome Back,</span>
             <h3>{session.user.name}</h3>
@@ -17,7 +21,9 @@ export default function UserMenu({ session }) {
         </div>
       ) : (
         <div className={styles.flex}>
-          <button className={styles.btn_primary}>Register</button>
+          <button className={styles.btn_primary} onClick={() => signIn()}>
+            Register
+          </button>
           <button className={styles.btn_outlined} onClick={() => signIn()}>
             Login
           </button>
