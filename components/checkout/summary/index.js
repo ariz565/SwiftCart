@@ -5,7 +5,7 @@ import { Form, Formik } from "formik";
 import ShippingInput from "../../inputs/shippingInput";
 import { applyCoupon } from "../../../requests/user";
 import axios from "axios";
-import { useRouter } from "next/router";
+import Router from "next/router";
 
 export default function Summary({
   totalAfterDiscount,
@@ -19,8 +19,6 @@ export default function Summary({
   const [discount, setDiscount] = useState("");
   const [error, setError] = useState("");
   const [order_error, setOrder_Error] = useState("");
-
-  const router = useRouter();
 
   const validateCoupon = Yup.object({
     coupon: Yup.string().required("Pleace enter a coupon first !"),
@@ -55,7 +53,7 @@ export default function Summary({
         totalBeforeDiscount: cart.cartTotal,
         couponApplied: coupon,
       });
-      router.push(`/order/${data.order_id}`);
+      Router.push(`/order/${data.order_id}`);
     } catch (error) {
       setOrder_Error(error.response.data.message);
     }
