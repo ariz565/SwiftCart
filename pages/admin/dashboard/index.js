@@ -95,7 +95,7 @@ export default function Dashboard({ users, orders, products }) {
               </thead>
               <tbody>
                 {orders.map((order) => (
-                  <tr key={user._id}>
+                  <tr key={order._id}>
                     <td>{order.user.name}</td>
                     <td>{order.total} $</td>
                     <td>
