@@ -16,7 +16,7 @@ export default function Details({ details, product, setProduct }) {
       setProduct({ ...product, details: values });
     }
   };
-  console.log("product details", product.details);
+  // console.log("product details", product.details);
   return (
     <div>
       <div className={styles.header}>Details</div>

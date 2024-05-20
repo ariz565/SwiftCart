@@ -191,7 +191,7 @@ export default function Browse({
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  console.log(scrollY, height);
+  // console.log(scrollY, height);
   //---------------------------------
   return (
     <div className={styles.browse}>

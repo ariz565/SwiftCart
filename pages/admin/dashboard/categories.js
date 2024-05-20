@@ -7,7 +7,7 @@ import List from "@/components/admin/categories/List";
 
 export default function Categories({ categories }) {
   const [data, setData] = useState(categories);
-  console.log(data);
+  // console.log(data);
   return (
     <Layout>
       <div>

@@ -36,7 +36,7 @@ export default function Form({ total, order_id }) {
           amount: total,
           id,
         });
-        console.log(res);
+        // console.log(res);
         if (res.data.success) {
           window.location.reload(false);
         }

@@ -93,7 +93,7 @@ export async function getServerSideProps() {
       return res.data.location.country;
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 
   return {

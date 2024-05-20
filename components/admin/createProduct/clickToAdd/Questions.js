@@ -16,7 +16,7 @@ export default function Questions({ questions, product, setProduct }) {
       setProduct({ ...product, questions: values });
     }
   };
-  console.log("product questions", product.questions);
+  // console.log("product questions", product.questions);
   return (
     <div>
       <div className={styles.header}>Questions</div>

@@ -69,13 +69,13 @@ router.put(async (req, res) => {
 router.get(async (req, res) => {
   try {
     const { category } = req.query;
-    console.log(category);
+    // console.log(category);
     if (!category) {
       return res.json([]);
     }
     db.connectDb();
     const results = await SubCategory.find({ parent: category }).select("name");
-    console.log(results);
+    // console.log(results);
     db.disconnectDb();
     return res.json(results);
   } catch (error) {

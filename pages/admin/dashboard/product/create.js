@@ -110,7 +110,7 @@ export default function Create({ parents, categories }) {
         setSubs(data);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   }, [product.category]);
   // ----------------Handle Change----------------

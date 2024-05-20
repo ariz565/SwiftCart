@@ -23,7 +23,7 @@ export default function HeadingFilters({
   );
   const checkRating = replaceQuery("rating", "4");
   const sortQuery = router.query.sort || "";
-  console.log("sortQuery", sortQuery);
+  // console.log("sortQuery", sortQuery);
   return (
     <div className={styles.filters}>
       <div className={styles.filters__price}>

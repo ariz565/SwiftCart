@@ -4,7 +4,7 @@ import styles from "./styles.module.scss";
 
 export default function Sidebar({ data }) {
   // ------------------------------------
-  console.log(data);
+  // console.log(data);
   // ------------------------------------
   return (
     <div className={styles.sidebar}>

@@ -32,7 +32,7 @@ router.put(async (req, res) => {
       .status(200)
       .json({ message: "Product succesfully added to your wishlist." });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });

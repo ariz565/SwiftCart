@@ -12,7 +12,7 @@ export default function ListItem({
   subCategory,
   setSubCategories,
 }) {
-  console.log("sub", subCategory);
+  // console.log("sub", subCategory);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [parent, setParent] = useState("");
