@@ -74,6 +74,15 @@ export default function Infos({ product, setActiveImg }) {
           );
           console.log("Updated Cart Items:", newCart); // Debug log
           dispatch(updateCart(newCart));
+          toast.success("Product added to cart successfully!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         } else {
           const newItem = {
             ...data,
@@ -83,6 +92,15 @@ export default function Infos({ product, setActiveImg }) {
           };
           console.log("New Cart Item:", newItem); // Debug log
           dispatch(addToCart(newItem));
+          toast.success("Product added to cart successfully!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         }
       }
     } catch (error) {

@@ -4,12 +4,11 @@ import { compareArrays } from "../../../utils/arrays_utils";
 
 export default function CartHeader({ cartItems, selected, setSelected }) {
   const [active, setActive] = useState();
-
   useEffect(() => {
     const check = compareArrays(cartItems, selected);
     setActive(check);
-  }, [selected, cartItems]);
-  // Select all items
+  }, [selected]);
+  
   const handleSelect = () => {
     if (selected.length !== cartItems.length) {
       setSelected(cartItems);
