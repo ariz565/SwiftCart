@@ -3,7 +3,8 @@ import styles from "./styles.module.scss";
 export default function PaymentMethods() {
   return (
     <div className={`${styles.card} ${styles.cart__method}`}>
-      <h2 className={styles.header}>Payment Methods</h2>
+      <h3 className={styles.header}>Payment Methods</h3>
+      <div className={styles.separator}></div>
       <div className={styles.images}>
         <img src="../../../images/payment/visa.webp" alt="" />
         <img src="../../../images/payment/mastercard.webp" alt="" />
@@ -12,7 +13,7 @@ export default function PaymentMethods() {
       <h2 className={styles.header}>Buyer Protection</h2>
       <div className={styles.protection}>
         <img src="../../../images/protection.png" alt="" />
-        Get full refund if the item is not as described or if it's not
+        Get full refund if the item is not as described or if its not
         delievered.
       </div>
     </div>

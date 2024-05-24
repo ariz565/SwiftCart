@@ -1,131 +1,206 @@
-import styles from "./styles.module.scss";
-import { BsHeart } from "react-icons/bs";
-import { AiOutlineDelete } from "react-icons/ai";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
-
+import { updateCart } from "@/store/cartSlice";
+import { useEffect, useState } from "react";
+import { FcShop, FcFullTrash } from "react-icons/fc";
+import { MdOutlineKeyboardArrowRight, MdPlayArrow } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCart } from "../../../store/cartSlice";
-import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+import { useMediaQuery } from "react-responsive";
+import styles from "./styles.module.scss";
+import Link from "next/link";
 
-export default function Product({ product, selected, setSelected }) {
+const Product = ({ product, selected, setSelected }) => {
   const { cart } = useSelector((state) => ({ ...state }));
-  const [active, setActive] = useState();
-  // console.log(active);
-
-  useEffect(() => {
-    const check = selected.find((p) => p._uid == product._uid);
-    setActive(check);
-  }, [selected]);
-
   const dispatch = useDispatch();
+  const [active, setActive] = useState(null);
 
-  // Update product quantity
-  const updateQty = (type) => {
+  const isSmall = useMediaQuery({ query: "(max-width: 684px)" });
+  const isSuperSmall = useMediaQuery({ query: "(max-width: 488px)" });
+
+  const updateQtyHandler = (type) => {
     let newCart = cart.cartItems.map((p) => {
-      if (p._uid == product._uid) {
+      if (p._uid === product._uid) {
         return {
           ...p,
-          qty: type == "plus" ? product.qty + 1 : product.qty - 1,
+          qty: type === "plus" ? p.qty + 1 : p.qty - 1,
         };
       }
       return p;
     });
     dispatch(updateCart(newCart));
+
+    if (selected.length > 0) {
+      setSelected(() => {
+        const newSelected = [...selected];
+        const itemIndex = newSelected.findIndex((a) => a._uid === product._uid);
+        const newItem = { ...newSelected[itemIndex] };
+        if (type === "plus") {
+          newItem.qty = newItem.qty + 1;
+        } else {
+          newItem.qty = newItem.qty - 1;
+        }
+        newSelected[itemIndex] = newItem;
+        return newSelected;
+      });
+    }
   };
-  // Remove product from cart
-  const removeProduct = (id) => {
-    let newCart = cart.cartItems.filter((p) => {
-      return p._uid != id;
-    });
+
+  const removeFromCartHandler = () => {
+    let newCart = cart.cartItems.filter((p) => p._uid !== product._uid);
     dispatch(updateCart(newCart));
   };
-  // Select product
-  const handleSelect = () => {
+
+  useEffect(() => {
+    const check = selected?.find((p) => p._uid == product._uid);
+    setActive(check);
+  }, [selected]);
+
+  const selectHandler = () => {
     if (active) {
-      setSelected(selected.filter((p) => p._uid !== product._uid));
+      setSelected(selected?.filter((p) => p._uid !== product._uid));
     } else {
       setSelected([...selected, product]);
     }
   };
+
+  const showPopupHandler = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `This item will be removed from cart!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, remove it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeFromCartHandler();
+        Swal.fire(
+          "Deleted!",
+          "Your item has been removed from cart.",
+          "success"
+        );
+      }
+    });
+  };
+
   return (
-    <div className={`${styles.card} ${styles.product}`}>
+    <div className={styles.cart__product}>
       {product.quantity < 1 && <div className={styles.blur}></div>}
-      <div className={styles.product__header}>
-        <img src="../../../images/store.webp" alt="" />
-        SwiftCart Official Store
-      </div>
-      <div className={styles.product__image}>
+      <div className={styles.cart__product_header}>
         <div
           className={`${styles.checkbox} ${active ? styles.active : ""}`}
-          onClick={() => handleSelect()}
+          onClick={selectHandler}
         ></div>
-        <img src={product.images[0].url} alt="" />
-        <div className={styles.col}>
-          <div className={styles.grid}>
-            <h1>
-              {product.name.length > 30
-                ? `${product.name.substring(0, 30)}`
-                : product.name}
-            </h1>
-            <div style={{ zIndex: "2" }}>
-              <BsHeart />
-            </div>
-            <div
-              style={{ zIndex: "2" }}
-              onClick={() => removeProduct(product._uid)}
+        <Link href={"/"}>
+          <FcShop />
+          Swift Cart
+          <MdPlayArrow />
+        </Link>
+      </div>
+      <div className={styles.cart__product_body}>
+        <div className={styles.infos}>
+          <div
+            className={`${styles.checkbox} ${styles.img__check} ${
+              active ? styles.active : ""
+            }`}
+            onClick={selectHandler}
+          ></div>
+          {!isSmall && (
+            <Link
+              target="_blank"
+              href={`/product/${product.slug}?style=${product.style}&size=${product.sizeIndex}`}
+              className={styles.image}
             >
-              <AiOutlineDelete />
-            </div>
-          </div>
-          <div className={styles.product__style}>
-            <img src={product.color.image} alt="" />
-            {product.size && <span>{product.size}</span>}
-            {product.price && <span>{product.price.toFixed(2)}Rs.</span>}
-            <MdOutlineKeyboardArrowRight />
-          </div>
-          <div className={styles.product__priceQty}>
-            <div className={styles.product__priceQty_price}>
-              <span className={styles.price}>
-                Rs. {(product.price * product.qty).toFixed(2)}$
-              </span>
-              {product.price !== product.priceBefore && (
-                <span className={styles.priceBefore}>
-                  USD{product.priceBefore}$
-                </span>
-              )}
-              {product.discount > 0 && (
-                <span className={styles.discount}>-{product.discount}%</span>
-              )}
-            </div>
-            <div className={styles.product__priceQty_qty}>
-              <button
-                disabled={product.qty < 2}
-                onClick={() => updateQty("minus")}
-              >
-                -
-              </button>
-              <span>{product.qty}</span>
-              <button
-                disabled={product.qty == product.quantity}
-                onClick={() => updateQty("plus")}
-              >
-                +
-              </button>
-            </div>
-          </div>
-          <div className={styles.product__shipping}>
-            {product.shipping
-              ? `+${product.shipping}$ Shipping fee`
-              : "Free Shipping"}
-          </div>
-          {product.quantity < 1 && (
-            <div className={styles.notAvailable}>
-              This product is out of stock, Add it to your whishlist it may get
-              restocked.
-            </div>
+              <img src={product.images[0].url} />
+            </Link>
           )}
+          <div className={styles.detail}>
+            <h3>{product.name}</h3>
+            {product.size && (
+              <p>
+                <span>Size :&nbsp;</span>
+                {product.size}
+              </p>
+            )}
+            <p>
+              <span>Color :&nbsp;</span>
+              {product.color.image ? (
+                <img src={product.color.image} alt="" />
+              ) : (
+                <span
+                  style={{
+                    backgroundColor: product.color.color,
+                    width: "15px",
+                    height: "15px",
+                    borderRadius: "50%",
+                    display: "inline-block",
+                  }}
+                ></span>
+              )}
+            </p>
+            {!isSuperSmall && (
+              <p>
+                <span>Ship fee :&nbsp;</span>
+                {product.shipping ? `$${product.shipping}` : "Free shipping"}
+              </p>
+            )}
+            {!isSuperSmall && (
+              <p>
+                <span>Details :&nbsp;</span>
+                <Link
+                  target="_blank"
+                  href={`/product/${product.slug}?style=${product.style}&size=${product.sizeIndex}`}
+                >
+                  Click here <MdOutlineKeyboardArrowRight />
+                </Link>
+              </p>
+            )}
+          </div>
+        </div>
+        <div className={styles.price}>
+          {product.discount > 0 && !isSmall && (
+            <p className={styles.price__discount}>
+              Discount :&nbsp;&nbsp;
+              <span>-{product.discount}%</span>
+            </p>
+          )}
+          <div className={styles.price__number}>
+            {product.price && <span>Rs.{product.price.toFixed(2)}</span>}
+            {product.price !== product.priceBefore && !isSmall && (
+              <del>Rs.{product.priceBefore}</del>
+            )}
+          </div>
+        </div>
+        <div className={styles.quantity}>
+          <button
+            disabled={product.qty < 2}
+            onClick={() => updateQtyHandler("minus")}
+          >
+            -
+          </button>
+          <span>{product.qty}</span>
+          <button
+            disabled={product.qty == product.quantity}
+            onClick={() => updateQtyHandler("plus")}
+          >
+            +
+          </button>
+        </div>
+        <span className={styles.amount}>
+          Rs.{(product.price * product.qty).toFixed(2)}
+        </span>
+        <div className={styles.action}>
+          <div
+            className={styles.action__delete}
+            style={{ zIndex: 2 }}
+            onClick={showPopupHandler}
+          >
+            <FcFullTrash />
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Product;

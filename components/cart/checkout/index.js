@@ -12,15 +12,15 @@ export default function Checkout({
       <h2>Order Summary</h2>
       <div className={styles.cart__checkout_line}>
         <span>Subtotal</span>
-        <span> ₹ {subtotal}</span>
+        <span>Rs. {subtotal}</span>
       </div>
       <div className={styles.cart__checkout_line}>
         <span>Shipping</span>
-        <span>+{shippingFee} ₹ </span>
+        <span>+{shippingFee}Rs. </span>
       </div>
       <div className={styles.cart__checkout_total}>
         <span>Total</span>
-        <span> ₹ {total}</span>
+        <span>Rs. {total}</span>
       </div>
       <div className={styles.submit}>
         <button
