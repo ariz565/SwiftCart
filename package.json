@@ -36,6 +36,7 @@
     "next": "14.1.4",
     "next-auth": "^4.24.7",
     "next-connect": "^1.0.0",
+    "next-nprogress-bar": "^2.3.12",
     "next-redux-wrapper": "^8.1.0",
     "nodemailer": "^6.9.13",
     "phone": "^3.1.42",
