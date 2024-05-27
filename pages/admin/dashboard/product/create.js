@@ -349,7 +349,7 @@ export default function Create({ parents, categories }) {
           
             */}
             <button
-              className={`${styles.btn} ${styles.btn__primary} ${styles.submit_btn}`}
+              className={`${styles.btn} ${styles.btn__primary}`}
               type="submit"
             >
               Create Product

@@ -10,7 +10,7 @@ const router = createRouter().use(auth).use(admin);
 // Created post request to create product............................................................
 router.post(async (req, res) => {
   try {
-    db.connectDb();
+    await db.connectDb();
     if (req.body.parent) {
       const parent = await Product.findById(req.body.parent);
       if (!parent) {

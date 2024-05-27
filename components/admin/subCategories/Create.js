@@ -21,6 +21,8 @@ export default function Create({ categories, setSubCategories }) {
       ) */
     parent: Yup.string().required("Please choose a parent category."),
   });
+
+// Submit handler
   const submitHandler = async () => {
     try {
       const { data } = await axios.post("/api/admin/subCategory", {
@@ -65,7 +67,7 @@ export default function Create({ categories, setSubCategories }) {
             />
             <div className={styles.btnWrap}>
               <button type="submit" className={`${styles.btn} `}>
-                <span>Add SubCategory</span>
+                <span>Add Sub-Category</span>
               </button>
             </div>
           </Form>

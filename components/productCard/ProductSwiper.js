@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay } from "swiper/modules";
 import { useEffect } from "react";
+
 export default function ProductSwiper({ images }) {
   const swiperRef = useRef(null);
   useEffect(() => {

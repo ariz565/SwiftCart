@@ -33,6 +33,7 @@ export default function ProductCard({ product }) {
         })
     );
   }, [active, product]);
+  
   return (
     <div className={styles.product}>
       <div className={styles.product__container}>
