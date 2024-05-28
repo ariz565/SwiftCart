@@ -13,7 +13,7 @@ export default function Offers() {
     <div className={styles.offers}>
       <div className={styles.offers__text}>
         <p>
-          use code <b>“SwiftUser”</b> for 30% off all products.
+          use code <b>“Swift30”</b> for 30% off all products.
         </p>
         <Link href="/browse">Shop now</Link>
       </div>
@@ -30,9 +30,9 @@ export default function Offers() {
         {offersAarray.map((offer, index) => (
           <SwiperSlide key={index}>
             <Link href="">
-              <img src={offer.image} alt="" />
+              <Image src={offer.image} height={200} width={500} alt="Offers" />
             </Link>
-            <span>Rs. {offer.price}</span>
+            <span>₹ {offer.price}</span>
             <span>-{offer.discount}%</span>
           </SwiperSlide>
         ))}

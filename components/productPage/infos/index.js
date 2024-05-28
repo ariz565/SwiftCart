@@ -15,6 +15,7 @@ import { addToCart, updateCart } from "@/store/cartSlice";
 import { toast } from "react-toastify";
 import { hideDialog, showDialog } from "@/store/DialogSlice";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 
 export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
@@ -193,6 +194,7 @@ export default function Infos({ product, setActiveImg }) {
           <div className={styles.infos__sizes_wrap}>
             {product.sizes.map((size, i) => (
               <Link
+                key={i}
                 href={`/product/${product.slug}?style=${router.query.style}&size=${i}`}
               >
                 <div
@@ -211,6 +213,7 @@ export default function Infos({ product, setActiveImg }) {
           {product.colors &&
             product.colors.map((color, i) => (
               <span
+                key={i}
                 className={i == router.query.style ? styles.active_color : ""}
                 onMouseOver={() =>
                   setActiveImg(product.subProducts[i].images[0].url)
@@ -218,7 +221,12 @@ export default function Infos({ product, setActiveImg }) {
                 onMouseLeave={() => setActiveImg("")}
               >
                 <Link href={`/product/${product.slug}?style=${i}`}>
-                  <img src={color.image} alt="" />
+                  <Image
+                    src={color.image}
+                    height={50}
+                    width={500}
+                    alt="productColor"
+                  />
                 </Link>
               </span>
             ))}

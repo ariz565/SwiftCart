@@ -1,6 +1,7 @@
 import styles from "./styles.module.scss";
 import Link from "next/link";
 import { signOut, signIn } from "next-auth/react";
+import Image from "next/image";
 
 export default function UserMenu({ session }) {
   return (
@@ -8,9 +9,11 @@ export default function UserMenu({ session }) {
       <h4>Welcome to SwiftCart !</h4>
       {session ? (
         <div className={styles.flex}>
-          <img
+          <Image
             src={session.user.image}
             alt="Avatar"
+            width={500} 
+            height={50} 
             className={styles.menu__img}
           />
           <div className={styles.col}>

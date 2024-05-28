@@ -30,14 +30,21 @@ export default function User() {
       <div className={styles.user__container}>
         {session ? (
           <div className={styles.user__infos}>
-            <img src={session.user?.image} alt="" />
+            <Image
+              src={session.user?.image}
+              width={500}
+              height={50}
+              alt="User"
+            />
             <h4>{session.user.name}</h4>
           </div>
         ) : (
           <div className={styles.user__infos}>
-            <img
+            <Image
               src="https://res.cloudinary.com/dmhcnhtng/image/upload/v1664642478/992490_b0iqzq.png"
-              alt=""
+              height={50}
+              width={50}
+              alt="Default"
             />
             <div className={styles.user__infos_btns}>
               <button>Register</button>

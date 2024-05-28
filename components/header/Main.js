@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "@mui/material";
+import Image from "next/image";
 import HeaderCartItem from "./HeaderCartItem";
 import {
   calculateSubPrice,
@@ -31,12 +32,12 @@ export default function Main({ searchHandler }) {
     <div className={styles.main}>
       <div className={styles.main__container}>
         <Link href="/" className={styles.logo}>
-          <img src="../../../logo2.png" alt="" />
+          <Image src="/logo2.png" height={50} width={150} alt="" />
         </Link>
         <form onSubmit={(e) => handleSearch(e)} className={styles.search}>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search for Products, Brands and More"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -49,9 +50,11 @@ export default function Main({ searchHandler }) {
         <Link href="/cart">
           <div className={styles.cart}>
             <FaOpencart />
-            <span className={styles.cart__number}>{cart.cartItems.length}</span>
+            <span className={styles.cart__number}>
+              {cart?.cartItems?.length ?? 0}
+            </span>
             <div className={styles.cart__dropdown}>
-              {cart.cartItems.length > 0 ? (
+              {cart?.cartItems?.length > 0 ? (
                 <div>
                   <div className={styles.cart__items}>
                     {cart.cartItems.map((item) => (
@@ -61,16 +64,16 @@ export default function Main({ searchHandler }) {
                   <div className={styles.cart__priceComponent}>
                     <p>
                       <span>Subtotal :</span>
-                      <span>${calculateSubPrice(cart.cartItems)}</span>
+                      <span>₹{calculateSubPrice(cart.cartItems)}</span>
                     </p>
                     <p>
                       <span>Shipping :</span>
-                      <span>${calculateTotalShipping(cart.cartItems)}</span>
+                      <span>₹{calculateTotalShipping(cart.cartItems)}</span>
                     </p>
                   </div>
                   <div className={styles.cart__total}>
                     <span>Total :</span>
-                    <span>{calculateTotal(cart.cartItems)}$</span>
+                    <span>{calculateTotal(cart.cartItems)}₹</span>
                   </div>
                   <div className={styles.cart__seeAll}>
                     See all items in cart
@@ -79,7 +82,7 @@ export default function Main({ searchHandler }) {
               ) : (
                 <div className={styles.cart__empty}>
                   <div className={styles.cart__empty_img}>
-                    <img src="/images/empty.png" />
+                    <img src="/images/empty.png" alt="Empty Cart" />
                   </div>
                   <p>Cart is empty!</p>
                   <div className={styles.cart__empty_btn}>

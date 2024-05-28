@@ -1,11 +1,12 @@
 import styles from "./styles.module.scss";
-import { MdSecurity } from "react-icons/md";
-import { HiHeart } from "react-icons/hi";
-import { RiAccountPinCircleLine, RiArrowDropDownFill } from "react-icons/ri";
 import Link from "next/link";
 import { useState } from "react";
 import UserMenu from "./UserMenu";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { MdSecurity } from "react-icons/md";
+import { RiAccountPinCircleLine, RiArrowDropDownFill } from "react-icons/ri";
+import { HiHeart } from "react-icons/hi";
 import { FaHandsHelping } from "react-icons/fa";
 import { RiCustomerServiceFill, RiAccountPinCircleFill } from "react-icons/ri";
 
@@ -19,7 +20,7 @@ export default function Top({ country }) {
         <div></div>
         <ul className={styles.top__list}>
           <li className={styles.li}>
-            <img src={country?.flag} alt="Flag" />
+            <Image src={country?.flag} width={20} height={20} alt="Flag" />
             <span>{country?.name} /IN</span>
           </li>
           <li className={styles.li}>
@@ -48,7 +49,12 @@ export default function Top({ country }) {
             {session ? (
               <li>
                 <div className={styles.flex}>
-                  <img src={session.user.image} alt="User" />
+                  <Image
+                    src={session.user.image}
+                    width={20}
+                    height={20}
+                    alt="User"
+                  />
                   <span>{session.user.name}</span>
                   <RiArrowDropDownFill />
                 </div>
