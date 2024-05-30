@@ -15,7 +15,6 @@ import { addToCart, updateCart } from "@/store/cartSlice";
 import { toast } from "react-toastify";
 import { hideDialog, showDialog } from "@/store/DialogSlice";
 import { signIn } from "next-auth/react";
-import Image from "next/image";
 
 export default function Infos({ product, setActiveImg }) {
   const router = useRouter();
@@ -36,9 +35,9 @@ export default function Infos({ product, setActiveImg }) {
     }
   }, [product.quantity, quantity]);
 
-  // -----------------Handle Add to Cart-----------------
+  // Handle Add to Cart
   const addToCartHandler = async () => {
-    setError(null); // Reset error state before new operation
+    setError(null);
 
     if (!router.query.size) {
       setError("Please select a size.");
@@ -50,8 +49,6 @@ export default function Infos({ product, setActiveImg }) {
         `/api/product/${product._id}?style=${router.query.style}&size=${router.query.size}`
       );
 
-      console.log("API Response Data:", data); // Debug log
-
       if (qty > data.quantity) {
         setError(
           "The quantity you have chosen is more than in stock. Try lowering the quantity."
@@ -60,20 +57,13 @@ export default function Infos({ product, setActiveImg }) {
         setError("This product is out of stock.");
       } else {
         const _uid = `${data._id}_${product.style}_${router.query.size}`;
-        console.log("Generated UID:", _uid); // Debug log
-
-        console.log("Current Cart State:", cart); // Debug log
         const cartItems = cart?.cartItems || [];
-        console.log("Current Cart Items:", cartItems); // Debug log
-
         const exist = cartItems.find((p) => p._uid === _uid);
-        console.log("Existing Cart Item:", exist); // Debug log
 
         if (exist) {
           const newCart = cartItems.map((p) =>
             p._uid === exist._uid ? { ...p, qty } : p
           );
-          console.log("Updated Cart Items:", newCart); // Debug log
           dispatch(updateCart(newCart));
           toast.success("Product added to cart successfully!", {
             position: "top-right",
@@ -91,7 +81,6 @@ export default function Infos({ product, setActiveImg }) {
             size: data.size,
             _uid,
           };
-          console.log("New Cart Item:", newItem); // Debug log
           dispatch(addToCart(newItem));
           toast.success("Product added to cart successfully!", {
             position: "top-right",
@@ -112,7 +101,7 @@ export default function Infos({ product, setActiveImg }) {
     }
   };
 
-  /// --------------------Handle Wishlist--------------------
+  // Handle Wishlist
   const handleWishlist = async () => {
     try {
       if (!session) {
@@ -148,7 +137,15 @@ export default function Infos({ product, setActiveImg }) {
     }
   };
 
-  // --------------------------------------------------
+  // Updated discount price calculation
+  const getDiscountedPrice = () => {
+    if (product.discount > 0 && size) {
+      const discountedPrice =
+        product.price - (product.price * product.discount) / 100;
+      return discountedPrice.toFixed(2);
+    }
+    return product.price;
+  };
 
   return (
     <div className={styles.infos}>
@@ -168,19 +165,21 @@ export default function Infos({ product, setActiveImg }) {
           {product.numReviews == 1 ? " review" : " reviews"})
         </div>
         <div className={styles.infos__price}>
-          {!size ? <h2>{product.priceRange}</h2> : <h1>{product.price}$</h1>}
-          {product.discount > 0 ? (
+          {!size ? (
+            <h2>{product.priceRange}</h2>
+          ) : (
+            <h1>₹{getDiscountedPrice()}</h1>
+          )}
+          {product.discount > 0 && size && (
             <h3>
-              {size && <span>{product.priceBefore}$</span>}
+              <span>₹{product.price}</span>
               <span>(-{product.discount}%)</span>
             </h3>
-          ) : (
-            ""
           )}
         </div>
         <span className={styles.infos__shipping}>
           {product.shipping
-            ? `+${product.shipping}$ Shipping fee`
+            ? `+${product.shipping}₹ Shipping fee`
             : "Free Shipping"}
         </span>
         <span>
@@ -221,12 +220,7 @@ export default function Infos({ product, setActiveImg }) {
                 onMouseLeave={() => setActiveImg("")}
               >
                 <Link href={`/product/${product.slug}?style=${i}`}>
-                  <Image
-                    src={color.image}
-                    height={50}
-                    width={500}
-                    alt="productColor"
-                  />
+                  <img src={color.image} alt="" />
                 </Link>
               </span>
             ))}
@@ -258,9 +252,7 @@ export default function Infos({ product, setActiveImg }) {
         </div>
         {error && <span className={styles.error}>{error}</span>}
         {success && <span className={styles.success}>{success}</span>}
-        {/* <Share /> */}
         <Accordian details={[product.description, ...product.details]} />
-        {/* <SimillarSwiper /> */}
       </div>
     </div>
   );

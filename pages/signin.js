@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Footer from "@/components/footer";
+import Footer from "@/components/Footer";
 import Header from "@/components/header";
 import LoginInput from "@/components/inputs/loginInput";
 import styles from "@/styles/signin.module.scss";

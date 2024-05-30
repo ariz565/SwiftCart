@@ -93,7 +93,7 @@ const Product = ({ product, selected, setSelected }) => {
         ></div>
         <Link href={"/"}>
           <FcShop />
-          Swift Cart
+          TradeHub
           <MdPlayArrow />
         </Link>
       </div>
@@ -108,7 +108,7 @@ const Product = ({ product, selected, setSelected }) => {
           {!isSmall && (
             <Link
               target="_blank"
-              href={`/product/${product.slug}?style=${product.style}&size=${product.sizeIndex}`}
+              href={`/product/${product.slug}?style=${product.style}`}
               className={styles.image}
             >
               <img src={product.images[0].url} />
@@ -123,7 +123,7 @@ const Product = ({ product, selected, setSelected }) => {
               </p>
             )}
             <p>
-              <span>Color :&nbsp;</span>
+              <span>Style :&nbsp;</span>
               {product.color.image ? (
                 <img src={product.color.image} alt="" />
               ) : (
@@ -141,7 +141,7 @@ const Product = ({ product, selected, setSelected }) => {
             {!isSuperSmall && (
               <p>
                 <span>Ship fee :&nbsp;</span>
-                {product.shipping ? `$${product.shipping}` : "Free shipping"}
+                {product.shipping ? `₹${product.shipping}` : "Free shipping"}
               </p>
             )}
             {!isSuperSmall && (
@@ -149,7 +149,7 @@ const Product = ({ product, selected, setSelected }) => {
                 <span>Details :&nbsp;</span>
                 <Link
                   target="_blank"
-                  href={`/product/${product.slug}?style=${product.style}&size=${product.sizeIndex}`}
+                  href={`/product/${product.slug}?style=${product.style}`}
                 >
                   Click here <MdOutlineKeyboardArrowRight />
                 </Link>
@@ -165,9 +165,9 @@ const Product = ({ product, selected, setSelected }) => {
             </p>
           )}
           <div className={styles.price__number}>
-            {product.price && <span>Rs.{product.price.toFixed(2)}</span>}
+            {product.price && <span>₹{product.price.toFixed(2)}</span>}
             {product.price !== product.priceBefore && !isSmall && (
-              <del>Rs.{product.priceBefore}</del>
+              <del>₹{product.priceBefore}</del>
             )}
           </div>
         </div>
@@ -187,7 +187,7 @@ const Product = ({ product, selected, setSelected }) => {
           </button>
         </div>
         <span className={styles.amount}>
-          Rs.{(product.price * product.qty).toFixed(2)}
+          ₹{(product.price * product.qty).toFixed(2)}
         </span>
         <div className={styles.action}>
           <div

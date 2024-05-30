@@ -1,15 +1,22 @@
-import styles from "./styles.module.scss";
+import React from "react";
 
-export default function Payment() {
+import styled from "./styles.module.scss";
+import NextImage from "../NextImage";
+
+const Payment = () => {
   return (
-    <div className={styles.footer__payment}>
-      <h3>We Accept</h3>
-      <div className={styles.footer__flexwrap}>
-        <img src="../../../images/payment/visa.webp" alt="" />
-        <img src="../../../images/payment/mastercard.webp" alt="" />
-        <img src="../../../images/payment/paypal.webp" alt="" />
-        <img src="../../../images/payment/bank-cards.webp" alt="" />
+    <div className={styled.footer__payment}>
+      <div className={styled.footer__payment_img}>
+        <NextImage src="/images/payment/visa.webp" alt="Visa" />
+      </div>
+      <div className={styled.footer__payment_img}>
+        <NextImage src="/images/payment/mastercard.webp" alt="Mastercard" />
+      </div>
+      <div className={styled.footer__payment_img}>
+        <NextImage src="/images/payment/paypal.webp" alt="Paypal" />
       </div>
     </div>
   );
-}
+};
+
+export default Payment;

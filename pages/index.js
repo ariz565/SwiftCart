@@ -1,7 +1,7 @@
 import Image from "next/image";
 import styles from "@/styles/Home.module.scss";
 import Header from "@/components/header";
-import Footer from "@/components/footer";
+import Footer from "@/components/Footer";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Main from "@/components/home/main";
 import FlashDeals from "@/components/home/flashDeals";
@@ -68,7 +68,7 @@ export default function Home({ country, products }) {
               <ProductCard key={product._id} product={product} />
             ))}
           </div>
-          
+
           <ProductsSwiper
             products={gamingSwiper}
             header="For Gamers"
