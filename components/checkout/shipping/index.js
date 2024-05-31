@@ -6,6 +6,7 @@ import ShippingInput from "@/components/inputs/shippingInput";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { countries } from "@/data/countries";
 import SingularSelect from "@/components/selects/SingularSelect";
+import Popup from "@/components/Popup";
 import {
   deleteAddress,
   saveAddress,
@@ -112,9 +113,19 @@ export default function Shipping({ user, addresses, setAddresses, profile }) {
   };
 
   // delete address handler
-  const deleteHandler = async (id) => {
-    const res = await deleteAddress(id);
-    setAddresses(res.addresses);
+  const deleteHandler = async (address_id) => {
+    Popup(
+      "Are you sure?",
+      "You won't be able to revert this!",
+      "warning",
+      "Yes, delete it!",
+      async () => {
+        const res = await deleteAddress(user._id || user.user.id, address_id);
+        setAddresses(res);
+      },
+      "Done!",
+      "Address has been deleted."
+    );
   };
 
   // ----------------------------------------
