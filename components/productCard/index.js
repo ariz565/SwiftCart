@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { useState } from "react";
+import { MdDiscount } from "react-icons/md";
 import ProductSwiper from "./ProductSwiper";
 import styles from "./styles.module.scss";
 

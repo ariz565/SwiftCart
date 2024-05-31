@@ -1,47 +1,13 @@
-import Link from "next/link";
-import styles from "./styles.module.scss";
-import { IoLocationSharp } from "react-icons/io5";
+import React from "react";
 
-export default function Copyright({ country }) {
+import styled from "./styles.module.scss";
+
+const Copyright = () => {
   return (
-    <div className={styles.footer__copyright}>
-      <section>©2024 SwiftCart All Rights Resereved.</section>
-      <section>
-        <ul>
-          {data.map((link) => (
-            <li key={link.id}>
-              <Link href={link.link}>{link.name}</Link>
-            </li>
-          ))}
-          <li>
-            <a>
-              <IoLocationSharp /> {country.name}
-            </a>
-          </li>
-        </ul>
-      </section>
-    </div>
+    <section className={styled.footer__copyright}>
+      ©2024 SwiftCart All Rights Reserved
+    </section>
   );
-}
-const data = [
-  {
-    name: "Privacy Center",
-    link: "",
-  },
-  {
-    name: "Privacy & Cookie Policy",
-    link: "",
-  },
-  {
-    name: "Manage Cookies",
-    link: "",
-  },
-  {
-    name: "Terms & Conditions",
-    link: "",
-  },
-  {
-    name: "Copyright Notice",
-    link: "",
-  },
-];
+};
+
+export default Copyright;

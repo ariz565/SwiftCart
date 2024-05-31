@@ -2,7 +2,6 @@ import db from "@/utils/db";
 import Product from "@/models/Product";
 import User from "@/models/User";
 import Cart from "@/models/Cart";
-// import auth from "@/middleware/auth";
 
 async function handler(req, res) {
   if (req.method === "POST") {
@@ -24,7 +23,6 @@ async function handler(req, res) {
       for (let i = 0; i < cart.length; i++) {
         let dbProduct = await Product.findById(cart[i]._id).lean();
 
-    
         let subProduct = dbProduct.subProducts[cart[i].style];
         let tempProduct = {};
         tempProduct.name = dbProduct.name;
@@ -60,7 +58,7 @@ async function handler(req, res) {
 
       res.status(201).json({ message: "Save cart successfully" });
 
-      await db.disconnectDb();
+      await db.disConnectDb();
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

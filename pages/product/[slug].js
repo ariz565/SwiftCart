@@ -11,6 +11,8 @@ import MainSwiper from "@/components/productPage/mainSwiper";
 import { useState } from "react";
 import Infos from "@/components/productPage/infos";
 import Reviews from "@/components/productPage/reviews";
+import Link from "next/link";
+import BreadCrumb from "@/components/BreadCrumb";
 
 export default function Products({ product }) {
   const [activeImg, setActiveImg] = useState("");
@@ -28,10 +30,11 @@ export default function Products({ product }) {
       <div className={styles.product}>
         <div className={styles.product__container}>
           <div className={styles.path}>
-            Home/ {product.category.name}/
-            {product.subCategories.map((sub, index) => (
-              <span key={index}>/{sub.name}</span>
-            ))}
+            <BreadCrumb
+              category={product.category?.name}
+              categoryLink={`/category/${product.category?.slug}`}
+              subCategories={product.subCategories}
+            />
           </div>
           <div className={styles.product__main}>
             <MainSwiper images={product.images} activeImg={activeImg} />
@@ -44,13 +47,14 @@ export default function Products({ product }) {
     </div>
   );
 }
+
 export async function getServerSideProps(context) {
   const { query } = context;
   const slug = query.slug;
   const style = query.style;
   const size = query.size || 0;
   db.connectDb();
-  //------------
+  // ...........
   let product = await Product.findOne({ slug })
     .populate({ path: "category", model: Category })
     .populate({ path: "subCategories", model: SubCategory })
@@ -64,6 +68,7 @@ export async function getServerSideProps(context) {
     .sort((a, b) => {
       return a - b;
     });
+
   let newProduct = {
     ...product,
     style,
@@ -75,11 +80,13 @@ export async function getServerSideProps(context) {
       return p.color;
     }),
     priceRange: subProduct.discount
-      ? `From ${(prices[0] - prices[0] / subProduct.discount).toFixed(2)} to ${(
+      ? `From ₹${(prices[0] - prices[0] / subProduct.discount).toFixed(
+          2
+        )} to ₹${(
           prices[prices.length - 1] -
           prices[prices.length - 1] / subProduct.discount
-        ).toFixed(2)}$`
-      : `From ${prices[0]} to ${prices[prices.length - 1]}$`,
+        ).toFixed(2)}`
+      : `From ₹${prices[0]} to ₹${prices[prices.length - 1]}`,
     price:
       subProduct.discount > 0
         ? (
@@ -120,8 +127,7 @@ export async function getServerSideProps(context) {
           array.findIndex((el2) => el2.size === element.size) === index
       ),
   };
-  const related = await Product.find({ category: product.category._id }).lean();
-  //------------
+  // ...........
   function calculatePercentage(num) {
     return (
       (product.reviews.reduce((a, review) => {
@@ -134,14 +140,11 @@ export async function getServerSideProps(context) {
       product.reviews.length
     ).toFixed(1);
   }
+
   db.disconnectDb();
-  // console.log("related", related);
   return {
     props: {
       product: JSON.parse(JSON.stringify(newProduct)),
-      related: JSON.parse(JSON.stringify(related)),
     },
   };
 }
-
-

@@ -1,15 +1,13 @@
-import styles from "./styles.module.scss";
-import { FaFacebookF, FaTiktok } from "react-icons/fa";
-import {
-  BsInstagram,
-  BsTwitter,
-  BsYoutube,
-  BsPinterest,
-  BsSnapchat,
-} from "react-icons/bs";
-export default function Socials() {
+import React from "react";
+import { FaFacebookF, FaTiktok, FaSnapchatGhost } from "react-icons/fa";
+import { AiFillInstagram } from "react-icons/ai";
+import { BsInstagram, BsTwitter, BsYoutube, BsPinterest } from "react-icons/bs";
+
+import styled from "./styles.module.scss";
+
+const Socials = () => {
   return (
-    <div className={styles.footer__socials}>
+    <div className={styled.footer__socials}>
       <section>
         <h3>STAY CONNECTED</h3>
         <ul>
@@ -20,7 +18,7 @@ export default function Socials() {
           </li>
           <li>
             <a href="/" target="_blank">
-              <BsInstagram />
+              <AiFillInstagram />
             </a>
           </li>
           <li>
@@ -40,7 +38,7 @@ export default function Socials() {
           </li>
           <li>
             <a href="/" target="_blank">
-              <BsSnapchat />
+              <FaSnapchatGhost />
             </a>
           </li>
           <li>
@@ -52,4 +50,6 @@ export default function Socials() {
       </section>
     </div>
   );
-}
+};
+
+export default Socials;

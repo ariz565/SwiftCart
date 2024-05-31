@@ -1,6 +1,6 @@
 import { getSession } from "next-auth/react";
 import { useState } from "react";
-import Layout from "../../components/profile/layout";
+import Layout from "@/components/profile/layout";
 import User from "../../models/User";
 import Payment from "../../components/checkout/payment";
 import styles from "../../styles/profile.module.scss";

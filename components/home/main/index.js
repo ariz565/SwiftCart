@@ -5,6 +5,7 @@ import Offers from "./offers";
 import styles from "./styles.module.scss";
 import MainSwiper from "./swiper";
 import { useSession } from "next-auth/react";
+import AnimateWrapper from "@/components/AnimateWrapper";
 
 export default function Main() {
   const { data: session } = useSession();

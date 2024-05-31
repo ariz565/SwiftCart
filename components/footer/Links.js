@@ -1,33 +1,38 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import styles from "./styles.module.scss";
+import React from "react";
 
-export default function Links() {
+import styled from "./styles.module.scss";
+
+const Links = () => {
   return (
-    <div className={styles.footer__links}>
-      {links.map((link, i) => (
-        <ul key={i}>
-          {" "}
-          {/* Key for outer list */}
-          {i === 0 ? (
-            <img src="../../../logo2.png" alt="" />
-          ) : (
-            <b>{link.heading}</b>
-          )}
-          {link.links.map((link) => (
-            <li key={link.name}>
-              {" "}
-              {/* Key for inner list item */}
-              <Link href={link.link}>{link.name}</Link>
-            </li>
-          ))}
-        </ul>
-      ))}
+    <div className={styled.footer__links}>
+      {links.map((link, index) => {
+        return (
+          <ul key={index}>
+            {/* Heading */}
+            {index === 0 ? (
+              <img src="/logo2.png" alt="Logo footer" />
+            ) : (
+              <b>{link.heading}</b>
+            )}
+
+            {/* Items */}
+            {link.links.map((link, index) => (
+              <li key={index}>
+                <Link href={link.link}>{link.name}</Link>
+              </li>
+            ))}
+          </ul>
+        );
+      })}
     </div>
   );
-}
+};
+
 const links = [
   {
-    heading: "SwiftCart",
+    heading: "SHOPPAY",
     links: [
       {
         name: "About us",
@@ -73,7 +78,7 @@ const links = [
     ],
   },
   {
-    heading: "Customer service",
+    heading: "CUSTOMER SERVICE",
     links: [
       {
         name: "Customer service",
@@ -94,3 +99,5 @@ const links = [
     ],
   },
 ];
+
+export default Links;

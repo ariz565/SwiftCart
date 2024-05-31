@@ -1,6 +1,6 @@
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import Layout from "../../components/profile/layout";
+import Layout from "@/components/profile/layout";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import { useState } from "react";

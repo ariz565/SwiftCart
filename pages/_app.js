@@ -7,6 +7,7 @@ import { SessionProvider } from "next-auth/react";
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { PagesProgressBar as ProgressBar } from "next-nprogress-bar";
 
 //  Wrap the MyApp component with the SessionProvider
 let persistor = persistStore(store);
@@ -22,6 +23,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <SessionProvider session={session}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
+            <ProgressBar
+              height="4px"
+              color="#000000"
+              options={{ showSpinner: false }}
+              shallowRouting
+            />
             <ToastContainer
               position="top-right"
               autoClose={5000}

@@ -1,53 +1,63 @@
 import Link from "next/link";
 import { useState } from "react";
-import styles from "./styles.module.scss";
+
+import styled from "./styles.module.scss";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-export default function NewsLetter() {
+import { MoonLoader } from "react-spinners";
+
+const Newsletter = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const subscribe = async () => {
-    setSuccess("");
-    setError("");
+
+  const subcribeHandler = async (e) => {
+    e.preventDefault();
     try {
       setLoading(true);
       const { data } = await axios.post("/api/newsletter", { email });
-      setSuccess(data.message);
-      setLoading(false);
       setEmail("");
-    } catch (error) {
-      setSuccess("");
       setLoading(false);
-      setError(error.response.data.message);
+      toast.success(data.message);
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.response.data.message);
     }
   };
+
   return (
-    <div className={styles.footer__newsletter}>
+    <div className={styled.footer__newsletter}>
       <h3>SIGN UP FOR OUR NEWSLETTER</h3>
-      <div className={styles.footer__flex}>
+      <div className={styled.footer__inputWrapper}>
         <input
           type="text"
           placeholder="Your Email Address"
-          value={email}
           onChange={(e) => setEmail(e.target.value)}
+          value={email}
         />
         <button
-          className={styles.btn_primary}
-          disbaled={loading === true}
-          style={{ cursor: `${loading ? "not-allowed" : ""}` }}
-          onClick={() => subscribe()}
+          className={styled.btn_primary}
+          disabled={loading === true}
+          style={{ cursor: loading ? "not-allowed" : "pointer" }}
+          onClick={subcribeHandler}
+          type="submit"
         >
-          SUBSCRIBE
+          {loading ? (
+            <>
+              Waiting...
+              <MoonLoader size={20} color="#fff" />
+            </>
+          ) : (
+            "SUBSCRIBE"
+          )}
         </button>
       </div>
-      {loading && <div className="">loading...</div>}
-      {error && <div className="error">{error}</div>}
-      {success && <div className="success">{success}</div>}
       <p>
         By clicking the SUBSCRIBE button, you are agreeing to{" "}
-        <Link href="">Our Privacy & Cookie Policy</Link>
+        <Link href="">our Privacy & Cookie Policy</Link>
       </p>
     </div>
   );
-}
+};
+
+export default Newsletter;
