@@ -1,85 +1,102 @@
-import Layout from "../../../components/admin/layout";
-import styles from "../../../styles/dashboard.module.scss";
-import User from "@/models/User";
-import Order from "@/models/Order";
-import Product from "../../../models/Product";
+/* eslint-disable @next/next/no-img-element */
 import Head from "next/head";
 import { useSession } from "next-auth/react";
-import Dropdown from "../../../components/admin/dashboard/dropdown";
-import Notifications from "../../../components/admin/dashboard/notifications";
-import { TbUsers } from "react-icons/tb";
-import { SlHandbag, SlEye } from "react-icons/sl";
-import { SiProducthunt } from "react-icons/si";
-import { GiTakeMyMoney } from "react-icons/gi";
+import { GiShoppingBag } from "react-icons/gi";
+import { FaUsers, FaMoneyCheckAlt } from "react-icons/fa";
+import { HiTemplate } from "react-icons/hi";
+import { RiMoneyDollarCircleFill } from "react-icons/ri";
+import { ImEye } from "react-icons/im";
+
+import styled from "@/styles/Dashboard.module.scss";
+import AdminLayout from "@/components/Admin/Layout";
+import Notification from "@/components/Admin/Dashboard/Notification";
+import { Order } from "@/models/Order";
+import { Product } from "@/models/Product";
+import { User } from "@/models/User";
+import db from "@/utils/db";
+import Dropdown from "@/components/Admin/Dashboard/Dropdown";
 import Link from "next/link";
 
-export default function Dashboard({ users, orders, products }) {
+const Dashboard = ({ users, orders, products }) => {
   const { data: session } = useSession();
   return (
-    <div>
+    <>
       <Head>
-        <title>Swift Cart - Admin Dashboard</title>
+        <title>Shoppay - Admin Dashboard</title>
       </Head>
-      <Layout>
-        <div className={styles.header}>
-          <div className={styles.header__search}>
+      <AdminLayout>
+        <div className={styled.header}>Dashboard</div>
+        <div className={styled.heading}>
+          <div className={styled.heading__search}>
             <label htmlFor="">
               <input type="text" placeholder="Search here..." />
             </label>
           </div>
-          <div className={styles.header__right}>
-            <Dropdown userImage={session?.user?.image} />
-            <Notifications />
+          <div className={styled.heading__right}>
+            <Dropdown userImage={session?.user.image} />
+            <Notification />
           </div>
         </div>
-        <div className={styles.cards}>
-          <div className={styles.card}>
-            <div className={styles.card__icon}>
-              <TbUsers />
+
+        <div className={styled.cards}>
+          <div className={styled.card}>
+            <div className={styled.card__icon}>
+              <FaUsers />
             </div>
-            <div className={styles.card__infos}>
-              <h4>+{users.length}</h4>
-              <span>Users</span>
-            </div>
-          </div>
-          <div className={styles.card}>
-            <div className={styles.card__icon}>
-              <SlHandbag />
-            </div>
-            <div className={styles.card__infos}>
-              <h4>+{orders.length}</h4>
-              <span>Orders</span>
+            <div className={styled.card__infos}>
+              <h4>+{users.length} Users</h4>
             </div>
           </div>
-          <div className={styles.card}>
-            <div className={styles.card__icon}>
-              <SiProducthunt />
+
+          <div className={styled.card}>
+            <div className={styled.card__icon}>
+              <GiShoppingBag />
             </div>
-            <div className={styles.card__infos}>
-              <h4>+{products.length}</h4>
-              <span>Products</span>
+            <div className={styled.card__infos}>
+              <h4>+{orders.length} Orders</h4>
             </div>
           </div>
-          <div className={styles.card}>
-            <div className={styles.card__icon}>
-              <GiTakeMyMoney />
+
+          <div className={styled.card}>
+            <div className={styled.card__icon}>
+              <HiTemplate />
             </div>
-            <div className={styles.card__infos}>
-              <h4>+{orders.reduce((a, val) => a + val.total, 0)} INR</h4>
-              <h5>
-                -
+            <div className={styled.card__infos}>
+              <h4>+{products.length} Products</h4>
+            </div>
+          </div>
+
+          <div className={styled.card}>
+            <div className={styled.card__icon}>
+              <RiMoneyDollarCircleFill />
+            </div>
+            <div className={styled.card__infos}>
+              <h4>
+                ${orders.reduce((a, val) => a + val.total, 0)}&nbsp;
+                <span>Earnings</span>
+              </h4>
+            </div>
+          </div>
+
+          <div className={styled.card}>
+            <div className={styled.card__icon}>
+              <FaMoneyCheckAlt />
+            </div>
+            <div className={styled.card__infos}>
+              <h4>
+                $
                 {orders
                   .filter((o) => !o.isPaid)
-                  .reduce((a, val) => a + val.total, 0)}{" "}
-                Rs. Unpaid yet.
-              </h5>
-              <span>Total Earnings</span>
+                  .reduce((a, val) => a + val.total, 0)}
+                &nbsp;Unpaid
+              </h4>
             </div>
           </div>
         </div>
-        <div className={styles.data}>
-          <div className={styles.orders}>
-            <div className={styles.heading}>
+
+        <div className={styled.data}>
+          <div className={styled.orders}>
+            <div className={styled.title}>
               <h2>Recent Orders</h2>
               <Link href="/admin/dashboard/orders">View All</Link>
             </div>
@@ -94,10 +111,10 @@ export default function Dashboard({ users, orders, products }) {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
-                  <tr key={order._id}>
-                    <td>{order.user.name}</td>
-                    <td>{order.total} $</td>
+                {orders.map((order, i) => (
+                  <tr key={i}>
+                    <td>{order.user?.name}</td>
+                    <td>${order.total}</td>
                     <td>
                       {order.isPaid ? (
                         <img src="../../../images/verified.webp" alt="" />
@@ -107,17 +124,17 @@ export default function Dashboard({ users, orders, products }) {
                     </td>
                     <td>
                       <div
-                        className={`${styles.status} ${
-                          order.status == "Not Processed"
-                            ? styles.not_processed
+                        className={`${styled.status} ${
+                          order.status == "Not processed"
+                            ? styled.not_processed
                             : order.status == "Processing"
-                            ? styles.processing
+                            ? styled.processing
                             : order.status == "Dispatched"
-                            ? styles.dispatched
+                            ? styled.dispatched
                             : order.status == "Cancelled"
-                            ? styles.cancelled
+                            ? styled.cancelled
                             : order.status == "Completed"
-                            ? styles.completed
+                            ? styled.completed
                             : ""
                         }`}
                       >
@@ -126,7 +143,7 @@ export default function Dashboard({ users, orders, products }) {
                     </td>
                     <td>
                       <Link href={`/order/${order._id}`}>
-                        <SlEye />
+                        <ImEye />
                       </Link>
                     </td>
                   </tr>
@@ -134,17 +151,17 @@ export default function Dashboard({ users, orders, products }) {
               </tbody>
             </table>
           </div>
-          <div className={styles.users}>
-            <div className={styles.heading}>
+          <div className={styled.users}>
+            <div className={styled.title}>
               <h2>Recent Users</h2>
               <Link href="/admin/dashboard/users">View All</Link>
             </div>
             <table>
               <tbody>
-                {users.map((user) => (
-                  <tr key={user._id}>
-                    <td className={styles.user}>
-                      <div className={styles.user__img}>
+                {users.map((user, i) => (
+                  <tr key={i}>
+                    <td className={styled.user}>
+                      <div className={styled.user__img}>
                         <img src={user.image} alt="" />
                       </div>
                       <td>
@@ -158,17 +175,21 @@ export default function Dashboard({ users, orders, products }) {
             </table>
           </div>
         </div>
-      </Layout>
-    </div>
+      </AdminLayout>
+    </>
   );
-}
+};
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps(ctx) {
+  await db.connectDb();
   const users = await User.find().lean();
   const orders = await Order.find()
     .populate({ path: "user", model: User })
     .lean();
   const products = await Product.find().lean();
+
+  await db.disconnectDb();
+
   return {
     props: {
       users: JSON.parse(JSON.stringify(users)),
@@ -177,3 +198,5 @@ export async function getServerSideProps({ req }) {
     },
   };
 }
+
+export default Dashboard;

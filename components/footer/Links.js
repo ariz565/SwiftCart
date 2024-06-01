@@ -12,7 +12,7 @@ const Links = () => {
           <ul key={index}>
             {/* Heading */}
             {index === 0 ? (
-              <img src="/logo2.png" alt="Logo footer" />
+              <img src="/logo.png" alt="Logo footer" />
             ) : (
               <b>{link.heading}</b>
             )}

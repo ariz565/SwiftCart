@@ -1,36 +1,58 @@
-import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import Header from "@/components/cart/header";
-import styles from "../styles/cart.module.scss";
-import Empty from "@/components/cart/empty";
-import Product from "@/components/cart/product";
+import styled from "../styles/Cart.module.scss";
 
-import { useSession, signIn } from "next-auth/react";
+import CartHeader from "../components/Cart/Header";
+import Empty from "@/components/Cart/Empty";
+import { useDispatch, useSelector } from "react-redux";
+import Product from "@/components/Cart/Product";
+import Top from "@/components/Cart/Top";
+import Checkout from "@/components/Cart/Checkout";
+import PaymentMethods from "@/components/Cart/PaymentMethods";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { saveCart } from "../requests/user";
+import { saveCart } from "@/utils/request";
+import axios from "axios";
+import { updateCart } from "@/store/cartSlice";
+import Footer from "@/components/Footer";
+import {
+  calculateSubPrice,
+  calculateTotal,
+  calculateTotalShipping,
+} from "@/utils/productUltils";
 
-import { updateCart } from "../store/cartSlice";
-import { women_swiper } from "../data/home";
-import CartHeader from "@/components/cart/cartHeader";
-import Checkout from "@/components/cart/checkout";
-import PaymentMethods from "@/components/cart/paymentMethods";
-import ProductsSwiper from "@/components/productsSwiper";
-
-export default function Cart() {
-  //---
-  const Router = useRouter();
+const Cart = () => {
   const { data: session } = useSession();
   const { cart } = useSelector((state) => ({ ...state }));
-  const dispatch = useDispatch();
-  const [selected, setSelected] = useState([]);
-  //-------
 
-  //----
+  const dispatch = useDispatch();
+  const Router = useRouter();
+
+  const [selected, setSelected] = useState([]);
+
+  const [shippingFee, setShippingFee] = useState(0);
+  const [subTotal, setSubTotal] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  //Tính giá tiền
+  useEffect(() => {
+    setShippingFee(() => {
+      return calculateTotalShipping(selected);
+    });
+
+    setSubTotal(() => {
+      return calculateSubPrice(selected);
+    });
+
+    setTotal(() => {
+      return calculateTotal(selected);
+    });
+  }, [JSON.stringify(selected)]);
+
+  // Update Cart
   // useEffect(() => {
   //   const update = async () => {
-  //     const { data } = await axios.post("/api/user/saveCart", {
+  //     const { data } = await axios.post("/api/updateCart", {
   //       products: cart.cartItems,
   //     });
   //     dispatch(updateCart(data));
@@ -38,70 +60,62 @@ export default function Cart() {
   //   if (cart.cartItems.length > 0) {
   //     update();
   //   }
-  // }, [cart, dispatch]);
-  //----
+  // }, []);
 
-  // ------
-  const [shippingFee, setShippingFee] = useState(0);
-  const [subtotal, setSubtotal] = useState(0);
-  const [total, setTotal] = useState(0);
-  //----
-  useEffect(() => {
-    setShippingFee(
-      selected.reduce((a, c) => a + Number(c.shipping), 0).toFixed(2)
-    );
-    setSubtotal(selected.reduce((a, c) => a + c.price * c.qty, 0).toFixed(2));
-    setTotal(
-      (
-        selected.reduce((a, c) => a + c.price * c.qty, 0) + Number(shippingFee)
-      ).toFixed(2)
-    );
-  }, [selected, shippingFee]);
-
+  //Thêm data vào database sau khi click Continue
   const saveCartToDbHandler = async () => {
     if (session) {
-      const res = saveCart(selected, session.user.id);
+      //Lưu cart vào db
+      const res = await saveCart(selected, session.user.id);
+      //Chuyển hướng sang trang checkout
       Router.push("/checkout");
     } else {
       signIn();
     }
   };
-  // ------
+
   return (
-    <>
-      <Header />
-      <div className={styles.cart}>
+    <div>
+      <CartHeader text="BACK TO SHOPPING" link="/browse" />
+      <div className={styled.cart}>
+        <h1>Your shopping cart</h1>
         {cart.cartItems.length > 0 ? (
-          <div className={styles.cart__container}>
-            <CartHeader
-              cartItems={cart.cartItems}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <div className={styles.cart__product}>
-              {cart.cartItems.map((product) => (
-                <Product
-                  product={product}
-                  key={product._uid}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              ))}
+          <div className={styled.cart__container}>
+            <div className={styled.cart__container_left}>
+              <Top
+                cartItems={cart.cartItems}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <div className={styled.cart__products}>
+                {cart.cartItems.map((product) => (
+                  <Product
+                    key={product._uid}
+                    product={product}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ))}
+              </div>
             </div>
-            <Checkout
-              subtotal={subtotal}
-              shippingFee={shippingFee}
-              total={total}
-              selected={selected}
-              saveCartToDbHandler={saveCartToDbHandler}
-            />
-            <PaymentMethods />
+            <div className={styled.cart__container_right}>
+              <Checkout
+                shippingFee={shippingFee}
+                subTotal={subTotal}
+                total={total}
+                selected={selected}
+                saveCartToDbHandler={saveCartToDbHandler}
+              />
+              <PaymentMethods />
+            </div>
           </div>
         ) : (
           <Empty />
         )}
-        <ProductsSwiper products={women_swiper} />
       </div>
-    </>
+      <Footer />
+    </div>
   );
-}
+};
+
+export default Cart;

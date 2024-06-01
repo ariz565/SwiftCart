@@ -1,30 +1,36 @@
-import styles from "./styles.module.scss";
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
+import React from "react";
 import { signOut, signIn } from "next-auth/react";
+import { BiLogOut } from "react-icons/bi";
 
-export default function UserMenu({ session }) {
+import styled from "./styles.module.scss";
+import { RevealWrapper } from "next-reveal";
+
+const UserMenu = ({ session }) => {
   return (
-    <div className={styles.menu}>
-      <h4>Welcome to SwiftCart !</h4>
+    <div className={styled.menu}>
+      <h4>Welcome to ShopPay!</h4>
       {session ? (
-        <div className={styles.flex}>
+        <div className={styled.userInfo}>
           <img
             src={session.user.image}
             alt="Avatar"
-            className={styles.menu__img}
+            className={styled.menu__img}
           />
-          <div className={styles.col}>
-            <span>Welcome Back,</span>
+          <div className={styled.col}>
             <h3>{session.user.name}</h3>
-            <span onClick={() => signOut()}>Sign Out</span>
+            <span onClick={() => signOut()}>
+              <BiLogOut /> Sign out
+            </span>
           </div>
         </div>
       ) : (
-        <div className={styles.flex}>
-          <button className={styles.btn_primary} onClick={() => signIn()}>
+        <div className={styled.flex}>
+          <button className={styled.btn__primary} onClick={() => signIn()}>
             Register
           </button>
-          <button className={styles.btn_outlined} onClick={() => signIn()}>
+          <button className={styled.btn__outline} onClick={() => signIn()}>
             Login
           </button>
         </div>
@@ -34,13 +40,13 @@ export default function UserMenu({ session }) {
           <Link href="/profile">Account</Link>
         </li>
         <li>
-          <Link href="/profile/orders?tab=0&q=all__all">My Orders</Link>
+          <Link href="/profile/orders?tab=1&q=all-orders">My Orders</Link>
         </li>
         <li>
           <Link href="/profile/messages">Message Center</Link>
         </li>
         <li>
-          <Link href="/profile/address">Address</Link>
+          <Link href="/profile/address?tab=0&q=addresses">Address</Link>
         </li>
         <li>
           <Link href="/profile/wishlist">Wishlist</Link>
@@ -48,4 +54,6 @@ export default function UserMenu({ session }) {
       </ul>
     </div>
   );
-}
+};
+
+export default UserMenu;

@@ -1,37 +1,44 @@
 import { useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
-import { FaMinus } from "react-icons/fa";
-import styles from "../styles.module.scss";
+import styled from "../styles.module.scss";
+import { FaMinus, FaPlus } from "react-icons/fa";
+import { useRouter } from "next/router";
+import { replaceQuery } from "@/utils/filter";
+import CheckboxItem from "../CheckboxItem";
+import PlusMinusBtn from "../PlusMinusBtn";
 
-export default function GenderFilter({ genderHandler, replaceQuery }) {
+export default function GenderFilter({ genderHandler, checkChecked }) {
   const genders = ["Men", "Women", "Unisex"];
+
+  const router = useRouter();
+  const existedGender = router.query.gender || "";
+
   const [show, setShow] = useState(true);
   return (
-    <div className={styles.filter}>
+    <div className={styled.filter}>
       <h3>
-        Gender <span>{show ? <FaMinus /> : <BsPlusLg />}</span>
+        Gender
+        <PlusMinusBtn show={show} onClick={() => setShow((prev) => !prev)} />
       </h3>
+
       {show && (
-        <div className={styles.filter__sizes}>
+        <>
           {genders.map((gender, i) => {
-            const check = replaceQuery("gender", gender);
+            const check = checkChecked("gender", gender);
             return (
-              <label
-                htmlFor={gender}
-                className={styles.filter__sizes_size}
-                onClick={() => genderHandler(check.result)}
-              >
-                <input
-                  type="checkbox"
-                  name="gender"
-                  id={gender}
-                  checked={check.active}
-                />
-                <label htmlFor={gender}>{gender}</label>
-              </label>
+              <CheckboxItem
+                key={i}
+                onClick={() => {
+                  replaceQuery(existedGender, check, gender, genderHandler);
+                }}
+                id={gender}
+                check={check}
+                content={gender}
+                name="gender"
+                type="checkbox"
+              />
             );
           })}
-        </div>
+        </>
       )}
     </div>
   );

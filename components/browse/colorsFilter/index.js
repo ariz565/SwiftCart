@@ -1,29 +1,42 @@
 import { useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
-import { FaMinus } from "react-icons/fa";
-import styles from "../styles.module.scss";
+import { FaMinus, FaPlus } from "react-icons/fa";
+import { useRouter } from "next/router";
 
-export default function ColorsFilter({ colors, colorHandler, replaceQuery }) {
+import styled from "../styles.module.scss";
+import { replaceQuery } from "@/utils/filter";
+import PlusMinusBtn from "../PlusMinusBtn";
+
+export default function ColorsFilter({ colors, colorHandler, checkChecked }) {
   const [show, setShow] = useState(true);
+  const router = useRouter();
+  const existedColor = router.query.color;
   return (
-    <div className={styles.filter}>
+    <div className={styled.filter}>
       <h3>
-        Colors <span>{show ? <FaMinus /> : <BsPlusLg />}</span>
+        Colors{" "}
+        <PlusMinusBtn show={show} onClick={() => setShow((prev) => !prev)} />
       </h3>
-      {show && (
-        <div className={styles.filter__colors}>
-          {colors.map((color, i) => {
-            const check = replaceQuery("color", color);
-            return (
-              <button
-                style={{ background: `${color}` }}
-                className={check.active ? styles.activeFilterColor : ""}
-                onClick={() => colorHandler(check.result)}
-              ></button>
-            );
-          })}
-        </div>
-      )}
+
+      {show &&
+        (colors.length > 0 ? (
+          <div className={styled.filter__colors}>
+            {colors.map((color, i) => {
+              const check = checkChecked("color", color);
+              return (
+                <button
+                  onClick={() =>
+                    replaceQuery(existedColor, check, color, colorHandler)
+                  }
+                  style={{ background: `${color}` }}
+                  className={check ? styled.colorActiveFilter : ""}
+                  key={i}
+                ></button>
+              );
+            })}
+          </div>
+        ) : (
+          <p style={{ padding: "10px 0" }}>Found no colors</p>
+        ))}
     </div>
   );
 }

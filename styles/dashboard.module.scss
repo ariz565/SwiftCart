@@ -1,81 +1,94 @@
-.header {
-  width: calc(100% - 40px);
-  margin-left: 20px;
-  height: 60px;
+@import "../components/Admin/base";
+
+.heading {
+  height: 80px;
   display: flex;
   padding: 0 20px;
   align-items: center;
   justify-content: space-between;
   box-shadow: $shadow-1;
+  border-radius: 3px;
+
   &__search {
     position: relative;
-    width: 500px;
+    width: 70%;
+    height: 50px;
     margin: 0;
+
     label {
       position: relative;
       width: 100%;
+
       input {
         width: 100%;
-        height: 40px;
+        height: 100%;
+        outline: none;
         border-radius: 50px;
         padding: 5px 20px;
-        outline: none;
         border: 1px solid #00000033;
       }
     }
   }
+
   &__right {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
 }
+
 .cards {
   position: relative;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 20px;
-  padding: 20px;
-  padding-bottom: 0;
-  @media (max-width: 1500px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  margin-top: 2rem;
+
   @media (max-width: 1100px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  @media (max-width: 800px) {
     grid-template-columns: repeat(3, 1fr);
   }
   .card {
     position: relative;
-    padding: 30px;
+    height: 120px;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    gap: 10px;
     background-color: #fff;
     box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 3px;
     z-index: 1;
     transition: color 0.5s ease 0s;
     margin-bottom: 30px;
+
     &__icon {
-      width: 30%;
-      height: 100%;
-      font-size: 3rem;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1;
+
+      svg {
+        width: 30px;
+        height: 30px;
+        color: $blue-color;
+      }
     }
+
     &__infos {
-      flex-grow: 1;
       text-align: center;
       z-index: 1;
       text-transform: capitalize;
+      display: flex;
+      align-items: center;
+
       h4 {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0;
+        color: $blue-color;
       }
     }
     &::before {
@@ -83,7 +96,7 @@
       width: 100%;
       padding-top: 100%;
       border-radius: 50%;
-      background-image: linear-gradient(to top right, #fff, $blue-color);
+      background-image: linear-gradient(to top right, #a2b8ff, $blue-color);
       position: absolute;
       top: 0;
       left: -50%;
@@ -91,30 +104,56 @@
       transition: transform 0.8s ease 0s;
     }
     &:hover {
-      color: #fff;
+      h4 {
+        color: #fff;
+        transition: color 1s ease;
+      }
+
+      svg {
+        fill: #fff;
+        transition: fill 1s ease;
+      }
+
       &::before {
         transform: scale(3);
       }
     }
   }
 }
+
 .data {
   position: relative;
   width: 100%;
-  padding: 0 20px;
   display: grid;
+  gap: 20px;
   grid-template-columns: 2fr 1fr;
+  margin-top: 0.5rem;
+
   @media (max-width: 1100px) {
     grid-template-columns: 1fr;
   }
+
   .orders {
     position: relative;
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: max-content;
     background: #fff;
-    padding: 20px;
+    padding: 20px 20px 10px 20px;
+    box-shadow: $shadow-1;
+    border-radius: 3px;
+
     table {
       thead {
+        tr {
+          border-bottom: 1px solid #0000001a;
+        }
+
         td {
+          text-transform: uppercase;
+          font-weight: 700;
+
           &:nth-of-type(4) {
             display: flex;
             align-items: center;
@@ -122,13 +161,16 @@
           }
         }
       }
+
       tbody {
         tr {
           border-radius: 5px !important;
           border-bottom: 1px solid #0000001a;
+
           &:hover {
             background: $blue-color;
             color: #fff;
+
             td {
               &:nth-of-type(5) {
                 svg {
@@ -137,22 +179,27 @@
               }
             }
           }
+
           &:last-child {
             border-bottom: none;
           }
+
           td {
             img {
               width: 20px;
             }
+
             &:nth-of-type(3) {
               width: 50px;
               text-align: center;
             }
+
             &:nth-of-type(4) {
               display: flex;
               align-items: center;
               justify-content: center;
             }
+
             &:nth-of-type(5) {
               svg {
                 width: 21px;
@@ -174,27 +221,39 @@
       }
     }
   }
-  .heading {
+
+  .title {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    margin-bottom: 1rem;
+
     h2 {
-      font-weight: 600;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 17px;
+      color: $blue-color;
     }
+
     a {
+      font-size: 12px;
       position: relative;
       padding: 5px 10px;
       background: $blue-color;
       color: #fff;
       border-radius: 4px;
       &:hover {
-        background: $dark-blue-color;
+        background: $hover-color;
       }
     }
   }
+
   table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 12px;
+    color: #666;
+
     thead {
       td {
         font-weight: 600;
@@ -206,15 +265,17 @@
         border-radius: 5px !important;
       }
     }
+
     .status {
       padding: 5px;
       width: 100px;
       border-radius: 3px;
       color: #fff;
+      border: 1px solid #fff;
       font-size: 12px;
       font-weight: 600;
-      margin-top: 7px;
-      text-align: center;
+      display: grid;
+      place-items: center;
     }
   }
 
@@ -222,11 +283,16 @@
     position: relative;
     background: #fff;
     padding: 20px;
+    box-shadow: $shadow-1;
+    border-radius: 3px;
+
     .user {
-      padding: 5px;
+      padding: 10px;
       display: flex;
       align-items: center;
       gap: 10px;
+      font-size: 12px;
+
       &__img {
         position: relative;
         height: 100%;
@@ -240,20 +306,22 @@
           box-shadow: $shadow-1;
         }
       }
+
       span {
-        font-size: 13px;
+        font-size: 12px;
         color: #666;
       }
+
       &:hover {
         span {
           color: #fff;
         }
       }
     }
+
     table {
-      margin-top: 1rem;
-      &:last-of-type {
-      }
+      margin-top: 2rem;
+
       tr {
         &:hover {
           background: $blue-color;
@@ -263,6 +331,7 @@
     }
   }
 }
+
 .not_processed {
   background: #e3503e;
 }

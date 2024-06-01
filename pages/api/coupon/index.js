@@ -1,38 +1,36 @@
-import { createRouter } from "next-connect";
-import User from "../../../models/User";
-import Coupon from "../../../models/Coupon";
-import db from "../../../utils/db";
-import auth from "../../../middleware/auth";
+import { Coupon } from "@/models/Coupon";
+import db from "@/utils/db";
 
-const router = createRouter();
-
-// ----------------------POST method for creating a new coupon----------------------
-router.post(async (req, res) => {
+async function handler(req, res) {
   try {
-    db.connectDb();
-    const { coupon, startDate, endDate, discount } = req.body;
-    const test = await Coupon.findOne({ coupon });
-    if (test) {
-      return res.status(400).json({
-        message: "This Coupon name already exists, try with a different name.",
+    if (req.method === "POST") {
+      await db.connectDb();
+      const { coupon, startDate, endDate, discount } = req.body;
+      const test = await Coupon.findOne({ coupon });
+
+      if (test) {
+        return res
+          .status(400)
+          .json({ message: "Coupon already exists, try with different name!" });
+      }
+
+      await new Coupon({
+        coupon,
+        startDate,
+        endDate,
+        discount,
+      }).save();
+
+      db.disConnectDb();
+
+      return res.status(201).json({
+        message: "Coupon created successfully!",
+        coupons: await Coupon.find({}),
       });
     }
-    await new Coupon({
-      coupon,
-      startDate,
-      endDate,
-      discount,
-    }).save();
-
-    db.disconnectDb();
-    return res.json({
-      message: "Coupon created successfully !",
-      coupons: await Coupon.find({}),
-    });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
-});
+}
 
-// ---------------------- Exporting the router ----------------------
-export default router.handler();
+export default handler;

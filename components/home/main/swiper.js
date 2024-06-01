@@ -1,13 +1,13 @@
-import styles from "./styles.module.scss";
-import Image from "next/image";
-import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { Pagination, Navigation, Autoplay } from "swiper";
 
-export default function MainSwiper() {
+import styled from "./styles.module.scss";
+import NextImage from "@/components/NextImage";
+
+export default function App() {
   return (
     <>
       <Swiper
@@ -17,22 +17,22 @@ export default function MainSwiper() {
         pagination={{
           clickable: true,
         }}
+        navigation={true}
+        modules={[Pagination, Navigation, Autoplay]}
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
         }}
-        navigation={true}
-        modules={[Autoplay, Pagination, Navigation]}
         className="mainSwiper"
       >
-        {[...Array(11).keys()].map((i) => (
+        {[...Array(4).keys()].map((i) => (
           <SwiperSlide key={i}>
-            <Image
-              src={`/images/swiper/${i + 1}.jpg`}
-              alt="main banner"
-              width={5000}
-              height={300}
-            />
+            <div className={styled.mainSwiper__wrapper}>
+              <NextImage
+                src={`/images/swiper/${i + 1}.jpg`}
+                alt={`Home Banner ${i + 1}`}
+              />
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>

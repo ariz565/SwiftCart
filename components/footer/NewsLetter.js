@@ -36,7 +36,7 @@ const Newsletter = () => {
           value={email}
         />
         <button
-          className={styled.btn_primary}
+          className={styled.btn__primary}
           disabled={loading === true}
           style={{ cursor: loading ? "not-allowed" : "pointer" }}
           onClick={subcribeHandler}

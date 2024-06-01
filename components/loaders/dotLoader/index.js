@@ -1,9 +1,12 @@
-import styles from "./styles.module.scss";
+import styled from "./styles.module.scss";
 import DotLoader from "react-spinners/DotLoader";
-export default function DotLoaderSpinner({ loading }) {
+
+const StyledDotLoader = ({ loading }) => {
   return (
-    <div className={styles.loader}>
-      <DotLoader color="#2f82ff" loading={loading} />
+    <div className={styled.loader}>
+      <DotLoader color="#1976d2" loading={loading} />
     </div>
   );
-}
+};
+
+export default StyledDotLoader;

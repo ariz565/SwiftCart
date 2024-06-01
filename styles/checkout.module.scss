@@ -1,10 +1,28 @@
 .checkout {
-  max-width: 1400px;
-  margin-top: 2rem;
-  overflow-x: hidden;
-  @media (min-width: 1000px) {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
+  display: flex;
+  gap: 1rem;
+  max-width: 1200px;
+  padding: 0 10px;
+  margin: 0 auto;
+
+  &__left_side {
+    width: 65%;
+    flex-shrink: 0;
+  }
+
+  &_right_side {
+    flex: 1;
+  }
+
+  @media screen and (max-width: 1200px) {
+    flex-direction: column;
+
+    &__left_side {
+      width: 100%;
+    }
+
+    &_right_side {
+      width: 100%;
+    }
   }
 }

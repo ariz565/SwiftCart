@@ -1,25 +1,29 @@
-import Layout from "../../../components/admin/layout";
-import db from "../../../utils/db";
-import Coupon from "../../../models/Coupon";
 import { useState } from "react";
-import Create from "../../../components/admin/coupons/Create";
-import List from "../../../components/admin/coupons/List";
 
-export default function Coupons({ coupons }) {
+import Create from "@/components/Admin/Coupons/Create";
+import List from "@/components/Admin/Coupons/List";
+import db from "@/utils/db";
+import Layout from "../../../components/Admin/Layout";
+import { Coupon } from "@/models/Coupon";
+
+const CategoriesPage = ({ coupons }) => {
   const [data, setData] = useState(coupons);
+
   return (
     <Layout>
-      <div>
-        <Create setCoupons={setData} />
-        <List coupons={data} setCoupons={setData} />
-      </div>
+      <Create setCoupons={setData} />
+      <List coupons={data} setCoupons={setData} />
     </Layout>
   );
-}
+};
+
+export default CategoriesPage;
 
 export async function getServerSideProps(context) {
-  db.connectDb();
+  await db.connectDb();
+
   const coupons = await Coupon.find({}).sort({ updatedAt: -1 }).lean();
+
   return {
     props: {
       coupons: JSON.parse(JSON.stringify(coupons)),

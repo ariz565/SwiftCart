@@ -1,26 +1,28 @@
-import Layout from "@/components/admin/layout";
+import Create from "@/components/Admin/Categories/Create";
+import List from "@/components/Admin/Categories/List";
+import { Category } from "@/models/Category";
 import db from "@/utils/db";
-import Category from "@/models/Category";
 import { useState } from "react";
-import Create from "@/components/admin/categories/Create";
-import List from "@/components/admin/categories/List";
+import Layout from "../../../components/Admin/Layout";
 
-export default function Categories({ categories }) {
+const CategoriesPage = ({ categories }) => {
   const [data, setData] = useState(categories);
-  // console.log(data);
+
   return (
     <Layout>
-      <div>
-        <Create setCategories={setData} />
-        <List categories={data} setCategories={setData} /> 
-      </div>
+      <Create setCategories={setData} />
+      <List categories={data} setCategories={setData} />
     </Layout>
   );
-}
+};
+
+export default CategoriesPage;
 
 export async function getServerSideProps(context) {
-  db.connectDb();
+  await db.connectDb();
+
   const categories = await Category.find({}).sort({ updatedAt: -1 }).lean();
+
   return {
     props: {
       categories: JSON.parse(JSON.stringify(categories)),

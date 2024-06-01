@@ -1,100 +1,125 @@
 .filter {
-  padding: 1rem;
+  padding: 0px 16px 12px;
+
+  &:not(:first-child) {
+    border-top: 1px solid rgb(235, 235, 240);
+  }
+
   h3 {
-    font-size: 17px;
+    margin: 0px;
+    line-height: 20px;
+    display: flex;
+    justify-content: space-between;
+    color: rgb(56, 56, 61);
+    font-size: 14px;
+    padding: 12px 0px;
     font-weight: 600;
+
+    span {
+      display: grid;
+      place-items: center;
+
+      svg {
+        width: 7px;
+        color: rgb(56, 56, 61);
+      }
+    }
+  }
+
+  &__input {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 10px;
+    padding: 0px 0px 12px;
     cursor: pointer;
-    margin-bottom: 10px;
-    span {
-      svg {
-        fill: #333;
-        width: 10px;
-      }
-    }
-  }
-  section {
-    ul {
-      margin-left: 1rem;
-    }
-    li {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 14px;
+
+    input {
+      width: 12px;
       cursor: pointer;
-      span {
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        svg {
-          width: 10px;
-          fill: #333;
-        }
+    }
+
+    span {
+      font-size: 12px;
+      color: rgb(56, 56, 61);
+      line-height: 16px;
+    }
+  }
+
+  .flex {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+
+    span {
+      &:last-of-type {
+        display: flex;
+        align-items: center;
       }
     }
-  }
-  &__sizes {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    margin-top: 10px;
-    &_size {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    label {
-      font-size: 15px;
+
+    svg {
+      width: 7px;
+      height: 7px;
     }
   }
+
   &__colors {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 12px;
     cursor: pointer;
+    padding-bottom: 12px;
+
     button {
-      width: 20px;
-      height: 20px;
+      width: 21px;
+      height: 21px;
       border-radius: 50%;
       box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.2);
       cursor: pointer;
+
       &:hover {
-        outline: 1px solid #000;
-        outline-offset: 3px;
+        outline: 2px solid #ccc;
+        outline-offset: 2px;
+        transition: all 0.2s;
       }
     }
   }
-  &__brand {
-    background: transparent;
-    width: 100px;
-    height: 37px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-    margin-bottom: 10px;
-    font-weight: 600;
-    font-size: 15px;
-    color: #222;
-    &:hover {
-      border: 1px solid #000;
-    }
-    img {
-      height: 29px;
-      object-fit: contain;
-    }
+}
+
+.activeFilter {
+  border: 2px solid $blue-color;
+
+  &:hover {
+    border: 2px solid $blue-color;
   }
 }
-.activeFilter {
-  border: 1px solid #222;
+
+.colorActiveFilter {
+  outline: 2px solid $blue-color;
+  outline-offset: 2px;
 }
-.activeFilterColor {
-  outline: 1px solid #000;
-  outline-offset: 3px;
+
+.showHideBtn {
+  padding: 10px 0 15px;
+
+  button {
+    text-transform: unset;
+    padding: 0px 10px;
+    font-family: "Poppins", sans-serif;
+    font-size: 11px;
+  }
+}
+
+.rating {
+  span {
+    display: flex;
+    align-items: center;
+
+    svg {
+      width: 15px;
+      height: 15px;
+      color: #faaf00;
+    }
+  }
 }

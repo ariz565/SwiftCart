@@ -1,29 +1,26 @@
-import { useDispatch, useSelector } from "react-redux";
-import Sidebar from "./sidebar";
-import styles from "./styles.module.scss";
-import DialogModal from "@/components/dialogModal";
-import { useEffect } from "react";
-import { hideDialog } from "@/store/DialogSlice";
+import React from "react";
+import Sidebar from "./Sidebar";
+import { useSelector } from "react-redux";
 
-// Layout component
-export default function Layout({ children }) {
+import styled from "./styles.module.scss";
+
+const AdminLayout = ({ children }) => {
   const { expandSidebar } = useSelector((state) => ({ ...state }));
   const showSidebar = expandSidebar.expandSidebar;
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(hideDialog());
-  }, []);
 
   return (
-    <div className={styles.layout}>
-      <DialogModal />
+    <div className={styled.layout}>
       <Sidebar />
       <div
-        style={{ marginLeft: `${showSidebar ? "280px" : "80px"}` }}
-        className={styles.layout__main}
+        //Khi Side bar được expanded, main cách lề trai 1 khoảng bằng width của expanded sidebar
+        //Khi Side bar được minimize, main cách lề trai 1 khoảng bằng width của minimized sidebar
+        style={{ marginLeft: showSidebar ? "260px" : "100px" }}
+        className={styled.layout__main}
       >
         {children}
       </div>
     </div>
   );
-}
+};
+
+export default AdminLayout;

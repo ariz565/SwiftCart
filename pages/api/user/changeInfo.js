@@ -1,11 +1,11 @@
 import auth from "@/middleware/auth";
-import User from "@/models/User";
+import { User } from "@/models/User";
 import db from "@/utils/db";
-import { createRouter } from "next-connect";
+import nc from "next-connect";
 
-const router = createRouter().use(auth);
+const handler = nc().use(auth);
 
-router.get(async (req, res) => {
+handler.get(async (req, res) => {
   try {
     await db.connectDb();
     const user = await User.findById(req.user);
@@ -19,7 +19,7 @@ router.get(async (req, res) => {
   }
 });
 
-router.put(async (req, res) => {
+handler.put(async (req, res) => {
   try {
     await db.connectDb();
 
@@ -27,14 +27,14 @@ router.put(async (req, res) => {
 
     await User.findByIdAndUpdate(req.user, { name, image: ava });
 
-    db.disconnectDb();
+    db.disConnectDb();
     res.status(200).json(await User.findById(req.user));
   } catch (error) {
-    await db.disconnectDb();
+    await db.disConnectDb();
     res
       .status(500)
       .json({ message: "Failed in attempting to update user information!" });
   }
 });
 
-export default router.handler();
+export default handler;

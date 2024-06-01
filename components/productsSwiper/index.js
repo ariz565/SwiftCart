@@ -1,59 +1,41 @@
-import styles from "./styles.module.scss";
-import { useRef, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper";
+
 import "swiper/css";
 import "swiper/css/pagination";
-import { Navigation } from "swiper/modules";
 
-//---- ProductsSwiper Component ----//
-export default function ProductsSwiper({ header, products, bg }) {
+import styled from "./styles.module.scss";
+
+const ProductsSwiper = ({ header, products }) => {
   return (
-    <div className={styles.wrapper}>
-      {header && (
-        <div
-          className={styles.header}
-          style={{ background: `${bg ? bg : ""}` }}
-        >
-          {header}
-        </div>
-      )}
+    <div className={styled.wrapper}>
+      {header && <div className={styled.header}>{header}</div>}
       <Swiper
         slidesPerView={1}
-        spaceBetween={30}
+        spaceBetween={10}
         navigation={true}
         modules={[Navigation]}
-        className="products__swiper"
+        rewind={true}
+        className="products_swiper"
         breakpoints={{
-          450: {
-            slidesPerView: 2,
-          },
-          630: {
-            slidesPerView: 3,
-          },
-          920: {
-            slidesPerView: 4,
-          },
-          1232: {
-            slidesPerView: 5,
-          },
-          1520: {
-            slidesPerView: 6,
-          },
+          300: { slidesPerView: 1 },
+          360: { slidesPerView: 2 },
+          600: { slidesPerView: 3 },
+          769: { slidesPerView: 4 },
+          1025: { slidesPerView: 5 },
+          1200: { slidesPerView: 6 },
         }}
       >
         {products.map((product, index) => (
           <SwiperSlide key={index}>
-            <div className={styles.product}>
-              <div className={styles.product__img}>
-                <img src={product.image} alt="" />
+            <div className={styled.product}>
+              <div className={styled.product__img}>
+                <img src={product.image} alt={product.name} />
               </div>
-              <div className={styles.product__infos}>
-                <h1>
-                  {product.name.length > 20
-                    ? `${product.name.slice(0, 20)}...`
-                    : product.name}
-                </h1>
-                {product.price && <span>Rs. {product.price}</span>}
+              <div className={styled.product__infos}>
+                <h3>{product.name}</h3>
+                <span>${product.price}</span>
               </div>
             </div>
           </SwiperSlide>
@@ -61,6 +43,6 @@ export default function ProductsSwiper({ header, products, bg }) {
       </Swiper>
     </div>
   );
-}
+};
 
-// Mapping through the products array and displaying them in the swiper
+export default ProductsSwiper;

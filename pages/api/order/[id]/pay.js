@@ -1,29 +1,37 @@
-import { createRouter } from "next-connect";
-import auth from "../../../../middleware/auth";
-import Order from "../../../../models/Order";
-import db from "../../../../utils/db";
+import { Order } from "@/models/Order";
+import db from "@/utils/db";
 
-const router = createRouter().use(auth);
+async function handler(req, res) {
+  if (req.method === "PUT") {
+    try {
+      await db.connectDb();
 
-router.put(async (req, res) => {
-  console.log("hello from api");
-  await db.connectDb();
-  const order = await Order.findById(req.qurey.id);
-  if (order) {
-    order.isPaid = true;
-    order.paidAt = Date.now();
-    order.paymentResult = {
-      id: req.body.id,
-      status: req.body.status,
-      email_address: req.body.email_address,
-    };
-    const newOrder = await order.save();
-    await db.disconnectDb();
-    res.json({ message: "Order is paid.", order: newOrder });
-  } else {
-    await db.disconnectDb();
-    res.status(404).json({ message: "Order is not found." });
+      console.log(req.body);
+
+      const order_id = req.query.id;
+
+      const order = await Order.findById(order_id);
+
+      if (order) {
+        order.isPaid = true;
+        order.paidAt = Date.now();
+        order.paymentResult = {
+          id: req.body.details.id,
+          status: req.body.details.status,
+          email_address: req.body.details.email_address,
+        };
+      }
+
+      const newOrder = await order.save();
+
+      db.disConnectDb();
+
+      res.json({ message: "Order is paid", order: newOrder });
+    } catch (error) {
+      db.disConnectDb();
+      return res.status(500).json({ message: error.message });
+    }
   }
-});
+}
 
-export default router.handler();
+export default handler;

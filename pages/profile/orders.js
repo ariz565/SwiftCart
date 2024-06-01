@@ -1,17 +1,18 @@
+/* eslint-disable @next/next/no-img-element */
 import { getSession } from "next-auth/react";
 import Head from "next/head";
+import React from "react";
 import Link from "next/link";
 import slugify from "slugify";
 import { useRouter } from "next/router";
 import { FiExternalLink } from "react-icons/fi";
 
-import styles from "../../styles/profile.module.scss";
-import Layout from "@/components/profile/layout";
-import Order from "../../models/Order";
-import { ordersLinks } from "../../data/profile";
+import styled from "@/styles/Profile.module.scss";
+import Layout from "@/components/Profile/Layout";
+import { Order } from "@/models/Order";
+import { ordersLinks } from "@/data/profile";
 
-// ----------------- Define the Order Component -----------------
-export default function Orders({ user, tab, orders }) {
+export default function ProfileOrder({ user, tab, orders }) {
   const router = useRouter();
   return (
     <>
@@ -19,9 +20,9 @@ export default function Orders({ user, tab, orders }) {
         <Head>
           <title>Orders</title>
         </Head>
-        <div className={styles.orders}>
-          <div className={styles.header}>
-            <h1 className={styles.title}>MY ORDERS</h1>
+        <div className={styled.orders}>
+          <div className={styled.header}>
+            <h1 className={styled.title}>MY ORDERS</h1>
           </div>
           <nav>
             <ul>
@@ -31,7 +32,7 @@ export default function Orders({ user, tab, orders }) {
                   className={
                     slugify(link.name, { lower: true }) ==
                     router.query.q.split("__")[0]
-                      ? styles.active
+                      ? styled.active
                       : ""
                   }
                 >
@@ -63,7 +64,7 @@ export default function Orders({ user, tab, orders }) {
               {orders.map((order) => (
                 <tr key={order._id}>
                   <td>{order._id}</td>
-                  <td className={styles.orders__images}>
+                  <td className={styled.orders__images}>
                     {order.products.map((p) => (
                       <img key={p._id} alt="" src={p.image} />
                     ))}
@@ -76,13 +77,13 @@ export default function Orders({ user, tab, orders }) {
                       : "Cash on delivery"}
                   </td>
                   <td>${order.total}</td>
-                  <td className={styles.orders__paid}>
+                  <td className={styled.orders__paid}>
                     {order.isPaid ? (
-                      <div className={styles.ver}>
+                      <div className={styled.ver}>
                         <img src="/images/verified.png" alt="" /> Paid
                       </div>
                     ) : (
-                      <div className={styles.unver}>
+                      <div className={styled.unver}>
                         <img src="/images/unverified.png" alt="" /> Unpaid
                       </div>
                     )}
@@ -130,7 +131,7 @@ export async function getServerSideProps(ctx) {
       break;
   }
 
-  
+  // Fetch toàn bộ order của user
   if (!filter) {
     orders = await Order.find({ user: session?.user.id })
       .sort({
@@ -138,7 +139,7 @@ export async function getServerSideProps(ctx) {
       })
       .lean();
 
-
+    //Filter ra những order đã thanh toán
   } else if (filter == "paid") {
     orders = await Order.find({ user: session?.user.id, isPaid: true })
       .sort({
@@ -146,7 +147,7 @@ export async function getServerSideProps(ctx) {
       })
       .lean();
 
-   
+    //Filter ra những order chưa thanh toán
   } else if (filter == "unpaid") {
     orders = await Order.find({ user: session?.user.id, isPaid: false })
       .sort({
@@ -154,7 +155,7 @@ export async function getServerSideProps(ctx) {
       })
       .lean();
 
-  
+    //Filter ra order dựa trên status
   } else {
     orders = await Order.find({ user: session?.user.id, status: filter })
       .sort({

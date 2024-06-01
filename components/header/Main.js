@@ -1,90 +1,144 @@
-import styles from "./styles.module.scss";
 import Link from "next/link";
 import { RiSearch2Line } from "react-icons/ri";
 import { FaOpencart } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Button } from "@mui/material";
+import { toast } from "react-toastify";
+import NextImage from "../NextImage";
+
+import styled from "./styles.module.scss";
+import "react-toastify/dist/ReactToastify.css";
 import HeaderCartItem from "./HeaderCartItem";
 import {
   calculateSubPrice,
   calculateTotal,
   calculateTotalShipping,
-} from "@/utils/productUtils";
+} from "@/utils/productUltils";
+import { Button } from "@mui/material";
+import SearchResults from "./SearchResults/";
+import axios from "axios";
+import { BiLoader } from "react-icons/bi";
 
-export default function Main({ searchHandler }) {
+const Main = ({ searchHandler2 }) => {
+  const { cart } = useSelector((state) => ({ ...state }));
   const router = useRouter();
   const [query, setQuery] = useState(router.query.search || "");
-  const { cart } = useSelector((state) => ({ ...state }));
-  const handleSearch = (e) => {
+  const [products, setProducts] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const searchChangeHandler = (e) => {
+    setQuery(e.target.value);
+  };
+
+  useEffect(() => {
+    const timerId = setTimeout(async () => {
+      if (query.length > 0) {
+        setLoading(true);
+        const { data } = await axios(`/api/search?query=${query}`);
+        setProducts(data);
+        setLoading(false);
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [query]);
+
+  const searchHandler = (e) => {
     e.preventDefault();
-    if (router.pathname !== "/browse") {
-      if (query.length > 1) {
+
+    if (router.pathname == "/browse") {
+      //Value của input tại Browse page cho phép bằng rỗng
+      searchHandler2(query);
+    } else {
+      //Đối với các trang ngoài /Browse
+      //Sau khi submit search form, chuyển hướng người dùng về Browse page
+      //Value của input phải khác rỗng, nếu bằng rỗng thi return
+      if (query && query.trim().length > 0) {
         router.push(`/browse?search=${query}`);
       } else {
-        searchHandler(query);
+        return toast.error("Invalid search query!");
       }
     }
   };
+
   return (
-    <div className={styles.main}>
-      <div className={styles.main__container}>
-        <Link href="/" className={styles.logo}>
-          <img src="../../../logo2.png" alt="" />
+    <div className={styled.main}>
+      <div className={styled.main__container}>
+        {/* logo */}
+        <Link href="/">
+          <div className={styled.logo}>
+            <NextImage src="/logo.png" alt="Logo Shoppay" />
+          </div>
         </Link>
-        <form onSubmit={(e) => handleSearch(e)} className={styles.search}>
+
+        {/* Search */}
+        <form onSubmit={searchHandler} className={styled.search}>
           <input
             type="text"
             placeholder="Search..."
+            onChange={searchChangeHandler}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onBlur={() => setShowSearchResults(false)}
+            onFocus={() => setShowSearchResults(true)}
           />
-          <button type="submit" className={styles.search__icon}>
-            <RiSearch2Line />
+          <SearchResults
+            products={products}
+            showSearchResults={showSearchResults}
+            query={query}
+            loading={loading}
+          />
+          <button type="submit" className={styled.search__icon}>
+            {loading && (
+              <span>
+                <BiLoader />
+              </span>
+            )}
+            {!loading && <RiSearch2Line />}
           </button>
         </form>
 
-        {/* In Cart */}
+        {/* Cart */}
         <Link href="/cart">
-          <div className={styles.cart}>
+          <div className={styled.cart}>
             <FaOpencart />
-            <span className={styles.cart__number}>
-              {cart?.cartItems?.length ?? 0}
-            </span>
-            <div className={styles.cart__dropdown}>
-              {cart?.cartItems?.length > 0 ? (
+            <span className={styled.cart__number}>{cart.cartItems.length}</span>
+            <div className={styled.cart__dropdown}>
+              {cart.cartItems.length > 0 ? (
                 <div>
-                  <div className={styles.cart__items}>
+                  <div className={styled.cart__items}>
                     {cart.cartItems.map((item) => (
                       <HeaderCartItem key={item._uniqueId} item={item} />
                     ))}
                   </div>
-                  <div className={styles.cart__priceComponent}>
+                  <div className={styled.cart__priceComponent}>
                     <p>
                       <span>Subtotal :</span>
-                      <span>₹{calculateSubPrice(cart.cartItems)}</span>
+                      <span>${calculateSubPrice(cart.cartItems)}</span>
                     </p>
                     <p>
                       <span>Shipping :</span>
-                      <span>₹{calculateTotalShipping(cart.cartItems)}</span>
+                      <span>${calculateTotalShipping(cart.cartItems)}</span>
                     </p>
                   </div>
-                  <div className={styles.cart__total}>
+                  <div className={styled.cart__total}>
                     <span>Total :</span>
-                    <span>{calculateTotal(cart.cartItems)}₹</span>
+                    <span>{calculateTotal(cart.cartItems)}$</span>
                   </div>
-                  <div className={styles.cart__seeAll}>
+                  <div className={styled.cart__seeAll}>
                     See all items in cart
                   </div>
                 </div>
               ) : (
-                <div className={styles.cart__empty}>
-                  <div className={styles.cart__empty_img}>
-                    <img src="/images/empty.png" alt="Empty Cart" />
+                <div className={styled.cart__empty}>
+                  <div className={styled.cart__empty_img}>
+                    <NextImage src="/images/empty.png" />
                   </div>
                   <p>Cart is empty!</p>
-                  <div className={styles.cart__empty_btn}>
+                  <div className={styled.cart__empty_btn}>
                     <Button
                       variant="contained"
                       onClick={(e) => {
@@ -104,4 +158,6 @@ export default function Main({ searchHandler }) {
       </div>
     </div>
   );
-}
+};
+
+export default Main;

@@ -1,147 +1,160 @@
-import Product from "@/models/Product";
-import User from "../../models/User";
-import Category from "@/models/Category";
-import SubCategory from "@/models/SubCategory";
-import styles from "../../styles/product.module.scss";
-import db from "@/utils/db";
+import { useEffect, useState } from "react";
 import Head from "next/head";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
-import MainSwiper from "@/components/productPage/mainSwiper";
-import { useState } from "react";
-import Infos from "@/components/productPage/infos";
-import Reviews from "@/components/productPage/reviews";
-import Link from "next/link";
-import BreadCrumb from "@/components/BreadCrumb";
 
-export default function Products({ product }) {
+import { Category } from "@/models/Category";
+import { Product } from "@/models/Product";
+import { SubCategory } from "@/models/SubCategory";
+import db from "@/utils/db";
+import {
+  calculatePercentage,
+  findAllSizes,
+  priceAfterDiscount,
+  sortPricesArr,
+} from "@/utils/productUltils";
+
+import styled from "../../styles/Product.module.scss";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import BreadCrumb from "@/components/BreadCrumb";
+import MainSwiper from "@/components/ProductPageContent/MainSwiper";
+import Infos from "@/components/ProductPageContent/Infos";
+import Reviews from "@/components/ProductPageContent/Reviews";
+import Payment from "@/components/ProductPageContent/Payment";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const ProductPage = ({ product }) => {
   const [activeImg, setActiveImg] = useState("");
-  const country = {
-    name: "India",
-    flag: "https://cdn.ipregistry.co/flags/emojitwo/in.svg",
-  };
+  const [images, setImages] = useState(product.images);
+  const [ratings, setRatings] = useState([]);
+  const [loadRatings, setLoadRatings] = useState(false);
+
+  useEffect(() => {
+    const fetchRatings = async () => {
+      setLoadRatings(true);
+      const { data } = await axios.get(`/api/product/${product._id}/review`);
+      setRatings([
+        { percentage: calculatePercentage(data, 5) },
+        { percentage: calculatePercentage(data, 4) },
+        { percentage: calculatePercentage(data, 3) },
+        { percentage: calculatePercentage(data, 2) },
+        { percentage: calculatePercentage(data, 1) },
+      ]);
+      setLoadRatings(false);
+    };
+
+    try {
+      fetchRatings();
+    } catch (error) {
+      setLoadRatings(false);
+      toast.error(error.response.data.message);
+    }
+  }, []);
+
+  useEffect(() => {
+    let recentIds = JSON.parse(localStorage.getItem("recent-ids")) || [];
+    recentIds.unshift(product._id.toString());
+    const uniqueRecentIds = [...new Set(recentIds)];
+    localStorage.setItem("recent-ids", JSON.stringify(uniqueRecentIds));
+  }, []);
 
   return (
     <div>
       <Head>
         <title>{product.name}</title>
+        <meta name="description" content={product.description} />
       </Head>
-      <Header country={country} />
-      <div className={styles.product}>
-        <div className={styles.product__container}>
-          <div className={styles.path}>
-            <BreadCrumb
-              category={product.category?.name}
-              categoryLink={`/category/${product.category?.slug}`}
-              subCategories={product.subCategories}
+      <Header />
+      <div className={styled.product}>
+        <div className={styled.container}>
+          {/* BreadCrumb */}
+          <BreadCrumb
+            category={product.category.name}
+            categoryLink={""}
+            subCategories={product.subCategories}
+          />
+
+          <main className={styled.product__main}>
+            <div className={styled.product__main_column}>
+              {/* Product Content: Main image */}
+              <MainSwiper images={images} activeImg={activeImg} />
+              <Payment />
+            </div>
+
+            {/* Product Content: Infos */}
+            <Infos
+              product={product}
+              setActiveImg={setActiveImg}
+              setImages={setImages}
             />
-          </div>
-          <div className={styles.product__main}>
-            <MainSwiper images={product.images} activeImg={activeImg} />
-            <Infos product={product} setActiveImg={setActiveImg} />
-          </div>
-          <Reviews product={product} />
+          </main>
+          <Reviews
+            product={product}
+            ratings={ratings}
+            loadRatings={loadRatings}
+          />
         </div>
       </div>
-      {/* <Footer country={country.name} /> */}
+      <Footer />
     </div>
   );
-}
+};
+
+export default ProductPage;
 
 export async function getServerSideProps(context) {
   const { query } = context;
   const slug = query.slug;
   const style = query.style;
   const size = query.size || 0;
-  db.connectDb();
-  // ...........
+
+  await db.connectDb();
   let product = await Product.findOne({ slug })
+    //path là property category cần điền thông tin
     .populate({ path: "category", model: Category })
     .populate({ path: "subCategories", model: SubCategory })
-    .populate({ path: "reviews.reviewBy", model: User })
     .lean();
+
   let subProduct = product.subProducts[style];
-  let prices = subProduct.sizes
-    .map((s) => {
-      return s.price;
-    })
-    .sort((a, b) => {
-      return a - b;
-    });
+
+  let prices = sortPricesArr(subProduct.sizes);
 
   let newProduct = {
     ...product,
     style,
-    images: subProduct.images,
-    sizes: subProduct.sizes,
-    discount: subProduct.discount,
-    sku: subProduct.sku,
+    images: subProduct?.images,
+    sizes: subProduct?.sizes,
+    discount: subProduct?.discount,
+    sku: subProduct?.sku,
     colors: product.subProducts.map((p) => {
-      return p.color;
+      if (p.color.image && p.color.color) {
+        return { colorImg: p.color.image, color: p.color.color };
+      } else {
+        return { color: p.color.color };
+      }
     }),
-    priceRange: subProduct.discount
-      ? `From ₹${(prices[0] - prices[0] / subProduct.discount).toFixed(
-          2
-        )} to ₹${(
-          prices[prices.length - 1] -
-          prices[prices.length - 1] / subProduct.discount
-        ).toFixed(2)}`
-      : `From ₹${prices[0]} to ₹${prices[prices.length - 1]}`,
+
+    priceRange: subProduct?.discount
+      ? `$${priceAfterDiscount(
+          prices[0],
+          subProduct.discount
+        )} ~ $${priceAfterDiscount(
+          prices?.[prices?.length - 1],
+          subProduct.discount
+        )}`
+      : `$${prices?.[0]} ~ $${prices?.[prices?.length - 1]}`,
+
     price:
-      subProduct.discount > 0
-        ? (
-            subProduct.sizes[size].price -
-            subProduct.sizes[size].price / subProduct.discount
-          ).toFixed(2)
+      subProduct?.discount > 0
+        ? priceAfterDiscount(subProduct.sizes[size]?.price, subProduct.discount)
         : subProduct.sizes[size].price,
     priceBefore: subProduct.sizes[size].price,
     quantity: subProduct.sizes[size].qty,
-    ratings: [
-      {
-        percentage: calculatePercentage("5"),
-      },
-      {
-        percentage: calculatePercentage("4"),
-      },
-      {
-        percentage: calculatePercentage("3"),
-      },
-      {
-        percentage: calculatePercentage("2"),
-      },
-      {
-        percentage: calculatePercentage("1"),
-      },
-    ],
-    reviews: product.reviews.reverse(),
-    allSizes: product.subProducts
-      .map((p) => {
-        return p.sizes;
-      })
-      .flat()
-      .sort((a, b) => {
-        return a.size - b.size;
-      })
-      .filter(
-        (element, index, array) =>
-          array.findIndex((el2) => el2.size === element.size) === index
-      ),
+    allSizes: findAllSizes(product.subProducts),
   };
-  // ...........
-  function calculatePercentage(num) {
-    return (
-      (product.reviews.reduce((a, review) => {
-        return (
-          a +
-          (review.rating == Number(num) || review.rating == Number(num) + 0.5)
-        );
-      }, 0) *
-        100) /
-      product.reviews.length
-    ).toFixed(1);
-  }
 
-  db.disconnectDb();
+  await db.disconnectDb();
+
   return {
     props: {
       product: JSON.parse(JSON.stringify(newProduct)),

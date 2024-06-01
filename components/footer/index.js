@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import styled from "./styles.module.scss";
 import Policy from "./Policy";
 import Links from "./Links";
-import Newsletter from "./NewsLetter";
+import Newsletter from "./Newsletter";
 import Payment from "./Payment";
 import Socials from "./Socials";
 import Copyright from "./Copyright";

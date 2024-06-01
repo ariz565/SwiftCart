@@ -1,12 +1,15 @@
-import Layout from "../../../components/admin/layout";
-import db from "../../../utils/db";
-import User from "../../../models/User";
-import EnhancedTable from "../../../components/admin/users/table";
+import React from "react";
+import Layout from "@/components/Admin/Layout";
+import EnhancedTable from "@/components/Admin/User/Table";
+import db from "@/utils/db";
+import { User } from "@/models/User";
 
-export default function users({ users }) {
-  console.log(users);
+import styled from "@/styles/Users.module.scss";
+
+export default function UserPage({ users }) {
   return (
     <Layout>
+      <div className={styled.header}>User list</div>
       <EnhancedTable rows={users} />
     </Layout>
   );
@@ -14,7 +17,10 @@ export default function users({ users }) {
 
 export async function getServerSideProps(ctx) {
   await db.connectDb();
-  const users = await User.find({}).sort({ createdAt: -1 }).lean();
+  const users = await User.find().sort({ createdAt: -1 }).lean();
+
+  await db.disConnectDb();
+
   return {
     props: {
       users: JSON.parse(JSON.stringify(users)),

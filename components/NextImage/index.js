@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import Image from "next/image";
 import React from "react";
 import { shimmer, toBase64 } from "../ShimmerEffect";

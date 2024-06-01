@@ -1,9 +1,5 @@
-import { createRouter } from "next-connect";
+import { User } from "@/models/User";
 import db from "@/utils/db";
-import Product from "@/models/Product";
-import User from "@/models/User";
-import Cart from "@/models/Cart";
-import auth from "@/middleware/auth";
 
 async function handler(req, res) {
   if (req.method === "POST") {

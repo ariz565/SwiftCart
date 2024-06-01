@@ -42,27 +42,27 @@ export const sidebarData = [
       {
         name: "Processing Orders",
         link: "/profile/orders",
-        filter: "Processing",
+        filter: "processing",
       },
       {
         name: "Unprocessed Orders",
         link: "/profile/orders",
-        filter: "Not Processed",
+        filter: "not_processed",
       },
       {
         name: "Dispatched Orders",
         link: "/profile/orders",
-        filter: "Dispatched",
+        filter: "dispatched",
       },
       {
         name: "Delievered Orders",
         link: "/profile/orders",
-        filter: "Completed",
+        filter: "completed",
       },
       {
         name: "Cancelled Orders",
         link: "/profile/orders",
-        filter: "Cancelled",
+        filter: "cancelled",
       },
     ],
   },
@@ -70,7 +70,7 @@ export const sidebarData = [
     heading: "My Lists",
     links: [
       {
-        name: "Whishlist",
+        name: "Wishlist",
         link: "/profile/wishlist",
       },
       {
@@ -143,22 +143,22 @@ export const ordersLinks = [
   },
   {
     name: "Processing Orders",
-    filter: "Processing",
+    filter: "processing",
   },
   {
     name: "Unprocessed Orders",
-    filter: "Not Processed",
+    filter: "not_processed",
   },
   {
     name: "Dispatched Orders",
-    filter: "Dispatched",
+    filter: "dispatched",
   },
   {
-    name: "Delievered Orders",
-    filter: "Delievered",
+    name: "Delivered Orders",
+    filter: "delivered",
   },
   {
     name: "Cancelled Orders",
-    filter: "Cancelled",
+    filter: "cancelled",
   },
 ];

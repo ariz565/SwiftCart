@@ -1,132 +1,221 @@
 .login {
+  max-width: 1200px;
+  margin: 0 auto;
   position: relative;
   min-height: 100vh;
   overflow: hidden;
   display: flex;
-  justify-content: center;
-  @media (max-width: 790px) {
+  justify-content: space-between;
+
+  @media screen and (max-width: 769px) {
     flex-direction: column;
     align-items: center;
   }
 
   &__container {
-    padding: 3rem;
+    width: 47%;
+    padding: 3rem 1rem;
+
     &:last-of-type {
       margin-top: 3rem;
-      @media (max-width: 790px) {
-        margin-top: 0;
+
+      @media screen and (max-width: 769px) {
+        margin-top: -2rem;
       }
     }
+
+    @media screen and (max-width: 769px) {
+      width: 100%;
+    }
   }
+
   &__header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    max-width: 300px;
+    max-width: 410px;
+
     .back__svg {
-      width: 50px;
-      height: 50px;
-      border: 1px solid #66666657;
-      border-radius: 50%;
+      height: 45px;
       display: grid;
       place-items: center;
       cursor: pointer;
 
+      svg {
+        width: 20px;
+        height: 20px;
+        fill: #666;
+        transition: $transition-1;
+      }
+
       &:hover {
         border-color: $blue-color;
+        transition: $transition-1;
+
         svg {
           fill: $blue-color;
         }
       }
-      svg {
-        width: 20px;
-        height: 20px;
-        fill: #222;
-      }
     }
+
     span {
-      font-weight: 600;
-      font-size: 14px;
-      //padding-left: 10px;
+      font-weight: 400;
+      font-size: 16px;
+      padding-left: 10px;
+
       a {
         color: $blue-color;
         cursor: pointer;
-        border-bottom: 1px solid $blue-color;
-        padding-bottom: 5px;
+        text-decoration: underline;
+        font-weight: 700;
       }
     }
   }
+
   &__form {
     margin-top: 1rem;
+
     h1 {
-      font-size: 50px;
-      margin: 0;
+      margin-top: 20px;
     }
+
+    h1,
+    h2 {
+      font-size: 35px;
+      height: 60px;
+    }
+
     p {
       color: #96979b;
     }
+
     form {
       margin-top: 2rem;
     }
+
     .forgot {
       color: #666;
-      padding-top: 1rem;
       font-size: 14px;
-      width: -moz-fit-content;
+      margin-top: -10px;
       width: fit-content;
-      height: 40px;
+
       &:hover {
         color: $blue-color;
-        border-bottom: 1px solid $blue-color;
+        text-decoration: underline;
+        transition: $transition-1;
+      }
+    }
+
+    .signInBtnWrap,
+    .signUpBtnWrap {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 2rem;
+      margin-top: 1.2rem;
+
+      button {
+        width: 100%;
+        font-weight: 500;
       }
     }
   }
+
   &__socials {
     margin-top: 1rem;
+
     .or {
       position: relative;
       color: #666;
-      padding-left: 8rem;
-      &:before,
-      &:after {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      &::before,
+      &::after {
         content: "";
-        width: 130px;
+        width: 33%;
         height: 1px;
-        background: #66666648;
+        background-color: #66666648;
         position: absolute;
         top: 50%;
       }
-      &:before {
-        left: 250px;
+
+      &::before {
+        left: 0;
       }
-      &:after {
-        left: -10px;
+
+      &::after {
+        right: 0;
       }
     }
+
     &_wrap {
       margin-top: 1rem;
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: 1rem;
-      padding-left: 3rem;
+
       img {
-        width: 36px;
+        width: 20px;
         cursor: pointer;
       }
     }
   }
 }
+
 .social__btn {
   border: none;
   outline: none;
   width: 290px;
-  height: 50px;
-  border-radius: 50px;
+  height: 52px;
+  border-radius: 3px;
   display: flex;
   align-items: center;
-  padding-left: 5%;
-  gap: 10px;
+  gap: 7px;
   background: transparent;
-  border: 1px solid #66666683;
+  border: 1px solid #66666648;
   cursor: pointer;
+  padding: 0 1rem;
+
+  p {
+    color: #666;
+    font-size: 15px;
+  }
+
+  &:hover {
+    border-color: $blue-color;
+
+    p {
+      color: $hover-color;
+    }
+
+    transition: $transition-1;
+  }
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: -10px;
+  color: $error-color;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: -10px;
+  color: $success-color;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
 }

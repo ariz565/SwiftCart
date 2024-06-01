@@ -1,71 +1,88 @@
-import styles from "./styles.module.scss";
-import { MdSecurity } from "react-icons/md";
+/* eslint-disable @next/next/no-img-element */
+import { AiFillSafetyCertificate, AiOutlineMenuUnfold } from "react-icons/ai";
 import { HiHeart } from "react-icons/hi";
-import { RiAccountPinCircleLine, RiArrowDropDownFill } from "react-icons/ri";
-import Link from "next/link";
-import { useState } from "react";
-import UserMenu from "./UserMenu";
-import { useSession } from "next-auth/react";
 import { FaHandsHelping } from "react-icons/fa";
-import { RiCustomerServiceFill, RiAccountPinCircleFill } from "react-icons/ri";
+import {
+  RiCustomerServiceFill,
+  RiAccountPinCircleFill,
+  RiArrowDropDownFill,
+} from "react-icons/ri";
+import { useSession } from "next-auth/react";
+import { useMediaQuery } from "react-responsive";
+import Link from "next/link";
 
-export default function Top({ country }) {
+import styled from "./styles.module.scss";
+import UserMenu from "./UserMenu";
+import { useDispatch } from "react-redux";
+import { toggleMobileCate } from "@/store/mobileCateSlice";
+
+const Top = ({ country }) => {
   const { data: session } = useSession();
-  const [visible, setVisible] = useState(false);
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 816px)" });
+  const isExtraSmallScreen = useMediaQuery({ query: "(max-width: 386px)" });
+  const dispatch = useDispatch();
 
   return (
-    <div className={styles.top}>
-      <div className={styles.top__container}>
-        <div></div>
-        <ul className={styles.top__list}>
-          <li className={styles.li}>
-            <img src={country?.flag} alt="Flag" />
-            <span>{country?.name} /IN</span>
-          </li>
-          <li className={styles.li}>
-            <MdSecurity />
-            <span>Buyer Protection</span>
-          </li>
-          <li className={styles.li}>
-            <RiCustomerServiceFill />
-            <span>Customer Service</span>
-          </li>
-          <li className={styles.li}>
-            <FaHandsHelping />
-            <span>Help</span>
-          </li>
-          <li className={styles.li}>
-            <HiHeart />
-            <Link href="/profile/wishlist">
-              <span>Wishlist</span>
-            </Link>
-          </li>
-          <li
-            className={styles.li}
-            onMouseOver={() => setVisible(true)}
-            onMouseLeave={() => setVisible(false)}
+    <div className={styled.top}>
+      <div className={styled.top__container}>
+        <div>
+          <div
+            className={styled.menuIcon}
+            onClick={() => dispatch(toggleMobileCate())}
           >
+            <AiOutlineMenuUnfold size={24} />
+          </div>
+        </div>
+        <ul className={styled.top__list}>
+          {!isExtraSmallScreen && (
+            <li className={styled.li}>
+              <img src={country?.flag} alt={country?.name} />
+              <span>{country?.name} / IND</span>
+            </li>
+          )}
+          {!isSmallScreen && (
+            <>
+              <li className={styled.li}>
+                <AiFillSafetyCertificate />
+                <span>Buyer Protection</span>
+              </li>
+              <li className={styled.li}>
+                <RiCustomerServiceFill />
+                <span>Customer Service</span>
+              </li>
+              <li className={styled.li}>
+                <FaHandsHelping />
+                <span>Help</span>
+              </li>
+              <li className={styled.li}>
+                <HiHeart />
+                <Link href="/profile/wishlist?tab=2&q=wishlist">
+                  <span>Wishlist</span>
+                </Link>
+              </li>
+            </>
+          )}
+
+          <li className={styled.li}>
             {session ? (
-              <li>
-                <div className={styles.flex}>
-                  <img src={session.user.image} alt="User" />
-                  <span>{session.user.name}</span>
-                  <RiArrowDropDownFill />
-                </div>
-              </li>
+              <div className={styled.flex}>
+                <img src={session.user.image} alt="Avatar" />
+                <span>{session.user.name}</span>
+                <RiArrowDropDownFill />
+              </div>
             ) : (
-              <li>
-                <div className={styles.flex}>
-                  <RiAccountPinCircleLine />
-                  <span>Account</span>
-                  <RiArrowDropDownFill />
-                </div>
-              </li>
+              <div className={styled.flex}>
+                <RiAccountPinCircleFill />
+                <span>Account</span>
+                <RiArrowDropDownFill />
+              </div>
             )}
-            {visible && <UserMenu session={session} />}
+            <UserMenu session={session} />
           </li>
         </ul>
       </div>
     </div>
   );
-}
+};
+
+export default Top;

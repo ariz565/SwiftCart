@@ -1,11 +1,16 @@
-import Layout from "../../../components/admin/layout";
-import CollapsibleTable from "../../../components/admin/orders/table";
-import db from "../../../utils/db";
-import Order from "../../../models/Order";
-import User from "../../../models/User";
-export default function orders({ orders }) {
+import React from "react";
+import Layout from "@/components/Admin/Layout";
+
+import styled from "@/styles/AdminOrder.module.scss";
+import CollapsibleTable from "@/components/Admin/Orders/Table";
+import db from "@/utils/db";
+import { Order } from "@/models/Order";
+import { User } from "@/models/User";
+
+export default function OrdersPage({ orders }) {
   return (
     <Layout>
+      <div className={styled.header}>Orders</div>
       <CollapsibleTable rows={orders} />
     </Layout>
   );
@@ -13,10 +18,14 @@ export default function orders({ orders }) {
 
 export async function getServerSideProps(ctx) {
   await db.connectDb();
-  const orders = await Order.find({})
+
+  const orders = await Order.find()
     .populate({ path: "user", model: User, select: "name email image" })
-    .sort({ createdAt: -1 })
+    .sort({ createdAdt: -1 })
     .lean();
+
+  await db.disconnectDb();
+
   return {
     props: {
       orders: JSON.parse(JSON.stringify(orders)),

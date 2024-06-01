@@ -1,35 +1,58 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
-import { FaMinus } from "react-icons/fa";
-import styles from "../styles.module.scss";
+import styled from "../styles.module.scss";
+
 import { useRouter } from "next/router";
+import { replaceQuery } from "@/utils/filter";
+import CheckboxItem from "../CheckboxItem";
+import ShowAllBtn from "../ShowAllBtn";
+import useSeeMore from "@/hook/useSeeMore";
+import PlusMinusBtn from "../PlusMinusBtn";
 
-export default function BrandsFilter({ brands, brandHandler, replaceQuery }) {
-  const router = useRouter();
+export default function BrandsFilter({ brands, brandHandler, checkChecked }) {
   const [show, setShow] = useState(true);
-  return (
-    <div className={styles.filter}>
-      <h3>
-        Brands <span>{show ? <FaMinus /> : <BsPlusLg />}</span>
-      </h3>
-      {show && (
-        <div className={styles.filter__sizes}>
-          {brands.map((brand, i) => {
-            const check = replaceQuery("brand", brand);
+  const router = useRouter();
+  const { itemsQty, showAllHandler, hideBtn } = useSeeMore(brands);
 
-            return (
-              <button
-                key={i}
-                className={`${styles.filter__brand} ${
-                  check.active ? styles.activeFilter : ""
-                }`}
-                onClick={() => brandHandler(check.result)}
-              >
-                <img src={`../../../images/brands/${brand}.png`} alt="" />
-              </button>
-            );
-          })}
-        </div>
+  const existedBrand = router.query.brand || "";
+
+  return (
+    <div className={styled.filter}>
+      <h3>
+        Brands{" "}
+        <PlusMinusBtn show={show} onClick={() => setShow((prev) => !prev)} />
+      </h3>
+
+      {show && (
+        <>
+          {brands.length > 0 ? (
+            <div>
+              {brands.slice(0, itemsQty).map((brand, i) => {
+                const check = checkChecked("brand", brand);
+                return (
+                  <CheckboxItem
+                    key={i}
+                    onClick={() => {
+                      replaceQuery(existedBrand, check, brand, brandHandler);
+                    }}
+                    id={brand}
+                    check={check}
+                    content={brand}
+                    name="brand"
+                    type="checkbox"
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <p style={{ padding: "10px 0" }}>Found no brands</p>
+          )}
+          {brands.length > 5 && (
+            <div className={`${styled.showHideBtn}`}>
+              <ShowAllBtn hideBtn={hideBtn} onClick={showAllHandler} />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -4,10 +4,16 @@ import thunk from "redux-thunk";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import cart from "./cartSlice";
-import expandSidebar from "./ExpandSlice";
+import expandSidebar from "./expandSlice";
 import dialog from "./DialogSlice";
+import showMobileCate from "./mobileCateSlice";
 
-const reducers = combineReducers({ cart, expandSidebar, dialog });
+const reducers = combineReducers({
+  cart,
+  expandSidebar,
+  dialog,
+  showMobileCate,
+});
 
 const config = {
   key: "root",

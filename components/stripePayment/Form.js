@@ -1,44 +1,55 @@
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import React, { useState } from "react";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import { Button } from "@mui/material";
+import Swal from "sweetalert2";
+
+import styled from "./styles.module.scss";
 import axios from "axios";
-import { useState } from "react";
-import styles from "./styles.module.scss";
+
 const CARD_OPTIONS = {
   iconStyle: "solid",
+
   style: {
     base: {
-      //iconColor: "#000",
-      //color: "#000",
-      //fontSize: "16px",
-      fontSmoothing: "antialiased",
-      //":-webkit-autofill": { color: "#000" },
-      //"::placeholder": { color: "#000" },
-    },
-    invalid: {
-      iconColor: "#fd010169",
-      color: "#fd010169",
+      fontSize: "16px",
     },
   },
 };
-export default function Form({ total, order_id }) {
+
+const Form = ({ order_id, total }) => {
   const [error, setError] = useState("");
   const stripe = useStripe();
   const elements = useElements();
-  const handleSubmit = async (e) => {
+
+  const submitHandler = async (e) => {
     e.preventDefault();
+
+    const cardElement = elements.getElement(CardElement);
+
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
-      card: elements.getElement(CardElement),
+      card: cardElement,
     });
+
     if (!error) {
       try {
         const { id } = paymentMethod;
+
         const res = await axios.post(`/api/order/${order_id}/payWithStripe`, {
           amount: total,
           id,
         });
-        // console.log(res);
         if (res.data.success) {
-          window.location.reload(false);
+          Swal.fire({
+            icon: "success",
+            title: "Successfully!",
+            text: "We'll deliver the package to you as soon as possible.",
+            confirmButtonText: "Ok",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload(false);
+            }
+          });
         }
       } catch (error) {
         setError(error);
@@ -47,13 +58,18 @@ export default function Form({ total, order_id }) {
       setError(error.message);
     }
   };
+
   return (
-    <div className={styles.stripe}>
-      <form onSubmit={handleSubmit}>
+    <>
+      <form onSubmit={submitHandler} className={styled.stripe}>
         <CardElement options={CARD_OPTIONS} />
-        <button type="submit">PAY</button>
-        {error && <span className={styles}>{error}</span>}
+        <Button variant="contained" type="submit" className={styled.submitBtn}>
+          PAY NOW
+        </Button>
+        {error && <span className={styled.error}>{error}</span>}
       </form>
-    </div>
+    </>
   );
-}
+};
+
+export default Form;

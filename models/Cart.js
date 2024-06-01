@@ -19,13 +19,6 @@ const cartSchema = new mongoose.Schema(
         size: {
           type: String,
         },
-        /*
-        style: {
-          style: String,
-          color: String,
-          image: String,
-        },
-        */
         qty: {
           type: Number,
         },
@@ -34,6 +27,7 @@ const cartSchema = new mongoose.Schema(
           image: String,
         },
         price: Number,
+        shipping: Number,
       },
     ],
     cartTotal: Number,

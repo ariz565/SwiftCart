@@ -1,26 +1,21 @@
 .product {
   min-height: 100vh;
-  &__container {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 1rem;
-  }
-  .path {
-    font-size: 14px;
-    color: #666;
-  }
+  padding: 10px 0;
+
   &__main {
     position: relative;
-    display: grid;
     margin-top: 1rem;
-    gap: 1rem;
-    @media (min-width: 800px) {
-      grid-template-columns: 1fr 350px;
-      gap: 2rem;
+    display: flex;
+    gap: 2rem;
+    padding-top: 1rem;
+
+    @media screen and (max-width: 1036px) {
+      flex-direction: column;
     }
-    @media (min-width: 1160px) {
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
+
+    &_column {
+      display: flex;
+      flex-direction: column;
     }
   }
 }

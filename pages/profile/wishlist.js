@@ -6,14 +6,14 @@ import { getSession } from "next-auth/react";
 import { Button } from "@mui/material";
 import { FaTrash } from "react-icons/fa";
 
-import styles from "@/styles/profile.module.scss";
+import styled from "@/styles/Profile.module.scss";
 import { User } from "@/models/User";
-import Layout from "@/components/profile/layout";
+import Layout from "@/components/Profile/Layout";
 import { addToCartHandler, priceAfterDiscount } from "@/utils/productUltils";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Popup from "@/components/Popup";
-import DotLoaderSpinner from "@/components/loaders/dotLoader";
+import StyledDotLoader from "@/components/Loaders/DotLoader";
 import Link from "next/link";
 
 export default function Wishlist({ user, tab }) {
@@ -41,18 +41,18 @@ export default function Wishlist({ user, tab }) {
 
   return (
     <Layout session={{ name: user.name, image: user.image }} tab={tab}>
-      {loading && <DotLoaderSpinner />}
+      {loading && <StyledDotLoader />}
       <Head>
         <title>Wishlist</title>
       </Head>
-      <div className={styles.wishlist}>
+      <div className={styled.wishlist}>
         <>
           {products.length > 0 && (
-            <div className={styles.header}>
-              <h1 className={styles.title}>MY WISHLIST</h1>
+            <div className={styled.header}>
+              <h1 className={styled.title}>MY WISHLIST</h1>
             </div>
           )}
-          <div className={styles.wishlist__list}>
+          <div className={styled.wishlist__list}>
             {products.length > 0 ? (
               <table>
                 <thead>
@@ -67,9 +67,9 @@ export default function Wishlist({ user, tab }) {
                   {products.map((product, index) => (
                     <tr key={product._id + index}>
                       <td>
-                        <div className={styles.wishlist__flex}>
+                        <div className={styled.wishlist__flex}>
                           <div
-                            className={styles.wishlist__products_remove}
+                            className={styled.wishlist__products_remove}
                             onClick={() =>
                               removeFromWishlistHandler(product._id)
                             }
@@ -77,7 +77,7 @@ export default function Wishlist({ user, tab }) {
                             <FaTrash />
                           </div>
 
-                          <div className={styles.wishlist__products_images}>
+                          <div className={styled.wishlist__products_images}>
                             <NextImage
                               src={
                                 product.product.subProducts[
@@ -88,7 +88,7 @@ export default function Wishlist({ user, tab }) {
                             />
                           </div>
 
-                          <div className={styles.wishlist__products_infos}>
+                          <div className={styled.wishlist__products_infos}>
                             <p>
                               <span>Name : </span>
                               <p>
@@ -133,7 +133,7 @@ export default function Wishlist({ user, tab }) {
                       </td>
                       <td>
                         <div
-                          className={`${styles.wishlist__flex} ${styles.wishlist__products_price}`}
+                          className={`${styled.wishlist__flex} ${styled.wishlist__products_price}`}
                         >
                           {product.product.subProducts[product.style].discount >
                           0 ? (
@@ -146,7 +146,7 @@ export default function Wishlist({ user, tab }) {
                                 }
                               </span>
                               <span
-                                className={styles.wishlist__products_afterPrice}
+                                className={styled.wishlist__products_afterPrice}
                               >
                                 $
                                 {priceAfterDiscount(
@@ -159,7 +159,7 @@ export default function Wishlist({ user, tab }) {
                             </>
                           ) : (
                             <span
-                              className={styles.wishlist__products_afterPrice}
+                              className={styled.wishlist__products_afterPrice}
                             >
                               $
                               {
@@ -177,7 +177,7 @@ export default function Wishlist({ user, tab }) {
                           ? "In stock"
                           : "Out stock"}
                       </td>
-                      <td className={`${styles.btn} ${styles.wishlist__btn}`}>
+                      <td className={`${styled.btn} ${styled.wishlist__btn}`}>
                         <Button
                           onClick={(e) =>
                             addToCartHandler(
@@ -199,8 +199,8 @@ export default function Wishlist({ user, tab }) {
                 </tbody>
               </table>
             ) : (
-              <div className={styles.wishlist__empty}>
-                <div className={styles.wishlist__empty_image}>
+              <div className={styled.wishlist__empty}>
+                <div className={styled.wishlist__empty_image}>
                   <NextImage src="/images/empty-wishlist-3.webp" />
                 </div>
                 <p>Your Wishlist is empty!</p>

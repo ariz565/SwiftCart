@@ -1,86 +1,104 @@
-import { createRouter } from "next-connect";
-import auth from "@/middleware/auth";
-import admin from "@/middleware/admin";
-import Category from "@/models/Category";
-import SubCategory from "../../../models/SubCategory";
-import db from "../../../utils/db";
+import { Category } from "@/models/Category";
+import { SubCategory } from "@/models/SubCategory";
+import db from "@/utils/db";
+import nextConnect from "next-connect";
 import slugify from "slugify";
+import auth from "../../../middleware/auth";
+import admin from "../../../middleware/admin";
 
-// ------------------- Category Model -------------------
-const router = createRouter().use(auth).use(admin);
-// ------------------- Category Model -------------------
-router.post(async (req, res) => {
-  try {
-    const { name, parent } = req.body;
-    db.connectDb();
-    const test = await SubCategory.findOne({ name });
-    if (test) {
-      return res
-        .status(400)
-        .json({ message: "SubCategory already exist, Try a different name" });
-    }
-    await new SubCategory({ name, parent, slug: slugify(name) }).save();
+const handler = nextConnect().use(auth).use(admin);
 
-    db.disconnectDb();
-    res.json({
-      message: `SubCategory ${name} has been created successfully.`,
-      subCategories: await SubCategory.find({}).sort({ updatedAt: -1 }),
-    });
-  } catch (error) {
-    db.disconnectDb();
-    res.status(500).json({ message: error.message });
-  }
-});
-// ------------------- Delete Category -------------------
-router.delete(async (req, res) => {
+handler.get(async (req, res) => {
   try {
-    const { id } = req.body;
-    db.connectDb();
-    await SubCategory.findByIdAndDelete(id);
-    db.disconnectDb();
-    return res.json({
-      message: "SubCategory has been deleted successfuly",
-      subCategories: await SubCategory.find({}).sort({ updatedAt: -1 }),
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-// ------------------- Update Category -------------------
-router.put(async (req, res) => {
-  try {
-    const { id, name, parent } = req.body;
-    db.connectDb();
-    await SubCategory.findByIdAndUpdate(id, {
-      name,
-      parent,
-      slug: slugify(name),
-    });
-    db.disconnectDb();
-    return res.json({
-      message: "SubCategory has been updated successfuly",
-      subCategories: await SubCategory.find({}).sort({ createdAt: -1 }),
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-//------------------- Get SubCategories -------------------
-router.get(async (req, res) => {
-  try {
+    await db.connectDb();
+
     const { category } = req.query;
-    // console.log(category);
+
     if (!category) {
       return res.json([]);
     }
-    db.connectDb();
+
     const results = await SubCategory.find({ parent: category }).select("name");
-    // console.log(results);
-    db.disconnectDb();
+
+    await db.disconnectDb();
+
     return res.json(results);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-// ------------------- Export Handler -------------------
-export default router.handler();
+
+handler.post(async (req, res) => {
+  try {
+    await db.connectDb();
+    const { name, parent } = req.body;
+
+    const test = await SubCategory.findOne({ name });
+
+    if (test) {
+      return res.status(400).json({
+        message: "Sub-Category already exists, try a different name.",
+      });
+    }
+
+    await new SubCategory({ name, parent, slug: slugify(name) }).save();
+
+    db.disconnectDb();
+
+    res.status(201).json({
+      subCategories: await SubCategory.find({})
+        .populate({ path: "parent", model: Category })
+        .sort({ updatedAt: -1 }),
+      message: `Sub-Category ${name} has been created successfully.`,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+handler.delete(async (req, res) => {
+  try {
+    await db.connectDb();
+    const { id } = req.query;
+
+    await SubCategory.findByIdAndRemove(id);
+
+    db.disconnectDb();
+
+    return res.json({
+      message: "Sub-Category has been deleted successfully.",
+      subCategories: await SubCategory.find({})
+        .populate({ path: "parent", model: Category })
+        .sort({ updatedAt: -1 }),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+handler.put(async (req, res) => {
+  try {
+    const { id, name, parent } = req.body;
+
+    await db.connectDb();
+
+    await SubCategory.findByIdAndUpdate(id, {
+      name,
+      parent,
+      slug: slugify(name),
+    });
+
+    await db.disconnectDb();
+
+    return res.json({
+      message: "Sub-Category has been updated successfully.",
+      subCategories: await SubCategory.find({})
+        .populate({ path: "parent", model: Category })
+        .sort({ createdAt: -1 }),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+export default handler;

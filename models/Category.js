@@ -7,8 +7,8 @@ const categorySchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      minlength: [2, "must be atleast 2 charcters"],
-      maxlength: [32, "must be atleast 2 charcters"],
+      minlength: [2, "must be at least 2 characters"],
+      maxlength: [32, "maximum 32 characters"],
     },
     slug: {
       type: String,
@@ -17,12 +17,8 @@ const categorySchema = new mongoose.Schema(
       index: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Category =
+export const Category =
   mongoose.models.Category || mongoose.model("Category", categorySchema);
-
-export default Category;

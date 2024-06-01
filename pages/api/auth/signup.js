@@ -1,58 +1,73 @@
-import { createRouter } from "next-connect";
-import db from "../../../utils/db";
-import { validateEmail } from "../../../utils/validation";
-import User from "../../../models/User";
+import { activateEmailTemplate } from "@/emails/activateEmailTemplate";
+import { User } from "@/models/User";
+import db from "@/utils/db";
+import { sendEmail } from "@/utils/sendEmails";
+import { validateEmail } from "@/utils/validation";
 import bcrypt from "bcrypt";
+
 import { createActivationToken } from "../../../utils/tokens";
-import { sendEmail } from "../../../utils/sendEmails";
 
-const router = createRouter();
+async function handler(req, res) {
+  if (req.method === "POST") {
+    try {
+      // Connect db & extract data
+      await db.connectDb();
+      const { full_name, email, password } = req.body;
 
-router.post(async (req, res) => {
-  try {
-    await db.connectDb();
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "Please fill all the fields!" });
+      // Kiểm tra input value phải tồn tại
+      if (!full_name || !email || !password) {
+        return res.status(400).json({ message: "Please fill in all fields" });
+      }
+
+      // Kiểm tra tính hợp lệ của cú pháp email
+      if (!validateEmail(email)) {
+        return res.status(400).json({ message: "Invalid email" });
+      }
+
+      // Kiểm tra tính trùng lặp của email
+      const user = await User.findOne({ email });
+      if (user) {
+        return res.status(400).json({ message: "This email already exists" });
+      }
+
+      //Kiểm tra độ dài password
+      if (password.length < 6) {
+        return res
+          .status(400)
+          .json({ message: "Password must be at least 6 characters" });
+      }
+
+      // Sau khi thoả mãn các điều kiện trên, tiến hành tạo user
+      const cryptedPassword = await bcrypt.hash(password, 12);
+
+      const newUser = await User.create({
+        name: full_name,
+        email,
+        password: cryptedPassword,
+      });
+
+      const activation_token = createActivationToken({
+        id: newUser._id.toString(),
+      });
+
+      const activation_url = `${process.env.BASE_URL}/activate/${activation_token}`;
+      sendEmail(
+        email,
+        activation_url,
+        "",
+        "Activate your account",
+        activateEmailTemplate
+      );
+
+      await db.disConnectDb();
+
+      res.json({
+        message: "Register success! Please activate your email to start.",
+      });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-    if (!validateEmail(email)) {
-      return res.status(400).json({ message: "Invalid email address!" });
-    }
-    const user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ message: "User already exists!" });
-    }
-    if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters!" });
-    }
-    const cryptedPassword = await bcrypt.hash(password, 12);
-    const newUser = new User({
-      name,
-      email,
-      password: cryptedPassword,
-    });
-    const addedUser = await newUser.save();
-    const activation_token = createActivationToken({
-      id: addedUser._id.toString(),
-    });
-    const url = `${process.env.BASE_URL}/activate/${activation_token}`;
-    sendEmail(
-      email,
-      url,
-      "",
-      "Activate your account!",
-      activationEmailTemplate
-    );
-    await db.disconnectDb();
-    res.json({
-      message:
-        "User registered successfully! Please activate your email to start.",
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
-});
+}
 
-export default router.handler();
+export default handler;

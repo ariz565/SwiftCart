@@ -2,11 +2,11 @@ import Link from "next/link";
 import { ImHome } from "react-icons/im";
 import { GrFormNext } from "react-icons/gr";
 
-import styles from "./styles.module.scss";
+import styled from "./styles.module.scss";
 
 const BreadCrumb = ({ category, categoryLink, subCategories }) => {
   return (
-    <div className={styles.wrapper}>
+    <div className={styled.wrapper}>
       <Link href="/">
         <ImHome />
         Home
