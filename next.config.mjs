@@ -1,5 +1,6 @@
 import path from "path";
 import { fileURLToPath } from "url";
+
 // Get the directory name of the current module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -10,11 +11,23 @@ const nextConfig = {
     prependData: `@import "./base.scss";`,
   },
   images: {
-    domains: [
-      "res.cloudinary.com",
-      "ae01.alicdn.com",
-      "avatars.githubusercontent.com",
-      "lh3.googleusercontent.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "ae01.alicdn.com",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
     ],
   },
 };
