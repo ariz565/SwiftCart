@@ -9,12 +9,29 @@ import { Pagination, Navigation } from "swiper/modules";
 import Link from "next/link";
 
 export default function Offers() {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText("swift30")
+      .then(() => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  };
+
   return (
     <div className={styles.offers}>
       <div className={styles.offers__text}>
-        <p>
-          use code <b>“Swift30”</b> for 30% off all products.
+        <p onClick={copyToClipboard} style={{ cursor: "pointer" }}>
+          use code <b>“swift30”</b> for 30% off all products.
         </p>
+        {isCopied && (
+          <span style={{ color: "green" }}>Coupon code copied!</span>
+        )}
         <Link href="/browse">Shop now</Link>
       </div>
       <Swiper

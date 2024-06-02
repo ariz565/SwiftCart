@@ -12,8 +12,8 @@ export default function UserMenu({ session }) {
           <Image
             src={session.user.image}
             alt="Avatar"
-            width={500} 
-            height={50} 
+            width={500}
+            height={50}
             className={styles.menu__img}
           />
           <div className={styles.col}>
@@ -37,7 +37,7 @@ export default function UserMenu({ session }) {
           <Link href="/profile">Account</Link>
         </li>
         <li>
-          <Link href="/profile/orders">My Orders</Link>
+          <Link href="/profile/orders?tab=1&q=all-orders">My Orders</Link>
         </li>
         <li>
           <Link href="/profile/messages">Message Center</Link>
