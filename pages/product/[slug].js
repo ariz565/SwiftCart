@@ -24,10 +24,12 @@ export default function Products({ product }) {
   // Recently viewed products
   useEffect(() => {
     let recentIds = JSON.parse(localStorage.getItem("recent-ids")) || [];
-    recentIds.unshift(product._id.toString());
-    const uniqueRecentIds = [...new Set(recentIds)];
+    if (!recentIds.includes(product._id.toString())) {
+      recentIds.unshift(product._id.toString());
+    }
+    const uniqueRecentIds = [...new Set(recentIds)].slice(0, 6); // Limit to 10 products
     localStorage.setItem("recent-ids", JSON.stringify(uniqueRecentIds));
-  }, []);
+  }, [product._id]);
 
   return (
     <div>
@@ -68,6 +70,7 @@ export async function getServerSideProps(context) {
     .populate({ path: "subCategories", model: SubCategory })
     .populate({ path: "reviews.reviewBy", model: User })
     .lean();
+
   let subProduct = product.subProducts[style];
   let prices = subProduct.sizes
     .map((s) => {

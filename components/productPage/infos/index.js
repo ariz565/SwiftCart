@@ -36,11 +36,14 @@ export default function Infos({ product, setActiveImg }) {
   }, [product.quantity, quantity]);
 
   // Handle Add to Cart
+  // Handle Add to Cart
   const addToCartHandler = async () => {
     setError(null);
+    console.log("addToCartHandler called");
 
     if (!router.query.size) {
       setError("Please select a size.");
+      console.log("Error: Please select a size.");
       return;
     }
 
@@ -49,22 +52,30 @@ export default function Infos({ product, setActiveImg }) {
         `/api/product/${product._id}?style=${router.query.style}&size=${router.query.size}`
       );
 
+      console.log("Product data fetched:", data);
+
       if (qty > data.quantity) {
         setError(
           "The quantity you have chosen is more than in stock. Try lowering the quantity."
         );
+        console.log("Error: The quantity is more than in stock.");
       } else if (data.quantity < 1) {
         setError("This product is out of stock.");
+        console.log("Error: This product is out of stock.");
       } else {
         const _uid = `${data._id}_${product.style}_${router.query.size}`;
         const cartItems = cart?.cartItems || [];
         const exist = cartItems.find((p) => p._uid === _uid);
+
+        console.log("Cart items:", cartItems);
+        console.log("Existing product in cart:", exist);
 
         if (exist) {
           const newCart = cartItems.map((p) =>
             p._uid === exist._uid ? { ...p, qty } : p
           );
           dispatch(updateCart(newCart));
+          console.log("Product updated in cart:", newCart);
           toast.success("Product added to cart successfully!", {
             position: "top-right",
             autoClose: 3000,
@@ -82,6 +93,7 @@ export default function Infos({ product, setActiveImg }) {
             _uid,
           };
           dispatch(addToCart(newItem));
+          console.log("New product added to cart:", newItem);
           toast.success("Product added to cart successfully!", {
             position: "top-right",
             autoClose: 3000,

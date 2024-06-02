@@ -2,7 +2,15 @@ import { createRouter } from "next-connect";
 import db from "@/utils/db";
 import Product from "@/models/Product";
 
-const router = createRouter();
+const router = createRouter({
+  onError(error, req, res) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  },
+  onNoMatch(req, res) {
+    res.status(405).json({ message: "Method not allowed" });
+  },
+});
 
 router.get(async (req, res) => {
   try {
@@ -10,30 +18,30 @@ router.get(async (req, res) => {
     const { id, style = 0, size = 0 } = req.query;
 
     if (!id) {
-      throw new Error("Product ID is required");
+      return res.status(400).json({ message: "Product ID is required" });
     }
 
     const product = await Product.findById(id).lean();
     if (!product) {
-      res.status(404).json({ message: "Product not found" });
-      return;
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    if (
-      !product.subProducts[style] ||
-      !product.subProducts[style].sizes[size]
-    ) {
-      throw new Error("Invalid style or size");
+    const subProduct = product.subProducts[style];
+    if (!subProduct) {
+      return res.status(400).json({ message: "Invalid style" });
     }
 
-    let subProduct = product.subProducts[style];
-    let productSize = subProduct.sizes[size];
-    let discountPercentage = subProduct.discount || 0;
-    let priceBefore = productSize.price;
-    let discountAmount = priceBefore * (discountPercentage / 100);
-    let price = priceBefore - discountAmount;
+    const productSize = subProduct.sizes[size];
+    if (!productSize) {
+      return res.status(400).json({ message: "Invalid size" });
+    }
 
-    return res.status(200).json({
+    const discountPercentage = subProduct.discount || 0;
+    const priceBefore = productSize.price;
+    const discountAmount = priceBefore * (discountPercentage / 100);
+    const price = priceBefore - discountAmount;
+
+    const productData = {
       _id: product._id,
       style: Number(style),
       name: product.name,
@@ -50,7 +58,9 @@ router.get(async (req, res) => {
       price,
       priceBefore,
       quantity: productSize.qty,
-    });
+    };
+
+    res.status(200).json(productData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   } finally {

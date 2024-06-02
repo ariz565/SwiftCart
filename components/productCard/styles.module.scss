@@ -1,14 +1,31 @@
 .product {
   position: relative;
-  width: 290px;
-  height: 500px;
+  width: 320px;
+  height: 510px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+  &:hover {
+    transform: translateY(-5px);
+  }
+
   &__infos {
     width: 100%;
-    margin-top: 1px;
+    margin-top: 2px;
+    padding: 0 10px; /* Add padding to create space */
+    h3 {
+      font-size: 1rem;
+      color: #999;
+    }
     h1 {
-      font-size: 13px;
-      font-weight: normal;
+      font-size: 1.2rem;
+      font-weight: 500;
       color: #222;
+      margin: 0.2rem 0;
     }
     span {
       color: $redish-color;
@@ -19,8 +36,10 @@
     position: relative;
     display: flex;
     align-items: center;
+    margin-bottom: 5px;
     gap: 10px;
     margin-top: 5px;
+    padding: 0 2px; /* Add padding to create space */
     img {
       width: 20px;
       height: 20px;
@@ -28,20 +47,26 @@
       object-fit: cover;
       box-shadow: $shadow-1;
       cursor: pointer;
+      transition: transform 0.3s;
       outline-offset: 2px;
       &:hover {
+        transform: scale(1.1);
         outline: 1px solid #000;
       }
     }
     .active {
-      outline: 1px solid #000;
+      border: 2px solid #000;
     }
     span {
       width: 21px;
       height: 21px;
       border-radius: 50%;
-      box-shadow: $shadow-1;
-      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s;
+      &:hover {
+        transform: scale(1.1);
+        outline: 1px solid #000;
+      }
     }
   }
   &__discount {

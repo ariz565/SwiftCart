@@ -294,35 +294,35 @@ export const userSwiperArray = [
 export const flashDealsArray = [
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/09/15/1663220709c947ca4ad9aefd9c1f4baf5915653468_thumbnail_600x.webp",
-    price: "91",
-    discount: "11",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/22184756/2024/1/17/89e72cbb-8b51-47f5-9ad7-6b955b668d7f1705491087973NauticaMenRegularFitEverydaySneakers1.jpg",
+    price: "500",
+    discount: "10",
     link: "",
-    sold: "300",
+    sold: "10",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/09/20/1663668243e6d8f250648c2f34988320c046cba68f_thumbnail_405x552.webp",
-    price: "73",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/25217528/2023/10/5/bb314fd9-a321-4b2c-b26b-43b86468c2af1696485197789StreaxSetof2HairSerumPhilipsHairDryerFreeGiftsSmashboxWomenP2.jpg",
+    price: "700",
     discount: "25",
     link: "",
-    sold: "610",
+    sold: "25",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/03/25/164818761997d2ccb1de50aed18da9d77502717405_thumbnail_405x552.webp",
-    price: "254",
-    discount: "360",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/20076632/2022/11/19/cdc0d04b-dea8-44cb-8d3b-76ef62be7e6a1668840596500-Nestasia-Quilted-Velvet-Lunch-Bag-6281668840596114-1.jpg",
+    price: "250",
+    discount: "20",
     link: "",
-    sold: "12",
+    sold: "20",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/05/13/165244123600952e503ccab89dd363c9b71f9094f8_thumbnail_405x552.webp",
-    price: "1687",
-    discount: "200",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/29415142/2024/5/8/83426291-3528-47e0-b436-fe9211e7924d1715149742719RegularFitRibbedpoloshirt1.jpg",
+    price: "2299",
+    discount: "30",
     link: "",
-    sold: "96",
+    sold: "30",
   },
   {
     image:
@@ -334,11 +334,11 @@ export const flashDealsArray = [
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/08/17/16607290552013caeedd00666350d71774fcd6e95f_thumbnail_405x552.webp",
-    price: "65",
-    discount: "450",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/24746144/2023/10/19/a9bbc01c-2f00-4039-8f6a-107da1bc991a1697714137170-THE-MAN-COMPANY-Gentlemans-Essence-Perfume-Gift-Set---30-ml--1.jpg",
+    price: "1500",
+    discount: "5",
     link: "",
-    sold: "82",
+    sold: "30",
   },
   {
     image:
@@ -444,33 +444,33 @@ export const women_accessories = [
 
 export const women_swiper = [
   {
-    name: "HARRY POTTER | SHEIN Checkered & Snake Pattern Sweater Vest Without Blouse",
+    name: "Blackberrys | Men Slim Fit Formal Trousers",
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/06/21/1655799794344eb21cae76cf679de869f6b6e41229_thumbnail_600x.webp",
-    price: "1033",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/27749168/2024/2/21/a7378feb-61c9-4852-95c4-5fc8bcfb81061708497569565BlackberrysMenSlimFitLow-RiseTrousers1.jpg",
+    price: "1450",
   },
   {
-    name: "Blazer manches cape à bouton",
+    name: "Anouk | Men Bandhani Printed Pure Cotton Kurta with Trousers",
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/09/13/1663060175905a8d4a3995fd5bc4c4827114c4b070_thumbnail_900x.webp",
-    price: "580",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/19050688/2023/1/2/8974c6ff-e626-456a-adb6-f450af7b53491672654867958-Anouk-Men-Kurta-Sets-4001672654867056-1.jpg",
+    price: "749",
   },
   {
-    name: "SHEIN X Zhihan Wang Sweat-shirt dessin animé et slogan",
+    name: "Fort Collins | Notched Lapel Single Breasted Blazer",
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/09/29/1664415954a61747c30c7e9576fd4374354dad4b54_thumbnail_900x.webp",
-    price: "1222.99",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/29418874/2024/5/8/c965f364-54e9-4b4d-99be-96ebb679a8921715182434988Waistcoat1.jpg",
+    price: "3500",
   },
   {
     name: "ROMWE Grunge Punk Sweat-shirt à capuche à imprimé lettre et graphique à cordon",
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/09/14/166312290414845f283801744986928b2d3dd8d2a9_thumbnail_405x552.webp",
-    price: "3960",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/23296210/2023/5/20/198924f5-8254-44e0-b763-f2a8765821d61684600399975OPHELIATrendyStylishGreyCasualWomenVelvetFlatBoots1.jpg",
+    price: "699",
   },
   {
-    name: "15pcs Gemstone & Rhinestone Decor Ring",
+    name: "Men Solid Regular Fit T-shirt",
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/08/24/16613054802b93849c39b4b566941f1b5ebe9a1626_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/29487600/2024/5/14/af6b1323-cf17-4eb9-8c24-d317f1a6c6671715687083081-Roadster-Men-Tshirts-8541715687082656-1.jpg",
     price: "1099",
   },
   {

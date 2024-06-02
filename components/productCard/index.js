@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductSwiper from "./ProductSwiper";
 import styles from "./styles.module.scss";
 
@@ -16,11 +15,12 @@ export default function ProductCard({ product }) {
         return a - b;
       })
   );
-  const [styless, setStyless] = useState(
+  const [stylesOptions, setStylesOptions] = useState(
     product.subProducts.map((p) => {
       return p.color;
     })
   );
+
   useEffect(() => {
     setImages(product.subProducts[active].images);
     setPrices(
@@ -33,50 +33,50 @@ export default function ProductCard({ product }) {
         })
     );
   }, [active, product]);
-  
+
   return (
     <div className={styles.product}>
       <div className={styles.product__container}>
-        <a href={`/product/${product.slug}?style=${active}`} target="_blank">
-          <div>
+        <Link href={`/product/${product.slug}?style=${active}`} target="_blank">
+          <div className={styles.product__image}>
             <ProductSwiper images={images} />
           </div>
-        </a>
+        </Link>
         {product.subProducts[active].discount ? (
           <div className={styles.product__discount}>
             -{product.subProducts[active].discount}%
           </div>
-        ) : (
-          ""
-        )}
+        ) : null}
         <div className={styles.product__infos}>
-          <h1>
+          <h3 className={styles.product__brand}>{product.brand}</h3>
+          <h1 className={styles.product__name}>
             {product.name.length > 45
-              ? `${product.name.substring(0, 45)}...`
+              ? `${product.name.substring(0, 30)}...`
               : product.name}
           </h1>
-          <span>
+          <div className={styles.product__price}>
             {prices.length === 1
-              ? `Rs. {prices[0]}`
-              : `Rs. ${prices[0]}-${prices[prices.length - 1]}`}
-          </span>
+              ? `₹ ${prices[0]}`
+              : `₹ ${prices[0]} - ₹ ${prices[prices.length - 1]}`}
+          </div>
           <div className={styles.product__colors}>
-            {styless &&
-              styless.map((style, i) =>
+            {stylesOptions &&
+              stylesOptions.map((style, i) =>
                 style.image ? (
                   <img
-                    key={i} // Add a unique "key" prop
+                    key={i}
                     src={style.image}
-                    className={i == active && styles.active}
+                    className={i == active ? styles.active : ""}
                     onMouseOver={() => {
                       setImages(product.subProducts[i].images);
                       setActive(i);
                     }}
-                    alt=""
+                    alt={style.color}
                   />
                 ) : (
                   <span
-                    key={i} // Add a unique "key" prop
+                    key={i}
+                    className={i == active ? styles.active : ""}
                     style={{ backgroundColor: `${style.color}` }}
                     onMouseOver={() => {
                       setImages(product.subProducts[i].images);

@@ -2,8 +2,13 @@
   margin-top: 1rem;
   .header {
     height: 50px;
-    background: $yellow-color;
+    background: radial-gradient(
+      circle,
+      rgb(124, 81, 155) 0%,
+      rgb(87, 31, 114) 100%
+    );
     color: #fff;
+    border-radius: 10px;
     font-size: 25px;
     padding: 1rem 10px;
     display: flex;
