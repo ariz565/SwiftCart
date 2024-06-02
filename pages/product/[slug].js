@@ -6,13 +6,14 @@ import styles from "../../styles/product.module.scss";
 import db from "@/utils/db";
 import Head from "next/head";
 import Header from "@/components/header";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import MainSwiper from "@/components/productPage/mainSwiper";
 import { useState } from "react";
 import Infos from "@/components/productPage/infos";
 import Reviews from "@/components/productPage/reviews";
 import Link from "next/link";
 import BreadCrumb from "@/components/BreadCrumb";
+import { useEffect } from "react";
 
 export default function Products({ product }) {
   const [activeImg, setActiveImg] = useState("");
@@ -20,6 +21,13 @@ export default function Products({ product }) {
     name: "India",
     flag: "https://cdn.ipregistry.co/flags/emojitwo/in.svg",
   };
+  // Recently viewed products
+  useEffect(() => {
+    let recentIds = JSON.parse(localStorage.getItem("recent-ids")) || [];
+    recentIds.unshift(product._id.toString());
+    const uniqueRecentIds = [...new Set(recentIds)];
+    localStorage.setItem("recent-ids", JSON.stringify(uniqueRecentIds));
+  }, []);
 
   return (
     <div>
