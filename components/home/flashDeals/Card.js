@@ -16,10 +16,10 @@ export default function FlashCard({ product }) {
       </div>
       <div className={styles.card__price}>
         <span>
-          Rs. {(product.price - product.price / product.discount).toFixed(2)}
+          ₹ {(product.price - product.price / product.discount).toFixed(2)}
         </span>
         <span>
-          -Rs.
+          ₹
           {(
             product.price -
             (product.price - product.price / product.discount)
@@ -27,9 +27,14 @@ export default function FlashCard({ product }) {
         </span>
       </div>
       <div className={styles.card__bar}>
-        <div className={styles.card__bar_inner} style={{ width: "75%" }}></div>
+        <div
+          className={styles.card__bar_inner}
+          style={{ width: `${product.sold}%` }}
+        ></div>
       </div>
-      <div className={styles.card__percentage}>{product.sold}%</div>
+      <div className={styles.card__percentage}>
+        Only {product.sold} stocks left
+      </div>
     </div>
   );
 }

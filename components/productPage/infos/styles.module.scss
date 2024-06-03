@@ -43,6 +43,46 @@
       }
     }
   }
+  &__price_discount,
+  &__price_discount2 {
+    background-color: burlywood;
+    color: #fff; /* Ensure text color is white */
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin: 0 5px;
+    font-size: 14px;
+
+    @media screen and (max-width: 543px) {
+      font-size: 12px;
+    }
+  }
+
+  &__price_discount2 {
+    font-size: 13px;
+    position: relative;
+    font-style: italic;
+    top: -3px;
+    left: 10px;
+    margin: 0;
+    padding: 1px 9px 1px 7px;
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    color: #fff; /* Ensure text color is white */
+
+    @media screen and (max-width: 543px) {
+      top: 0;
+      left: 0;
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  &__price_discount.lift {
+    padding: 0px 5px;
+    position: relative;
+    top: -5px;
+  }
+
   &__shipping {
     display: block;
     color: $blue-color;

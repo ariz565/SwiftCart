@@ -8,28 +8,36 @@ import Head from "next/head";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import MainSwiper from "@/components/productPage/mainSwiper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Infos from "@/components/productPage/infos";
 import Reviews from "@/components/productPage/reviews";
-import Link from "next/link";
 import BreadCrumb from "@/components/BreadCrumb";
-import { useEffect } from "react";
 
 export default function Products({ product }) {
   const [activeImg, setActiveImg] = useState("");
+  const [selectedSize, setSelectedSize] = useState(0); // Default to the first size
   const country = {
     name: "India",
     flag: "https://cdn.ipregistry.co/flags/emojitwo/in.svg",
   };
+
   // Recently viewed products
   useEffect(() => {
     let recentIds = JSON.parse(localStorage.getItem("recent-ids")) || [];
     if (!recentIds.includes(product._id.toString())) {
       recentIds.unshift(product._id.toString());
     }
-    const uniqueRecentIds = [...new Set(recentIds)].slice(0, 6); // Limit to 10 products
+    const uniqueRecentIds = [...new Set(recentIds)].slice(0, 6); // Limit to 6 products
     localStorage.setItem("recent-ids", JSON.stringify(uniqueRecentIds));
   }, [product._id]);
+
+  const handleSizeChange = (sizeIndex) => {
+    setSelectedSize(sizeIndex);
+  };
+
+  const calculatePrice = (price, discount) => {
+    return discount ? (price * (1 - discount / 100)).toFixed(2) : price;
+  };
 
   return (
     <div>
@@ -48,12 +56,18 @@ export default function Products({ product }) {
           </div>
           <div className={styles.product__main}>
             <MainSwiper images={product.images} activeImg={activeImg} />
-            <Infos product={product} setActiveImg={setActiveImg} />
+            <Infos
+              product={product}
+              setActiveImg={setActiveImg}
+              selectedSize={selectedSize}
+              handleSizeChange={handleSizeChange}
+              calculatePrice={calculatePrice}
+            />
           </div>
           <Reviews product={product} />
         </div>
       </div>
-      {/* <Footer country={country.name} /> */}
+      <Footer country={country.name} />
     </div>
   );
 }
@@ -63,22 +77,22 @@ export async function getServerSideProps(context) {
   const slug = query.slug;
   const style = query.style;
   const size = query.size || 0;
+
   db.connectDb();
-  // ...........
   let product = await Product.findOne({ slug })
     .populate({ path: "category", model: Category })
     .populate({ path: "subCategories", model: SubCategory })
     .populate({ path: "reviews.reviewBy", model: User })
     .lean();
 
+  if (!product) {
+    return {
+      notFound: true,
+    };
+  }
+
   let subProduct = product.subProducts[style];
-  let prices = subProduct.sizes
-    .map((s) => {
-      return s.price;
-    })
-    .sort((a, b) => {
-      return a - b;
-    });
+  let prices = subProduct.sizes.map((s) => s.price).sort((a, b) => a - b);
 
   let newProduct = {
     ...product,
@@ -87,66 +101,42 @@ export async function getServerSideProps(context) {
     sizes: subProduct.sizes,
     discount: subProduct.discount,
     sku: subProduct.sku,
-    colors: product.subProducts.map((p) => {
-      return p.color;
-    }),
-    priceRange: subProduct.discount
-      ? `From ₹${(prices[0] - prices[0] / subProduct.discount).toFixed(
-          2
-        )} to ₹${(
-          prices[prices.length - 1] -
-          prices[prices.length - 1] / subProduct.discount
-        ).toFixed(2)}`
-      : `From ₹${prices[0]} to ₹${prices[prices.length - 1]}`,
-    price:
-      subProduct.discount > 0
-        ? (
-            subProduct.sizes[size].price -
-            subProduct.sizes[size].price / subProduct.discount
-          ).toFixed(2)
-        : subProduct.sizes[size].price,
+    colors: product.subProducts.map((p) => p.color),
+    priceRange: `From ₹${prices[0]} to ₹${prices[prices.length - 1]}.`,
+    price: subProduct.discount
+      ? (
+          subProduct.sizes[size].price *
+          (1 - subProduct.discount / 100)
+        ).toFixed(2)
+      : subProduct.sizes[size].price,
     priceBefore: subProduct.sizes[size].price,
     quantity: subProduct.sizes[size].qty,
     ratings: [
-      {
-        percentage: calculatePercentage("5"),
-      },
-      {
-        percentage: calculatePercentage("4"),
-      },
-      {
-        percentage: calculatePercentage("3"),
-      },
-      {
-        percentage: calculatePercentage("2"),
-      },
-      {
-        percentage: calculatePercentage("1"),
-      },
+      { percentage: calculatePercentage("5") },
+      { percentage: calculatePercentage("4") },
+      { percentage: calculatePercentage("3") },
+      { percentage: calculatePercentage("2") },
+      { percentage: calculatePercentage("1") },
     ],
     reviews: product.reviews.reverse(),
     allSizes: product.subProducts
-      .map((p) => {
-        return p.sizes;
-      })
-      .flat()
-      .sort((a, b) => {
-        return a.size - b.size;
-      })
+      .flatMap((p) => p.sizes)
+      .sort((a, b) => a.size - b.size)
       .filter(
         (element, index, array) =>
           array.findIndex((el2) => el2.size === element.size) === index
       ),
   };
-  // ...........
+
   function calculatePercentage(num) {
     return (
-      (product.reviews.reduce((a, review) => {
-        return (
+      (product.reviews.reduce(
+        (a, review) =>
           a +
-          (review.rating == Number(num) || review.rating == Number(num) + 0.5)
-        );
-      }, 0) *
+          (review.rating === Number(num) ||
+            review.rating === Number(num) + 0.5),
+        0
+      ) *
         100) /
       product.reviews.length
     ).toFixed(1);

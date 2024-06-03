@@ -107,9 +107,22 @@ export default function Shipping({ user, addresses, setAddresses, profile }) {
   };
 
   // change active address handler
-  const changeActiveHandler = async (id) => {
-    const res = await changeActiveAddress(id);
-    setAddresses(res.addresses);
+  const changeActiveHandler = async (address_id) => {
+    Popup(
+      "Are you sure?",
+      "We'll set this address as your default address!",
+      "question",
+      "Yes",
+      async () => {
+        const res = await changeActiveAddress(
+          user._id || user.user.id,
+          address_id
+        );
+        setAddresses(res);
+      },
+      "Done!",
+      "Set new default address successfully."
+    );
   };
 
   // delete address handler

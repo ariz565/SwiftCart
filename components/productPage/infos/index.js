@@ -1,5 +1,5 @@
 import styles from "./styles.module.scss";
-import { Rating } from "@mui/material";
+import Rating from "@mui/material/Rating";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -15,14 +15,14 @@ import { addToCart, updateCart } from "@/store/cartSlice";
 import { toast } from "react-toastify";
 import { hideDialog, showDialog } from "@/store/DialogSlice";
 import { signIn } from "next-auth/react";
+import { AiFillTags } from "react-icons/ai";
 
 export default function Infos({ product, setActiveImg }) {
+  const { data: session } = useSession();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { data: session } = useSession();
-  const [selectedSize, setSelectedSize] = useState(router.query.size);
+  const [selectedSize, setSelectedSize] = useState(router.query.size || 0); // Default to first size
   const [quantity, setQuantity] = useState(1);
-  const [size, setSize] = useState(router.query.size);
   const [qty, setQty] = useState(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -35,48 +35,46 @@ export default function Infos({ product, setActiveImg }) {
     }
   }, [product.quantity, quantity]);
 
-  // Handle Add to Cart
-  // Handle Add to Cart
+  useEffect(() => {
+    setSelectedSize(router.query.size || 0);
+  }, [router.query.size]);
+
+  const calculatePrice = (price, discount) => {
+    return discount ? (price * (1 - discount / 100)).toFixed(2) : price;
+  };
+
   const addToCartHandler = async () => {
     setError(null);
-    console.log("addToCartHandler called");
-
     if (!router.query.size) {
       setError("Please select a size.");
-      console.log("Error: Please select a size.");
       return;
     }
 
     try {
+      if (!session) {
+        return signIn();
+      }
       const { data } = await axios.get(
         `/api/product/${product._id}?style=${router.query.style}&size=${router.query.size}`
       );
-
-      console.log("Product data fetched:", data);
 
       if (qty > data.quantity) {
         setError(
           "The quantity you have chosen is more than in stock. Try lowering the quantity."
         );
-        console.log("Error: The quantity is more than in stock.");
       } else if (data.quantity < 1) {
         setError("This product is out of stock.");
-        console.log("Error: This product is out of stock.");
       } else {
         const _uid = `${data._id}_${product.style}_${router.query.size}`;
         const cartItems = cart?.cartItems || [];
         const exist = cartItems.find((p) => p._uid === _uid);
-
-        console.log("Cart items:", cartItems);
-        console.log("Existing product in cart:", exist);
 
         if (exist) {
           const newCart = cartItems.map((p) =>
             p._uid === exist._uid ? { ...p, qty } : p
           );
           dispatch(updateCart(newCart));
-          console.log("Product updated in cart:", newCart);
-          toast.success("Product added to cart successfully!", {
+          toast.success("Product updated in cart successfully!", {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
@@ -93,7 +91,6 @@ export default function Infos({ product, setActiveImg }) {
             _uid,
           };
           dispatch(addToCart(newItem));
-          console.log("New product added to cart:", newItem);
           toast.success("Product added to cart successfully!", {
             position: "top-right",
             autoClose: 3000,
@@ -109,11 +106,9 @@ export default function Infos({ product, setActiveImg }) {
       setError(
         "There was an error adding the product to the cart. Please try again."
       );
-      console.error("Error adding to cart:", error);
     }
   };
 
-  // Handle Wishlist
   const handleWishlist = async () => {
     try {
       if (!session) {
@@ -149,16 +144,6 @@ export default function Infos({ product, setActiveImg }) {
     }
   };
 
-  // Updated discount price calculation
-  const getDiscountedPrice = () => {
-    if (product.discount > 0 && size) {
-      const discountedPrice =
-        product.price - (product.price * product.discount) / 100;
-      return discountedPrice.toFixed(2);
-    }
-    return product.price;
-  };
-
   return (
     <div className={styles.infos}>
       <DialogModal />
@@ -177,15 +162,26 @@ export default function Infos({ product, setActiveImg }) {
           {product.numReviews == 1 ? " review" : " reviews"})
         </div>
         <div className={styles.infos__price}>
-          {!size ? (
+          {!selectedSize ? (
             <h2>{product.priceRange}</h2>
           ) : (
-            <h1>₹{getDiscountedPrice()}</h1>
+            <h1>
+              ₹
+              {calculatePrice(
+                product.sizes[selectedSize].price,
+                product.discount
+              )}
+            </h1>
           )}
-          {product.discount > 0 && size && (
-            <h3>
-              <span>₹{product.price}</span>
-              <span>(-{product.discount}%)</span>
+          {product.discount > 0 && selectedSize && (
+            <h3 className={styles.infos__price}>
+              <span>₹{product.sizes[selectedSize].price}</span>
+              <span
+                className={`${styles.infos__price_discount2} ${styles.lift}`}
+              >
+                <AiFillTags />
+                {product.discount}% off
+              </span>
             </h3>
           )}
         </div>
@@ -195,8 +191,8 @@ export default function Infos({ product, setActiveImg }) {
             : "Free Shipping"}
         </span>
         <span>
-          {size
-            ? product.quantity
+          {selectedSize
+            ? product.sizes[selectedSize].qty
             : product.sizes.reduce((start, next) => start + next.qty, 0)}{" "}
           pieces available.
         </span>
@@ -210,9 +206,9 @@ export default function Infos({ product, setActiveImg }) {
               >
                 <div
                   className={`${styles.infos__sizes_size} ${
-                    i == router.query.size && styles.active_size
+                    i == selectedSize && styles.active_size
                   }`}
-                  onClick={() => setSize(size.size)}
+                  onClick={() => setSelectedSize(i)}
                 >
                   {size.size}
                 </div>
@@ -243,15 +239,22 @@ export default function Infos({ product, setActiveImg }) {
           </button>
           <span>{qty}</span>
           <button
-            onClick={() => qty < product.quantity && setQty((prev) => prev + 1)}
+            onClick={() =>
+              qty < product.sizes[selectedSize].qty &&
+              setQty((prev) => prev + 1)
+            }
           >
             <TbPlus />
           </button>
         </div>
         <div className={styles.infos__actions}>
           <button
-            disabled={product.quantity < 1}
-            style={{ cursor: `${product.quantity < 1 ? "not-allowed" : ""}` }}
+            disabled={product.sizes[selectedSize].qty < 1}
+            style={{
+              cursor: `${
+                product.sizes[selectedSize].qty < 1 ? "not-allowed" : ""
+              }`,
+            }}
             onClick={() => addToCartHandler()}
           >
             <FaOpencart />

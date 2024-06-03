@@ -52,13 +52,13 @@ export default function Home({ country, products, recentlyViewedProducts }) {
             <Category
               header="Dresses"
               products={women_dresses}
-              background="#5a31f4"
+              background="linear-gradient(120deg, #ffb6c1 0%, #ffd1dc 100%)"
             />
             {!isMedium && (
               <Category
                 header="Shoes"
                 products={women_shoes}
-                background="linear-gradient(120deg, #b8de6f 0%, #f9f871 100%)"
+                background="linear-gradient(120deg, #a0a0a0 0%, #d3d3d3 100%)"
               />
             )}
             {isMobile && (

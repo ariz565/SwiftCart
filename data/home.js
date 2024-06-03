@@ -350,7 +350,7 @@ export const flashDealsArray = [
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/09/01/1662028598b9164c30a8410fc9d71b81fc63748d4e_thumbnail_405x552.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/28540830/2024/4/3/b9426bd6-c4d0-4f89-bf3d-0bb23c549f931712121742763-Reebok-Unisex-Sports-Shoes-4671712121742397-1.jpg",
     price: "288",
     discount: "35",
     link: "",
@@ -360,85 +360,85 @@ export const flashDealsArray = [
 export const women_dresses = [
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/01/10/16417808659209e55eaeb6216fe1b0ab7569f434e9_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/16857646/2024/4/30/02ebe685-6062-440f-affc-02142dea420d1714451865170-Libas-Women-Pink-Floral-Printed-Panelled-Pure-Cotton-Kurta-w-2.jpg",
     price: "790.58",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/04/25/16508565378f388bf7e888c2bc94273e9953d22100_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/29253680/2024/4/30/d10908a1-8028-4e0c-9966-96cc0e34004d1714475679328IndoEraWomenFloralEmbroideredRegularKurtawithTrousersWithDup1.jpg",
+    price: "1500",
+  },
+  {
+    image:
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/19609324/2022/8/22/239eefba-dc6e-4b8d-ad34-12ecaddf920d1661184413311NabiaAbayaBurqaforWomen1.jpg",
     price: "",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/03/24/164810755649b8cabd855efc56aa7a0a6b422962fe_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/17756580/2022/4/5/072f7100-78d6-4276-b97b-e920c5a8daa21649157632943NABIAWomenGreySolidAbayaBurqas3.jpg",
     price: "",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/04/11/164964281857e58b1fa7a38f9fff092384f23801f9_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/23547778/2023/6/6/08f4cc31-4ac4-4fff-9c04-b810224b44f31686062404164HERENOWPurpleGold-TonedEthnicMotifsEmbroideredDupattawithSeq1.jpg",
     price: "",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2021/10/15/16342654110372b23c51d76ca165537318bd0828f1_thumbnail_600x.webp",
-    price: "",
-  },
-  {
-    image:
-      "https://img.ltwebstatic.com/images3_pi/2022/02/21/1645432934d3afbf3ceebe3cbeb48019a7e4098f0f_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/24287286/2023/8/16/718e3714-4605-4936-bf9d-26e7a76121751692184838337-Van-Heusen-Woman-Women-Blazers-8781692184837932-5.jpg",
     price: "",
   },
 ];
 export const women_shoes = [
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2021/04/24/16192428449d0a2f9df3090b84cded584abe64c71e_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/28540830/2024/4/3/b9426bd6-c4d0-4f89-bf3d-0bb23c549f931712121742763-Reebok-Unisex-Sports-Shoes-4671712121742397-1.jpg",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/06/14/165517428253e93bd6a795d9a97c21810ef1beb61c_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/28351950/2024/3/18/7d070ee4-efb9-4297-bd9a-939cbd27e6321710778397360KARADDIWomenLoafers1.jpg",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2021/07/28/1627454227e78cf5c9d505d6c45a1c11e6c9b83625_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/28599766/2024/4/1/df1c128f-63fc-4741-b904-ef5c5fbadc231711952236489ConverseUnisexHigh-TopSneakers2.jpg",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/05/13/1652449751b1c4055651a96b57ae161885def48c15_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/26519144/2024/4/17/906fe36d-5c77-4e22-8737-7208f8c37f211713352231770-ADIDAS-Originals-Women-Samba-OG-Leather-Sneakers-69171335223-1.jpg",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2021/08/13/1628869751ad4c4dbe554b72f65af9d5c532528f6c_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/24184704/2023/7/26/df5a3daa-033d-4fa7-9e79-4be0605b1e291690346081418BMWMMotorsportDriftCatDecimaUnisexSneakers1.jpg",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/04/27/1651047458260c8e9c705b77227c9acdba9104c367_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/25277978/2023/9/29/58974612-c5f4-49f8-b113-539dccf439a11696008916124HRXbyHrithikRoshanWomenWhiteColourblockedSneakers1.jpg",
   },
 ];
 export const women_accessories = [
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/05/12/1652333770b01690f4b990751e070cc10e4682b39d_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/16058448/2021/12/21/be2421ba-f1e1-4f02-a676-a3ea0f44434d1640063346300-Baggit-Black-Structured-Shoulder-Bag-1891640063345699-1.jpg",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2021/10/18/1634549753f940286e6a06890c2a30302bbdbbf665_thumbnail_600x.webp",
+      "https://leafyaffair.com/cdn/shop/files/DSC_4832_720x.jpg?v=1702460557",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/03/15/1647310895dcbf38181ac1254338a636f64c94384b_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/3450320/2023/2/24/b33602f0-b2be-49d6-87fb-9da1607155491677214362585-Daniel-Klein-Women-Silver-Toned-Analogue-Watch-DK11328-6-631-1.jpg",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/05/13/1652449751b1c4055651a96b57ae161885def48c15_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/21979472/2023/2/14/9795117a-d603-48e1-9364-6e56d170f1ea1676393338901PUMAClassicUnisexBelt1.jpg",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/06/07/1654567858a331ceb5ce709ed8e53bc50b390d19f9_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/28300402/2024/3/18/9c07b9ad-17e1-487d-8fed-f0804908c01b1710740439155-FPods-FX10013mm-Bass-DriverQuad-Mic-ENC3C-NitroFast-ChargeBT-1.jpg",
   },
   {
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/06/20/16557062656c0432e06a65323afab13e64550c45d6_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/15304478/2021/8/30/af03b390-7266-4170-be1d-8392e15f87441630316817879PortronicsSoundDrum10WBluePortableWirelessSpeakerwithBluetoo4.jpg",
   },
 ];
 
@@ -474,21 +474,21 @@ export const women_swiper = [
     price: "1099",
   },
   {
-    name: "5pcs Halloween Pumpkin & Ghost Design Shoe Decoration",
+    name: "Fire-Boltt | Sporty Rugged Smartwatch ",
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/08/18/166082359241270ee7699993abcaefaad6fdedcfc2_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/23120666/2023/9/22/5c5d9e3f-2d9a-42ba-900b-7ec24ddcb1ce1695386406258-Fire-Boltt-Unisex-Smart-Watches-1811695386405297-1.jpg",
     price: "799.50",
   },
   {
-    name: "10pcs Solid Hair Band",
+    name: "Puma | Unisex Running Cap",
     image:
-      "https://img.ltwebstatic.com/images3_pi/2022/07/11/16575212726da2c7d3a0580bc5cfcfeb153d622924_thumbnail_600x.webp",
-    price: "300.69",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/27818910/2024/2/23/d5d69dfc-1fa7-4251-9ea1-3b5494760e6a1708712259295UnisexRunningCap1.jpg",
+    price: "359",
   },
   {
     name: "Rhinestone Decor Bracelet With Ring",
     image:
-      "https://img.ltwebstatic.com/images3_pi/2021/07/30/1627631651e33bb2d80d523abbcc83e3e18a43e76a_thumbnail_600x.webp",
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/27297748/2024/4/5/388c7726-5ec1-4f26-80b6-bb7da3febfd11712302449451HMRegularFitPrintedT-shirt1.jpg",
     price: "120.5",
   },
   {

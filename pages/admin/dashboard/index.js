@@ -15,6 +15,13 @@ import Link from "next/link";
 
 export default function Dashboard({ users, orders, products }) {
   const { data: session } = useSession();
+
+  const totalEarnings = orders.reduce((a, val) => a + val.total, 0).toFixed(2);
+  const unpaidEarnings = orders
+    .filter((o) => !o.isPaid)
+    .reduce((a, val) => a + val.total, 0)
+    .toFixed(2);
+
   return (
     <div>
       <Head>
@@ -65,13 +72,9 @@ export default function Dashboard({ users, orders, products }) {
               <GiTakeMyMoney />
             </div>
             <div className={styles.card__infos}>
-              <h4>+{orders.reduce((a, val) => a + val.total, 0)} INR</h4>
+              <h4>+{totalEarnings} ₹</h4>
               <h5>
-                -
-                {orders
-                  .filter((o) => !o.isPaid)
-                  .reduce((a, val) => a + val.total, 0)}{" "}
-                Rs. Unpaid yet.
+                -{unpaidEarnings} ₹ Unpaid yet.
               </h5>
               <span>Total Earnings</span>
             </div>
@@ -97,7 +100,7 @@ export default function Dashboard({ users, orders, products }) {
                 {orders.map((order) => (
                   <tr key={order._id}>
                     <td>{order.user.name}</td>
-                    <td>{order.total} $</td>
+                    <td>{order.total} ₹</td>
                     <td>
                       {order.isPaid ? (
                         <img src="../../../images/verified.webp" alt="" />

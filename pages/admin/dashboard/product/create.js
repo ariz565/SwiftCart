@@ -24,6 +24,8 @@ import Questions from "@/components/admin/createProduct/clickToAdd/Questions";
 import { validateCreateProduct } from "../../../../utils/validation";
 import dataURItoBlob from "../../../../utils/dataURItoBlob";
 import { uploadImages } from "../../../../requests/upload";
+import DotLoaderSpinner from "@/components/loaders/dotLoader";
+import reset from "@/pages/api/auth/reset";
 
 // ---------Initial State----------------
 const initialState = {
@@ -153,7 +155,7 @@ export default function Create({ parents, categories }) {
   };
   let uploaded_images = [];
   let style_img = "";
-  
+
   const createProductHandler = async () => {
     setLoading(true);
     if (images) {
@@ -188,6 +190,7 @@ export default function Create({ parents, categories }) {
       });
       setLoading(false);
       toast.success(data.message);
+      setProduct(initialState);
     } catch (error) {
       setLoading(false);
       toast.error(error.response.data.message);
@@ -197,6 +200,7 @@ export default function Create({ parents, categories }) {
   //------------------------------------------
   return (
     <Layout>
+      {loading && <DotLoaderSpinner Loading={loading} />}
       <div className={styles.header}>Create Product</div>
 
       <Formik
