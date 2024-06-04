@@ -1,42 +1,103 @@
 .forgot {
-    min-height: calc(100vh - 540px);
-    display: grid;
-    place-items: center;
-    &__header {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 300px);
+
+  &__wrap {
+    width: 50%;
+    padding: 0 1rem;
+
+    @media screen and (max-width: 1023px) {
+      width: 80%;
+    }
+  }
+
+  &__header {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+
+    .back__svg {
+      font-size: 15px;
+      color: #666;
+      font-weight: 600;
+      height: 45px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 10px;
-      .back__svg {
-        width: 50px;
-        height: 50px;
-        border: 1px solid #66666657;
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        cursor: pointer;
-  
-        &:hover {
-          border-color: $blue-color;
-          svg {
-            fill: $blue-color;
-          }
-        }
-        svg {
-          width: 20px;
-          height: 20px;
-          fill: #222;
-        }
+      gap: 2px;
+      cursor: pointer;
+
+      svg {
+        width: 20px;
+        height: 20px;
+        fill: #666;
+        // transition: $transition-1;
       }
-      span {
-        font-weight: 600;
-        font-size: 14px;
-        //padding-left: 10px;
-        a {
-          color: $blue-color;
-          cursor: pointer;
-          border-bottom: 1px solid $blue-color;
-          padding-bottom: 5px;
+
+      &:hover {
+        border-color: $blue-color;
+        // transition: $transition-1;
+        color: $blue-color;
+
+        svg {
+          fill: $blue-color;
         }
       }
     }
+
+    p {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 35px;
+
+      a {
+        color: $blue-color;
+        cursor: pointer;
+        text-decoration: underline;
+        font-weight: 700;
+      }
+    }
   }
+
+  &__form {
+    .btnWrap {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 2rem;
+      margin-top: 1.2rem;
+
+      button {
+        width: 100%;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: -10px;
+  color: $error-color;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: -10px;
+  color: $success-color;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}

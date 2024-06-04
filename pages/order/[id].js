@@ -4,86 +4,49 @@ import Order from "../../models/Order";
 import User from "../../models/User";
 import { IoIosArrowForward } from "react-icons/io";
 import db from "../../utils/db";
-// import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { useReducer, useEffect } from "react";
 import axios from "axios";
 import StripePayment from "../../components/stripePayment";
 import { getSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import RazorpayPayment from "../../components/razorpayPayment";
 
-// function reducer(state, action) {
-//   switch (action.type) {
-//     case "PAY_REQUEST":
-//       return { ...state, loading: true };
-//     case "PAY_SUCCESS":
-//       return { ...state, loading: false, success: true };
-//     case "PAY_FAIL":
-//       return { ...state, loading: false, error: action.payload };
-//     case "PAY_RESET":
-//       return { ...state, loading: false, success: false, error: false };
-//   }
-// }
 export default function Orders({
   orderData,
-  // paypal_client_id,
+  razorpay_key_id,
   stripe_public_key,
 }) {
-  // const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
-  // const [dispatch] = useReducer(reducer, {
-  //   loading: true,
-  //   error: "",
-  //   success: "",
-  // });
-  // useEffect(() => {
-  //   if (!orderData._id) {
-  //     dispatch({
-  //       type: "PAY_RESET",
-  //     });
-  //   } else {
-  //     paypalDispatch({
-  //       type: "resetOptions",
-  //       value: {
-  //         "client-id": paypal_client_id,
-  //         currency: "USD",
-  //       },
-  //     });
-  //     paypalDispatch({
-  //       type: "setLoadingStatus",
-  //       value: "pending",
-  //     });
-  //   }
-  // }, [order]);
-  // function createOrderHanlder(data, actions) {
-  //   return actions.order
-  //     .create({
-  //       purchase_units: [
-  //         {
-  //           amount: {
-  //             value: orderData.total,
-  //           },
-  //         },
-  //       ],
-  //     })
-  //     .then((order_id) => {
-  //       return order_id;
-  //     });
-  // }
-  // function onApproveHandler(data, actions) {
-  //   return actions.order.capture().then(async function (details) {
-  //     try {
-  //       dispatch({ type: "PAY_REQUEST" });
-  //       const { data } = await axios.put(
-  //         `/api/order/${orderData._id}/pay`,
-  //         details
-  //       );
-  //       dispatch({ type: "PAY_SUCCESS", payload: data });
-  //     } catch (error) {
-  //       dispatch({ type: "PAY_ERROR", payload: error });
-  //     }
-  //   });
-  // }
-  // function onErroHandler(error) {
-  //   console.log(error);
-  // }
+  const router = useRouter();
+  const { id } = router.query;
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Function to update the order status
+  const updateOrderStatus = async (status) => {
+    try {
+      setIsLoading(true);
+      const response = await axios.put(`/api/order/${id}/pay`, { status });
+      if (response.data.message === "Order is paid and status updated.") {
+        router.push("/complete"); // Redirect to the /complete page
+      } else {
+        router.reload(); // Reload the page to reflect the updated status
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Redirect if the order is already paid
+    if (orderData.isPaid) {
+      router.push('/complete'); // Assuming your success page is /orderSuccess
+    } 
+    else if (orderData.paymentMethod === "cash" && !orderData.isPaid) {
+        updateOrderStatus("Processing");
+      }
+  }, [orderData]);
   return (
     <>
       <Header country="country" />
@@ -140,10 +103,10 @@ export default function Orders({
                       <img src={product.color.image} alt="" /> / {product.size}
                     </div>
                     <div className={styles.product__infos_priceQty}>
-                      {product.price}$ x {product.qty}
+                      ₹{product.price} x {product.qty}
                     </div>
                     <div className={styles.product__infos_total}>
-                      {product.price * product.qty}$
+                      ₹{product.price * product.qty}
                     </div>
                   </div>
                 </div>
@@ -153,7 +116,7 @@ export default function Orders({
                   <>
                     <div className={styles.order__products_total_sub}>
                       <span>Subtotal</span>
-                      <span>{orderData.totalBeforeDiscount}$</span>
+                      <span>{orderData.totalBeforeDiscount}₹</span>
                     </div>
                     <div className={styles.order__products_total_sub}>
                       <span>
@@ -169,26 +132,26 @@ export default function Orders({
                     </div>
                     <div className={styles.order__products_total_sub}>
                       <span>Tax price</span>
-                      <span>+{orderData.taxPrice}$</span>
+                      <span>+{orderData.taxPrice}₹</span>
                     </div>
                     <div
                       className={`${styles.order__products_total_sub} ${styles.bordertop}`}
                     >
                       <span>TOTAL TO PAY</span>
-                      <b>{orderData.total}$</b>
+                      <b>₹{orderData.total}</b>
                     </div>
                   </>
                 ) : (
                   <>
                     <div className={styles.order__products_total_sub}>
                       <span>Tax price</span>
-                      <span>+{orderData.taxPrice}$</span>
+                      <span>+{orderData.taxPrice}₹</span>
                     </div>
                     <div
                       className={`${styles.order__products_total_sub} ${styles.bordertop}`}
                     >
                       <span>TOTAL TO PAY</span>
-                      <b>{orderData.total}$</b>
+                      <b>{orderData.total}₹</b>
                     </div>
                   </>
                 )}
@@ -260,6 +223,14 @@ export default function Orders({
                     stripe_public_key={stripe_public_key}
                   />
                 )}
+                {orderData.paymentMethod == "razorpay" && (
+                  <RazorpayPayment
+                    total={orderData.total}
+                    order_id={orderData._id}
+                    razorpay_key_id={razorpay_key_id} // Pass the Razorpay key ID
+                    shippingAddress={orderData.shippingAddress}
+                  />
+                )}
                 {orderData.paymentMethod == "cash" && (
                   <div className={styles.cash}>cash</div>
                 )}
@@ -279,13 +250,13 @@ export async function getServerSideProps(context) {
   const order = await Order.findById(id)
     .populate({ path: "user", model: User })
     .lean();
-  // let paypal_client_id = process.env.PAYPAL_CLIENT_ID;
+  let razorpay_key_id = process.env.RAZORPAY_KEY_ID;
   let stripe_public_key = process.env.STRIPE_PUBLIC_KEY;
   db.disconnectDb();
   return {
     props: {
       orderData: JSON.parse(JSON.stringify(order)),
-      // paypal_client_id,
+      razorpay_key_id,
       stripe_public_key,
     },
   };

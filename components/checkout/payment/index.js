@@ -1,7 +1,13 @@
 import { paymentMethods } from "../../../data/paymentMethods";
 import styles from "./styles.module.scss";
+import RazorpayPayment from "@/components/razorpayPayment";
 
-export default function Payment({ paymentMethod, setPaymentMethod, profile }) {
+export default function Payment({
+  paymentMethod,
+  setPaymentMethod,
+  profile,
+  orderData,
+}) {
   return (
     <div className={styles.payment}>
       {!profile && (
@@ -29,13 +35,18 @@ export default function Payment({ paymentMethod, setPaymentMethod, profile }) {
             <p>
               {pm.images.length > 0
                 ? pm.images.map((img) => (
-                    <img src={`../../../images/payment/${img}.webp`} alt="" />
+                    <img
+                      key={img}
+                      src={`../../../images/payment/${img}.webp`}
+                      alt={img}
+                    />
                   ))
                 : pm.description}
             </p>
           </div>
         </label>
       ))}
+     
     </div>
   );
 }

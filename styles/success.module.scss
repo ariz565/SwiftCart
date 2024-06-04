@@ -1,0 +1,39 @@
+.success-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  .success {
+    text-align: center;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    .icon {
+      font-size: 4rem;
+      color: green;
+    }
+    .btn {
+      background-color: #000;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 300px;
+    }
+    .email-mesg {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+    .description {
+      margin-top: 10px;
+      font-size: 1rem;
+      .email {
+        color: blue;
+        text-decoration: underline;
+        margin-left: 5px;
+      }
+    }
+  }
+}

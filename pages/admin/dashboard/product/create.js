@@ -190,7 +190,7 @@ export default function Create({ parents, categories }) {
       });
       setLoading(false);
       toast.success(data.message);
-      setProduct(initialState);
+      // setProduct(initialState);
     } catch (error) {
       setLoading(false);
       toast.error(error.response.data.message);

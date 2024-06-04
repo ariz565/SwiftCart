@@ -33,9 +33,12 @@ export default function Browse({
   patterns,
   materials,
   paginationCount,
-  country,
 }) {
   const router = useRouter();
+  const country = {
+    name: "India",
+    flag: "https://cdn.ipregistry.co/flags/emojitwo/in.svg",
+  };
   const filter = ({
     search,
     category,
@@ -291,6 +294,7 @@ export default function Browse({
 }
 
 export async function getServerSideProps(ctx) {
+  await db.connectDb();
   const { query } = ctx;
   //-------------------------------------------------->
   const searchQuery = query.search || "";
@@ -430,7 +434,7 @@ export async function getServerSideProps(ctx) {
         }
       : {};
   const sort =
-    sortQuery == ""
+    sortQuery == "recommend"
       ? {}
       : sortQuery == "popular"
       ? { rating: -1, "subProducts.sold": -1 }

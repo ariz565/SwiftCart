@@ -2,18 +2,41 @@ import styles from "./styles.module.scss";
 import { Rating } from "@mui/material";
 import { AiOutlineLike } from "react-icons/ai";
 
+// Function to mask a given name part (either first or last name) if it is longer than 5 characters
+function maskLongNamePart(namePart) {
+  if (namePart.length <= 2) {
+    return namePart[0] + '*';
+  }
+  return `${namePart[0]}***${namePart[namePart.length - 1]}`;
+}
+
+// Function to determine the display name based on privacy rules
+function getDisplayName(fullName) {
+  const nameParts = fullName.split(" ");
+  const firstName = nameParts[0];
+  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
+
+  if (firstName.length < 5) {
+    return `${firstName} ${maskLongNamePart(lastName)}`;
+  } else if (firstName.length > 5 && lastName.length < 5) {
+    return lastName;
+  } else {
+    return `${maskLongNamePart(firstName)} ${maskLongNamePart(lastName)}`;
+  }
+}
+
 // Review component
 export default function Review({ review }) {
-  const { name, image } = review.reviewBy
-    ? review.reviewBy
-    : { name: "", image: "" };
+  const { name, image } = review.reviewBy ? review.reviewBy : { name: "", image: "" };
+  
+  // Get the display name with privacy rules applied
+  const displayName = name ? getDisplayName(name) : "";
+
   return (
     <div className={styles.review}>
       <div className={styles.flex}>
         <div className={styles.review__user}>
-          <h4>
-            {name.slice(0, 1)}***{name.slice(name.length - 1, name.length)}
-          </h4>
+          <h4>{displayName}</h4>
           <img src={image} alt="" />
         </div>
         <div className={styles.review__review}>
