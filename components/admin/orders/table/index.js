@@ -77,7 +77,7 @@ function Row(props) {
         </TableCell>
         <TableCell align="right">{row.couponApplied || "-"}</TableCell>
         <TableCell align="right">
-          <b>{row.total}$</b>
+          <b>₹{row.total}</b>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -155,7 +155,7 @@ function Row(props) {
                       <TableCell>{p.name}</TableCell>
                       <TableCell align="left">{p.size}</TableCell>
                       <TableCell align="left">x{p.qty}</TableCell>
-                      <TableCell align="left">{p.price}$</TableCell>
+                      <TableCell align="left">₹{p.price}</TableCell>
                     </TableRow>
                   ))}
                   <TableRow key={row._id}>
@@ -169,7 +169,7 @@ function Row(props) {
                       align="left"
                       style={{ padding: "20px 0 20px 18px" }}
                     >
-                      <b style={{ fontSize: "20px" }}>{row.total}$</b>
+                      <b style={{ fontSize: "20px" }}>₹{row.total}</b>
                     </TableCell>
                   </TableRow>
                 </TableBody>

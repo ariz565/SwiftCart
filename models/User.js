@@ -78,6 +78,9 @@ const userSchema = new mongoose.Schema(
         style: {
           type: String,
         },
+        size: {
+          type: String,
+        },
       },
     ],
   },

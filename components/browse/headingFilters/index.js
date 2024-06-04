@@ -45,7 +45,7 @@ export default function HeadingFilters({
       </div>
       <div className={styles.filers__priceBtns}>
         <Tooltip
-          title={<h2>Check out products under 10$</h2>}
+          title={<h2>Check out products under 10₹</h2>}
           placement="top"
           arrow
           onClick={() => multiPriceHandler(0, 10)}
@@ -55,7 +55,7 @@ export default function HeadingFilters({
           </button>
         </Tooltip>
         <Tooltip
-          title={<h2>Check out products between 10$ and 50$</h2>}
+          title={<h2>Check out products between 10₹ and 50₹</h2>}
           placement="top"
           arrow
           onClick={() => multiPriceHandler(10, 50)}
@@ -65,7 +65,7 @@ export default function HeadingFilters({
           </button>
         </Tooltip>
         <Tooltip
-          title={<h2>Check out products between 50$ and 100$</h2>}
+          title={<h2>Check out products between 50₹ and 100₹</h2>}
           placement="top"
           arrow
           onClick={() => multiPriceHandler(50, 100)}
@@ -75,7 +75,7 @@ export default function HeadingFilters({
           </button>
         </Tooltip>
         <Tooltip
-          title={<h2>Check out products between 100$ and 500$</h2>}
+          title={<h2>Check out products between 100₹ and 500₹</h2>}
           placement="top"
           arrow
           onClick={() => multiPriceHandler(100, 500)}
@@ -85,7 +85,7 @@ export default function HeadingFilters({
           </button>
         </Tooltip>
         <Tooltip
-          title={<h2>Check out products for more than 500$</h2>}
+          title={<h2>Check out products for more than 500₹</h2>}
           placement="top"
           arrow
           onClick={() => multiPriceHandler(500, "")}

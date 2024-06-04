@@ -110,37 +110,20 @@ export default function Infos({ product, setActiveImg }) {
   };
 
   const handleWishlist = async () => {
+    if (!session) {
+      toast.error("Please sign in to use this feature!");
+      return signIn();
+    }
+
     try {
-      if (!session) {
-        return signIn();
-      }
-      const { data } = await axios.put("/api/user/wishlist", {
+      const { data } = await axios.put("/api/user/bag", {
         product_id: product._id,
         style: product.style,
+        size: selectedSize,
       });
-      dispatch(
-        showDialog({
-          header: "Product Added to Wishlist Successfully",
-          msgs: [
-            {
-              msg: data.message,
-              type: "success",
-            },
-          ],
-        })
-      );
+      toast.success(data.message);
     } catch (error) {
-      dispatch(
-        showDialog({
-          header: "Wishlist Error",
-          msgs: [
-            {
-              msg: error.response.data.message,
-              type: "error",
-            },
-          ],
-        })
-      );
+      return toast.error(error.response.data.message);
     }
   };
 
