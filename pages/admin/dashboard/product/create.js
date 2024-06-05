@@ -25,7 +25,7 @@ import { validateCreateProduct } from "../../../../utils/validation";
 import dataURItoBlob from "../../../../utils/dataURItoBlob";
 import { uploadImages } from "../../../../requests/upload";
 import DotLoaderSpinner from "@/components/loaders/dotLoader";
-import reset from "@/pages/api/auth/reset";
+// import reset from "@/pages/api/auth/reset";
 
 // ---------Initial State----------------
 const initialState = {
@@ -190,7 +190,7 @@ export default function Create({ parents, categories }) {
       });
       setLoading(false);
       toast.success(data.message);
-      // setProduct(initialState);
+      setProduct(initialState);
     } catch (error) {
       setLoading(false);
       toast.error(error.response.data.message);

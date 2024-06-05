@@ -6,7 +6,7 @@ import { getSession } from "next-auth/react";
 import { Button } from "@mui/material";
 import { FaTrash } from "react-icons/fa";
 import db from "@/utils/db";
-
+import { addToCartHandler } from "@/utils/productUtils";
 import styled from "@/styles/profile.module.scss";
 import User from "@/models/User";
 import Layout from "@/components/profile/layout";
@@ -195,17 +195,17 @@ export default function Wishlist({ user, tab }) {
                       </td> */}
                       <td className={`${styled.btn} ${styled.wishlist__btn}`}>
                         <Button
-                        //   onClick={(e) =>
-                        //     addToCartHandler(
-                        //       e,
-                        //       product.product._id,
-                        //       product.style,
-                        //       product.size,
-                        //       cart,
-                        //       dispatch
-                        //     )
-                        //   }
-                        //   variant="contained"
+                          // onClick={(e) =>
+                          //   addToCartHandler(
+                          //     e,
+                          //     product.product._id,
+                          //     product.style,
+
+                          //     cart,
+                          //     dispatch
+                          //   )
+                          // }
+                          variant="contained"
                         >
                           Add to cart
                         </Button>
