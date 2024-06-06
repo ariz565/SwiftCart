@@ -338,10 +338,10 @@ export async function getServerSideProps(ctx) {
   const search =
     searchQuery && searchQuery !== ""
       ? {
-          name: {
-            $regex: searchQuery,
-            $options: "i",
-          },
+          $or: [
+            { name: { $regex: searchQuery, $options: "i" } },
+            { brand: { $regex: searchQuery, $options: "i" } },
+          ],
         }
       : {};
   const category =
@@ -434,7 +434,7 @@ export async function getServerSideProps(ctx) {
         }
       : {};
   const sort =
-    sortQuery == "recommend"
+    sortQuery == ""
       ? {}
       : sortQuery == "popular"
       ? { rating: -1, "subProducts.sold": -1 }

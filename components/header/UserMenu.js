@@ -43,7 +43,7 @@ export default function UserMenu({ session }) {
           <Link href="/profile/messages">Message Center</Link>
         </li>
         <li>
-          <Link href="/profile/address">Address</Link>
+          <Link href="/profile/address?tab=0&q=addresses">Address</Link>
         </li>
         <li>
           <Link href="/profile/wishlist">Wishlist</Link>

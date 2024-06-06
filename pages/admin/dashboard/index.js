@@ -73,9 +73,7 @@ export default function Dashboard({ users, orders, products }) {
             </div>
             <div className={styles.card__infos}>
               <h4>+{totalEarnings} ₹</h4>
-              <h5>
-                -{unpaidEarnings} ₹ Unpaid yet.
-              </h5>
+              <h5>-{unpaidEarnings} ₹ Unpaid yet.</h5>
               <span>Total Earnings</span>
             </div>
           </div>
@@ -170,6 +168,7 @@ export async function getServerSideProps({ req }) {
   const users = await User.find().lean();
   const orders = await Order.find()
     .populate({ path: "user", model: User })
+    .sort({ createdAt: -1 }) // Sort orders by creation date in descending order
     .lean();
   const products = await Product.find().lean();
   return {

@@ -23,9 +23,9 @@ export default function Main({ searchHandler }) {
     if (router.pathname !== "/browse") {
       if (query.length > 1) {
         router.push(`/browse?search=${query}`);
-      } else {
-        searchHandler(query);
       }
+    } else {
+      searchHandler(query);
     }
   };
   return (

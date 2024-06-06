@@ -57,7 +57,7 @@ export default function Sidebar() {
         <div className={styles.sidebar__user}>
           <img src={session?.user?.image} alt="" />
           <div className={styles.show}>
-            <span>Welcome back 👋</span>
+            <span>Welcome back Admin👋</span>
             <span>{session?.user?.name}</span>
           </div>
         </div>
