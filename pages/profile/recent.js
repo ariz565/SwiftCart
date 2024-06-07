@@ -1,13 +1,13 @@
-import Layout from "@/components/Profile/Layout";
-import { User } from "@/models/User";
+import Layout from "@/components/profile/layout";
+import User from "@/models/User";
 import axios from "axios";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
-import styled from "@/styles/Profile.module.scss";
-import StyledDotLoader2 from "@/components/Loaders/DotLoader2";
-import ProductCard from "@/components/ProductCard";
+import styles from "@/styles/profile.module.scss";
+import StyledDotLoader2 from "@/components/loaders/DotLoader2";
+import ProductCard from "@/components/productCard";
 import { useMediaQuery } from "react-responsive";
 import NextImage from "@/components/NextImage";
 import Link from "next/link";
@@ -43,15 +43,15 @@ function RecentProductsPage({ user, tab }) {
       <Head>
         <title>Recently viewed products</title>
       </Head>
-      <div className={styled.recent}>
+      <div className={styles.recent}>
         <div>
           {loading && <StyledDotLoader2 loading={loading} />}
           {products.length > 0 && !loading && (
             <>
-              <div className={styled.header}>
-                <h1 className={styled.title}>Recently view products</h1>
+              <div className={styles.header}>
+                <h1 className={styles.title}>Recently view products</h1>
               </div>
-              <div className={styled.recent__list}>
+              <div className={styles.recent__list}>
                 {products.map((product) => (
                   <ProductCard
                     product={product}
@@ -65,8 +65,8 @@ function RecentProductsPage({ user, tab }) {
             </>
           )}
           {products.length === 0 && !loading && (
-            <div className={styled.wishlist__empty}>
-              <div className={styled.wishlist__empty_image2}>
+            <div className={styles.wishlist__empty}>
+              <div className={styles.wishlist__empty_image2}>
                 <NextImage src="/images/search.webp" />
               </div>
               <p>Your recently viewed list is empty!</p>

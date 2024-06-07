@@ -1,17 +1,16 @@
+import { useState, useEffect } from "react";
+import styles from "../styles/checkout.module.scss";
 import { getSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import User from "../models/User";
+import Cart from "../models/Cart";
+import db from "../utils/db";
+import Header from "../components/cart/header";
+import Shipping from "../components/checkout/shipping";
+import Products from "../components/checkout/products";
+import Payment from "../components/checkout/payment";
+import Summary from "../components/checkout/summary";
 
-import styled from "../styles/Checkout.module.scss";
-import { User } from "@/models/User";
-import db from "@/utils/db";
-import Header from "@/components/Cart/Header";
-import Products from "@/components/Checkout/Products";
-import Shipping from "@/components/Checkout/Shipping";
-import Cart from "@/models/Cart";
-import PaymentMethods from "@/components/Checkout/PaymentMethods";
-import Summary from "@/components/Checkout/Summary";
-
-const Checkout = ({ cart, user }) => {
+export default function Checkout({ cart, user }) {
   const [addresses, setAddresses] = useState(user?.address || []);
   const [selectedAddress, setSelectedAddress] = useState("");
 
@@ -19,20 +18,18 @@ const Checkout = ({ cart, user }) => {
   const [totalAfterDiscount, setTotalAfterDiscount] = useState("");
 
   useEffect(() => {
-    let check = addresses.find((a) => a.active == true);
-
+    let check = addresses.find((ad) => ad.active == true);
     if (check) {
       setSelectedAddress(check);
     } else {
       setSelectedAddress("");
     }
   }, [addresses]);
-
   return (
     <>
-      <Header link="/cart" text="BACK TO CART" />
-      <div className={styled.checkout}>
-        <div className={styled.checkout__left_side}>
+      <Header />
+      <div className={`${styles.container} ${styles.checkout}`}>
+        <div className={styles.checkout__side}>
           <Shipping
             user={user}
             addresses={addresses}
@@ -40,8 +37,8 @@ const Checkout = ({ cart, user }) => {
           />
           <Products cart={cart} />
         </div>
-        <div className={styled.checkout__right_side}>
-          <PaymentMethods
+        <div className={styles.checkout__side}>
+          <Payment
             paymentMethod={paymentMethod}
             setPaymentMethod={setPaymentMethod}
           />
@@ -57,28 +54,20 @@ const Checkout = ({ cart, user }) => {
       </div>
     </>
   );
-};
-
-export default Checkout;
-
+}
 export async function getServerSideProps(context) {
   db.connectDb();
   const session = await getSession(context);
-
-  //Lấy ra cart data của user
-  const user = await User.findById(session?.user.id);
-  const cart = await Cart.findOne({ user: user?._id });
+  const user = await User.findById(session.user.id);
+  const cart = await Cart.findOne({ user: user._id });
   db.disconnectDb();
-
-  //Nếu data cart rỗng, không che phép truy cập trang checkout
-  if (!cart) {
-    return {
-      redirect: {
-        destination: "/cart",
-      },
-    };
-  }
-
+  // if (!cart) {
+  //   return {
+  //     redirect: {
+  //       destination: "/cart",
+  //     },
+  //   };
+  // }
   return {
     props: {
       cart: JSON.parse(JSON.stringify(cart)),

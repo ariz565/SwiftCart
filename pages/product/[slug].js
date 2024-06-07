@@ -1,106 +1,76 @@
-import { useEffect, useState } from "react";
-import Head from "next/head";
-
-import { Category } from "@/models/Category";
-import { Product } from "@/models/Product";
-import { SubCategory } from "@/models/SubCategory";
+import Product from "@/models/Product";
+import User from "../../models/User";
+import Category from "@/models/Category";
+import SubCategory from "@/models/SubCategory";
+import styles from "../../styles/product.module.scss";
 import db from "@/utils/db";
-import {
-  calculatePercentage,
-  findAllSizes,
-  priceAfterDiscount,
-  sortPricesArr,
-} from "@/utils/productUltils";
-
-import styled from "../../styles/Product.module.scss";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import Head from "next/head";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import MainSwiper from "@/components/productPage/mainSwiper";
+import { useState, useEffect } from "react";
+import Infos from "@/components/productPage/infos";
+import Reviews from "@/components/productPage/reviews";
 import BreadCrumb from "@/components/BreadCrumb";
-import MainSwiper from "@/components/ProductPageContent/MainSwiper";
-import Infos from "@/components/ProductPageContent/Infos";
-import Reviews from "@/components/ProductPageContent/Reviews";
-import Payment from "@/components/ProductPageContent/Payment";
-import axios from "axios";
-import { toast } from "react-toastify";
 
-const ProductPage = ({ product }) => {
+export default function Products({ product }) {
   const [activeImg, setActiveImg] = useState("");
-  const [images, setImages] = useState(product.images);
-  const [ratings, setRatings] = useState([]);
-  const [loadRatings, setLoadRatings] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(0); // Default to the first size
+  const country = {
+    name: "India",
+    flag: "https://cdn.ipregistry.co/flags/emojitwo/in.svg",
+  };
 
-  useEffect(() => {
-    const fetchRatings = async () => {
-      setLoadRatings(true);
-      const { data } = await axios.get(`/api/product/${product._id}/review`);
-      setRatings([
-        { percentage: calculatePercentage(data, 5) },
-        { percentage: calculatePercentage(data, 4) },
-        { percentage: calculatePercentage(data, 3) },
-        { percentage: calculatePercentage(data, 2) },
-        { percentage: calculatePercentage(data, 1) },
-      ]);
-      setLoadRatings(false);
-    };
-
-    try {
-      fetchRatings();
-    } catch (error) {
-      setLoadRatings(false);
-      toast.error(error.response.data.message);
-    }
-  }, []);
-
+  // Recently viewed products
   useEffect(() => {
     let recentIds = JSON.parse(localStorage.getItem("recent-ids")) || [];
-    recentIds.unshift(product._id.toString());
-    const uniqueRecentIds = [...new Set(recentIds)];
+    if (!recentIds.includes(product._id.toString())) {
+      recentIds.unshift(product._id.toString());
+    }
+    const uniqueRecentIds = [...new Set(recentIds)].slice(0, 6); // Limit to 6 products
     localStorage.setItem("recent-ids", JSON.stringify(uniqueRecentIds));
-  }, []);
+  }, [product._id]);
+
+  const handleSizeChange = (sizeIndex) => {
+    setSelectedSize(sizeIndex);
+  };
+
+  const calculatePrice = (price, discount) => {
+    return discount ? (price * (1 - discount / 100)).toFixed(2) : price;
+  };
 
   return (
     <div>
       <Head>
         <title>{product.name}</title>
-        <meta name="description" content={product.description} />
       </Head>
-      <Header />
-      <div className={styled.product}>
-        <div className={styled.container}>
-          {/* BreadCrumb */}
-          <BreadCrumb
-            category={product.category.name}
-            categoryLink={""}
-            subCategories={product.subCategories}
-          />
-
-          <main className={styled.product__main}>
-            <div className={styled.product__main_column}>
-              {/* Product Content: Main image */}
-              <MainSwiper images={images} activeImg={activeImg} />
-              <Payment />
-            </div>
-
-            {/* Product Content: Infos */}
+      <Header country={country} />
+      <div className={styles.product}>
+        <div className={styles.product__container}>
+          <div className={styles.path}>
+            <BreadCrumb
+              category={product.category?.name}
+              categoryLink={`/category/${product.category?.slug}`}
+              subCategories={product.subCategories}
+            />
+          </div>
+          <div className={styles.product__main}>
+            <MainSwiper images={product.images} activeImg={activeImg} />
             <Infos
               product={product}
               setActiveImg={setActiveImg}
-              setImages={setImages}
+              selectedSize={selectedSize}
+              handleSizeChange={handleSizeChange}
+              calculatePrice={calculatePrice}
             />
-          </main>
-          <Reviews
-            product={product}
-            ratings={ratings}
-            loadRatings={loadRatings}
-          />
+          </div>
+          <Reviews product={product} />
         </div>
       </div>
-      <Footer />
+      <Footer country={country.name} />
     </div>
   );
-};
-
-export default ProductPage;
+}
 
 export async function getServerSideProps(context) {
   const { query } = context;
@@ -108,53 +78,71 @@ export async function getServerSideProps(context) {
   const style = query.style;
   const size = query.size || 0;
 
-  await db.connectDb();
+  db.connectDb();
   let product = await Product.findOne({ slug })
-    //path là property category cần điền thông tin
     .populate({ path: "category", model: Category })
     .populate({ path: "subCategories", model: SubCategory })
+    .populate({ path: "reviews.reviewBy", model: User })
     .lean();
 
-  let subProduct = product.subProducts[style];
+  if (!product) {
+    return {
+      notFound: true,
+    };
+  }
 
-  let prices = sortPricesArr(subProduct.sizes);
+  let subProduct = product.subProducts[style];
+  let prices = subProduct.sizes.map((s) => s.price).sort((a, b) => a - b);
 
   let newProduct = {
     ...product,
     style,
-    images: subProduct?.images,
-    sizes: subProduct?.sizes,
-    discount: subProduct?.discount,
-    sku: subProduct?.sku,
-    colors: product.subProducts.map((p) => {
-      if (p.color.image && p.color.color) {
-        return { colorImg: p.color.image, color: p.color.color };
-      } else {
-        return { color: p.color.color };
-      }
-    }),
-
-    priceRange: subProduct?.discount
-      ? `$${priceAfterDiscount(
-          prices[0],
-          subProduct.discount
-        )} ~ $${priceAfterDiscount(
-          prices?.[prices?.length - 1],
-          subProduct.discount
-        )}`
-      : `$${prices?.[0]} ~ $${prices?.[prices?.length - 1]}`,
-
-    price:
-      subProduct?.discount > 0
-        ? priceAfterDiscount(subProduct.sizes[size]?.price, subProduct.discount)
-        : subProduct.sizes[size].price,
+    images: subProduct.images,
+    sizes: subProduct.sizes,
+    discount: subProduct.discount,
+    sku: subProduct.sku,
+    colors: product.subProducts.map((p) => p.color),
+    priceRange: `From ₹${prices[0]} to ₹${prices[prices.length - 1]}.`,
+    price: subProduct.discount
+      ? (
+          subProduct.sizes[size].price *
+          (1 - subProduct.discount / 100)
+        ).toFixed(2)
+      : subProduct.sizes[size].price,
     priceBefore: subProduct.sizes[size].price,
     quantity: subProduct.sizes[size].qty,
-    allSizes: findAllSizes(product.subProducts),
+    ratings: [
+      { percentage: calculatePercentage("5") },
+      { percentage: calculatePercentage("4") },
+      { percentage: calculatePercentage("3") },
+      { percentage: calculatePercentage("2") },
+      { percentage: calculatePercentage("1") },
+    ],
+    reviews: product.reviews.reverse(),
+    allSizes: product.subProducts
+      .flatMap((p) => p.sizes)
+      .sort((a, b) => a.size - b.size)
+      .filter(
+        (element, index, array) =>
+          array.findIndex((el2) => el2.size === element.size) === index
+      ),
   };
 
-  await db.disconnectDb();
+  function calculatePercentage(num) {
+    return (
+      (product.reviews.reduce(
+        (a, review) =>
+          a +
+          (review.rating === Number(num) ||
+            review.rating === Number(num) + 0.5),
+        0
+      ) *
+        100) /
+      product.reviews.length
+    ).toFixed(1);
+  }
 
+  db.disconnectDb();
   return {
     props: {
       product: JSON.parse(JSON.stringify(newProduct)),

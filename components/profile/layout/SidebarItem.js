@@ -3,17 +3,16 @@ import Link from "next/link";
 import slugify from "slugify";
 import { useRouter } from "next/router";
 
-import styled from "./styles.module.scss";
+import styles from "./styles.module.scss";
 import { signOut } from "next-auth/react";
 import { HiMinusSm, HiPlusSm } from "react-icons/hi";
 
 export default function SidebarItem({ item, visible, index }) {
-  //SidebarItem nào có index bằng với tab thì stat show mặc định bằng true
   const [show, setShow] = useState(visible);
   const router = useRouter();
 
   return (
-    <li className={styled.sidebar__item}>
+    <li className={styles.sidebar__item}>
       {item.heading == "Sign out" ? (
         <b onClick={() => signOut()}>Sign out</b>
       ) : (
@@ -22,7 +21,6 @@ export default function SidebarItem({ item, visible, index }) {
         </b>
       )}
 
-      {/* Item nào có show bằng true thì sẽ đươc phép hiển thị các item con */}
       {show && (
         <ul>
           {item.links.map((link, i) => (
@@ -32,7 +30,7 @@ export default function SidebarItem({ item, visible, index }) {
                   className={
                     (router.query.q?.split("__")[0] || "") ==
                     slugify(link.name, { lower: true })
-                      ? styled.active
+                      ? styles.active
                       : ""
                   }
                 >
@@ -58,7 +56,7 @@ export default function SidebarItem({ item, visible, index }) {
                   className={
                     (router.query.q || "") ==
                     slugify(link.name, { lower: true })
-                      ? styled.active
+                      ? styles.active
                       : ""
                   }
                 >

@@ -1,4 +1,4 @@
-import { User } from "@/models/User";
+import User from "@/models/User";
 import db from "@/utils/db";
 
 async function handler(req, res) {
@@ -13,7 +13,6 @@ async function handler(req, res) {
 
       const newAddresses = addresses.filter((a) => a._id != address_id);
 
-      //Lưu ý phải có toObject để nhận về chính xác dạng Object
       await user.updateOne(
         {
           $pull: { address: { _id: address_id } },
@@ -23,7 +22,7 @@ async function handler(req, res) {
 
       res.json(newAddresses);
 
-      await db.disConnectDb();
+      await db.disconnectDb();
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

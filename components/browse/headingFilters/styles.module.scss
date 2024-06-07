@@ -1,118 +1,73 @@
 .filters {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  gap: 2rem;
   margin-bottom: 2rem;
-  font-size: 13px;
-  gap: 20px;
-
-  @media screen and (max-width: 1040px) {
-    div {
-      &:nth-of-type(1) {
-        order: 3;
-      }
-      &:nth-of-type(3) {
-        order: 1;
-      }
-    }
+  input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
   }
-
-  &__price {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    input {
-      width: 100px;
-      height: 35px;
-      padding-left: 10px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-
-      &:focus {
-        outline: none;
-      }
-    }
-  }
-
   &__sort {
     display: flex;
     align-items: center;
     gap: 10px;
-
+    position: absolute;
+    right: 1rem;
+    @media (max-width: 1300px) {
+      position: relative;
+    }
+    span {
+      font-size: 14px;
+    }
     &_list {
       position: relative;
       display: flex;
       align-items: center;
-
       button {
-        height: 35px;
-        width: 170px;
-        border-radius: 3px;
+        height: 40px;
+        width: 180px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 0 1rem;
-        font-size: 13px;
+        justify-content: space-around;
+        font-size: 14px;
+        gap: 5px;
         background: transparent;
         border: 1px solid #ccc;
         cursor: pointer;
-
         > div {
           transition: all 0.3s;
         }
       }
-
       ul {
         position: absolute;
         top: 100%;
         left: 0;
         background: #fff;
-        padding: 0 1rem;
+        padding: 1rem;
         z-index: 99;
         width: 100%;
         height: 250px;
         overflow-y: auto;
         transform-origin: top;
+        transform: scale3d(1, 0, 1);
         transition: all 0.2s;
-        border: 1px solid #ccc;
-        border-top: none;
-
-        &::-webkit-scrollbar {
-          width: 5px;
-        }
-
-        &::-webkit-scrollbar-track {
-          background-color: #fafafa;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background-image: linear-gradient(-45deg, #d9d8eb, #c0c0c0);
-          border-radius: 50px;
-        }
-
         li {
           height: 40px;
           font-size: 13px;
           cursor: pointer;
-          display: flex;
-          align-items: center;
-
+          svg {
+            margin-top: 2px;
+          }
           a {
-            width: 100%;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: space-between;
-
-            svg {
-              width: 16px;
-              height: 16px;
-              margin-right: -5px;
-              margin-top: -3px;
-            }
           }
-
+          .check {
+            display: none;
+          }
           &:hover {
             font-weight: 600;
             .check {
@@ -123,35 +78,61 @@
       }
     }
   }
-
-  &__priceBtns_wrap {
+  &__shipping {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
   }
-
+  &__price {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    span {
+      font-size: 14px;
+    }
+    input {
+      width: 70px;
+      height: 32px;
+      padding-left: 5px;
+      font-size: 14px;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
   &__priceBtns {
     display: flex;
     align-items: center;
     background: transparent !important;
   }
+  &__rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    label {
+      display: flex;
+      align-items: center;
+      margin-top: 1px;
+      svg {
+        fill: #fe4d4d;
+      }
+    }
+  }
 }
-
 .tooltip_btn {
   position: relative;
   width: 30px;
-  height: 35px;
+  height: 37px;
   cursor: pointer;
   background: transparent;
-
   span {
     position: absolute;
-    left: 0;
+    left: -2px;
     bottom: 0;
-    width: 98%;
+    width: 29px;
+    height: 25%;
     background: #ff00005f;
   }
-
   &:hover {
     span {
       background: red;

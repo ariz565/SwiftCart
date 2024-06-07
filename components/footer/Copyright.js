@@ -5,7 +5,7 @@ import styled from "./styles.module.scss";
 const Copyright = () => {
   return (
     <section className={styled.footer__copyright}>
-      ©2022 ShopPay All Rights Reserved
+      ©2024 SwiftCart All Rights Reserved
     </section>
   );
 };

@@ -1,17 +1,16 @@
 import { getSession } from "next-auth/react";
-import React, { useState } from "react";
+import { useState } from "react";
+import Shipping from "../../components/checkout/shipping";
+import Layout from "@/components/profile/layout";
+import User from "../../models/User";
+import styles from "@/styles/profile.module.scss";
 
-import styled from "@/styles/Profile.module.scss";
-import Shipping from "@/components/Checkout/Shipping";
-import Layout from "@/components/Profile/Layout";
-import { User } from "@/models/User";
-
-export default function ProfileAddresses({ user, tab }) {
+export default function Addresses({ user, tab }) {
   const [addresses, setAddresses] = useState(user.address.address || []);
   return (
     <>
       <Layout session={user.user} tab={tab}>
-        <div className={styled.shipping}>
+        <div className={styles.shipping}>
           <Shipping
             user={user}
             addresses={addresses}
@@ -26,11 +25,10 @@ export default function ProfileAddresses({ user, tab }) {
 
 export async function getServerSideProps(ctx) {
   const { query, req } = ctx;
-  const session = await getSession(ctx);
+  const session = await getSession({ req });
   const tab = query.tab || 0;
-
+  //--------------
   const address = await User.findById(session.user.id).select("address").lean();
-
   return {
     props: {
       user: {

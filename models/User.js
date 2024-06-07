@@ -1,29 +1,30 @@
-import mongoose, { models, model } from "mongoose";
+import mongoose from "mongoose";
 const { ObjectId } = mongoose.Schema;
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: "Please enter your full name",
+      required: "Please enter your full name.",
     },
     email: {
       type: String,
-      required: "Please enter your email address",
+      required: "Please enter your email address.",
       trim: true,
+      unique: true,
     },
     password: {
       type: String,
-      required: "Please enter your password",
+      required: '"Please enter a password.',
     },
-    //  Role mặc định là user
     role: {
       type: String,
       default: "user",
     },
     image: {
       type: String,
-      default: "/images/default-avt.png",
+      default:
+        "https://res.cloudinary.com/dmhcnhtng/image/upload/v1664642478/992490_b0iqzq.png",
     },
     emailVerified: {
       type: Boolean,
@@ -83,7 +84,10 @@ const userSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-export const User = models?.User || model("User", userSchema);
+export default User;

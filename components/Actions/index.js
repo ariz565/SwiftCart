@@ -9,7 +9,7 @@ import axios from "axios";
 
 import styled from "./styles.module.scss";
 import "react-toastify/dist/ReactToastify.css";
-import { addToCartHandler } from "@/utils/productUltils";
+// import { addToCartHandler } from "@/utils/productUltils";
 
 export default function Actions({ product, productStyle, productSize }) {
   const { data: session } = useSession();
@@ -26,7 +26,7 @@ export default function Actions({ product, productStyle, productSize }) {
     }
 
     try {
-      const { data } = await axios.put("/api/user/wishlist", {
+      const { data } = await axios.put("/api/user/bag", {
         product_id: product._id,
         style: productStyle,
         size: productSize,
@@ -48,16 +48,16 @@ export default function Actions({ product, productStyle, productSize }) {
       <Tooltip title={<p>Add to Cart</p>} placement="left" arrow>
         <button
           className={styled.actions__addToCart}
-          onClick={(e) =>
-            addToCartHandler(
-              e,
-              product._id,
-              productStyle,
-              productSize,
-              cart,
-              dispatch
-            )
-          }
+          // onClick={(e) =>
+          //   addToCartHandler(
+          //     e,
+          //     product._id,
+          //     productStyle,
+          //     productSize,
+          //     cart,
+          //     dispatch
+          //   )
+          // }
         >
           <FcPaid />
         </button>

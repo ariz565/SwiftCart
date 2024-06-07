@@ -5,20 +5,20 @@ import { RiSave3Fill } from "react-icons/ri";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import { Button } from "@mui/material";
+import axios from "axios";
 
-import styled from "../../styles/Profile.module.scss";
-import Layout from "@/components/Profile/Layout";
+import styles from "@/styles/profile.module.scss";
+import Layout from "@/components/profile/layout";
 
-import LoginInput from "@/components/Input/LoginInput";
+import LoginInput from "@/components/inputs/loginInput";
 import { BsFillCameraFill } from "react-icons/bs";
 import { toast } from "react-toastify";
 import Popup from "@/components/Popup";
 import dataURItoBlob from "@/utils/dataURItoBlob";
-import { uploadHandler } from "@/utils/request";
-import axios from "axios";
-import StyledDotLoader2 from "@/components/Loaders/DotLoader2";
+import { uploadImages } from "@/requests/upload";
+import StyledDotLoader2 from "@/components/loaders/DotLoader2";
 
-export default function ProfilePage({ tab }) {
+export default function Profile({ user, tab }) {
   const [name, setName] = useState("");
   const [ava, setAva] = useState("");
 
@@ -82,7 +82,7 @@ export default function ProfilePage({ tab }) {
             formData.append("path", path);
             formData.append("file", temp);
 
-            const avatar_image = await uploadHandler(formData);
+            const avatar_image = await uploadImages(formData);
 
             const { data } = await axios.put("/api/user/changeInfo", {
               name,
@@ -120,14 +120,14 @@ export default function ProfilePage({ tab }) {
   return (
     <>
       <Layout session={{ name, image: ava }} tab={tab}>
-        <div className={styled.profile}>
+        <div className={styles.profile}>
           {loading ? (
             <StyledDotLoader2 />
           ) : (
             <>
-              <h1 className={styled.title}>my profile</h1>
-              <div className={styled.flex}>
-                <div className={styled.profile__form}>
+              <h1 className={styles.title}>my profile</h1>
+              <div className={styles.flex}>
+                <div className={styles.profile__form}>
                   <Formik
                     enableReinitialize
                     initialValues={{
@@ -140,8 +140,8 @@ export default function ProfilePage({ tab }) {
                   >
                     {(form) => (
                       <Form>
-                        <div className={styled.flex}>
-                          <div className={styled.profile__form_inputs}>
+                        <div className={styles.flex}>
+                          <div className={styles.profile__form_inputs}>
                             <LoginInput
                               icon="user"
                               type="text"
@@ -168,10 +168,10 @@ export default function ProfilePage({ tab }) {
                             />
                           </div>
 
-                          <div className={styled.avatar}>
+                          <div className={styles.avatar}>
                             <NextImage src={ava} alt="" />
                             <label
-                              className={styled.avatar__upload}
+                              className={styles.avatar__upload}
                               htmlFor="imageUpload"
                             >
                               <BsFillCameraFill size={20} />
@@ -185,7 +185,7 @@ export default function ProfilePage({ tab }) {
                           </div>
                         </div>
 
-                        <div className={`${styled.btn} ${styled.profileBtn}`}>
+                        <div className={`${styles.btn} ${styles.profileBtn}`}>
                           <Button
                             variant="contained"
                             startIcon={<RiSave3Fill />}

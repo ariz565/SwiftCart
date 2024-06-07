@@ -1,28 +1,85 @@
-/* eslint-disable @next/next/no-img-element */
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import React from "react";
 import Link from "next/link";
 import slugify from "slugify";
 import { useRouter } from "next/router";
 import { FiExternalLink } from "react-icons/fi";
+import styles from "../../styles/profile.module.scss";
+import Layout from "@/components/profile/layout";
+import Order from "../../models/Order";
+import { ordersLinks } from "../../data/profile";
+import Swal from "sweetalert2";
+import { useEffect } from "react";
 
-import styled from "@/styles/Profile.module.scss";
-import Layout from "@/components/Profile/Layout";
-import { Order } from "@/models/Order";
-import { ordersLinks } from "@/data/profile";
-
-export default function ProfileOrder({ user, tab, orders }) {
+// Define the Orders Component
+export default function Orders({ user, tab, orders }) {
   const router = useRouter();
+
+  // Function to handle order cancellation
+  // Function to handle order cancellation
+  const cancelOrder = async (orderId) => {
+    // Display confirmation dialog
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Once canceled, you will not be able to recover this order!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, cancel it!",
+    });
+
+    // If user confirms cancellation, proceed with cancellation
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`/api/order/${orderId}/cancel`, {
+          method: "PUT",
+        });
+        if (response.ok) {
+          // Show success message
+          Swal.fire("Canceled!", "Your order has been canceled.", "success");
+          // Reload orders after cancellation
+          router.reload();
+        } else {
+          console.error("Failed to cancel order");
+          Swal.fire("Error!", "Failed to cancel order.", "error");
+        }
+      } catch (error) {
+        console.error("Error canceling order:", error);
+        Swal.fire("Error!", "Failed to cancel order.", "error");
+      }
+    }
+  };
+  // Function to automatically update order statuses
+  useEffect(() => {
+    const orderStatusUpdater = async () => {
+      try {
+        const response = await fetch(`/api/order/updateStatus`, {
+          method: "PUT",
+        });
+        if (!response.ok) {
+          console.error("Failed to update order statuses");
+        }
+      } catch (error) {
+        console.error("Error updating order statuses:", error);
+      }
+    };
+
+    // Run the updater on mount and then every hour
+    orderStatusUpdater();
+    const interval = setInterval(orderStatusUpdater, 60 * 60 * 1000); // 1 hour
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <>
       <Layout session={user.user} tab={tab}>
         <Head>
           <title>Orders</title>
         </Head>
-        <div className={styled.orders}>
-          <div className={styled.header}>
-            <h1 className={styled.title}>MY ORDERS</h1>
+        <div className={styles.orders}>
+          <div className={styles.header}>
+            <h1 className={styles.title}>MY ORDERS</h1>
           </div>
           <nav>
             <ul>
@@ -30,9 +87,9 @@ export default function ProfileOrder({ user, tab, orders }) {
                 <li
                   key={i}
                   className={
-                    slugify(link.name, { lower: true }) ==
+                    slugify(link.name, { lower: true }) ===
                     router.query.q.split("__")[0]
-                      ? styled.active
+                      ? styles.active
                       : ""
                   }
                 >
@@ -47,7 +104,6 @@ export default function ProfileOrder({ user, tab, orders }) {
               ))}
             </ul>
           </nav>
-
           <table>
             <thead>
               <tr>
@@ -58,32 +114,33 @@ export default function ProfileOrder({ user, tab, orders }) {
                 <td>Paid</td>
                 <td>Status</td>
                 <td>View</td>
+                <td>Action</td> {/* New column for cancellation action */}
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id}>
                   <td>{order._id}</td>
-                  <td className={styled.orders__images}>
+                  <td className={styles.orders__images}>
                     {order.products.map((p) => (
                       <img key={p._id} alt="" src={p.image} />
                     ))}
                   </td>
                   <td>
-                    {order.paymentMethod == "paypal"
-                      ? "Paypal"
-                      : order.paymentMethod == "credit_card"
+                    {order.paymentMethod === "razorpay"
+                      ? "Razorpay"
+                      : order.paymentMethod === "credit_card"
                       ? "Credit card"
                       : "Cash on delivery"}
                   </td>
-                  <td>${order.total}</td>
-                  <td className={styled.orders__paid}>
+                  <td>₹{order.total}</td>
+                  <td className={styles.orders__paid}>
                     {order.isPaid ? (
-                      <div className={styled.ver}>
+                      <div className={styles.ver}>
                         <img src="/images/verified.png" alt="" /> Paid
                       </div>
                     ) : (
-                      <div className={styled.unver}>
+                      <div className={styles.unver}>
                         <img src="/images/unverified.png" alt="" /> Unpaid
                       </div>
                     )}
@@ -93,6 +150,14 @@ export default function ProfileOrder({ user, tab, orders }) {
                     <Link href={`/order/${order._id}`} target="_blank">
                       <FiExternalLink />
                     </Link>
+                  </td>
+                  <td>
+                    {!order.isPaid &&
+                      order.status !== "Cancelled" && ( // Display cancel button if order is unpaid and not already canceled
+                        <button onClick={() => cancelOrder(order._id)}>
+                          Cancel
+                        </button>
+                      )}
                   </td>
                 </tr>
               ))}
@@ -126,36 +191,29 @@ export async function getServerSideProps(ctx) {
     case "completed":
       filter = "Completed";
       break;
-    case "canceled":
-      filter = "Canceled";
+    case "cancelled":
+      filter = "Cancelled";
       break;
   }
 
-  // Fetch toàn bộ order của user
   if (!filter) {
     orders = await Order.find({ user: session?.user.id })
       .sort({
         createdAt: -1,
       })
       .lean();
-
-    //Filter ra những order đã thanh toán
-  } else if (filter == "paid") {
+  } else if (filter === "paid") {
     orders = await Order.find({ user: session?.user.id, isPaid: true })
       .sort({
         createdAt: -1,
       })
       .lean();
-
-    //Filter ra những order chưa thanh toán
-  } else if (filter == "unpaid") {
+  } else if (filter === "unpaid") {
     orders = await Order.find({ user: session?.user.id, isPaid: false })
       .sort({
         createdAt: -1,
       })
       .lean();
-
-    //Filter ra order dựa trên status
   } else {
     orders = await Order.find({ user: session?.user.id, status: filter })
       .sort({

@@ -1,11 +1,11 @@
 import auth from "@/middleware/auth";
-import { Product } from "@/models/Product";
+import Product from "@/models/Product";
 import db from "@/utils/db";
-import nc from "next-connect";
+import { createRouter } from "next-connect";
 
-const handler = nc().use(auth);
+const router = createRouter().use(auth);
 
-handler.post(async (req, res) => {
+router.post(async (req, res) => {
   try {
     const { ids } = req.body;
 
@@ -32,4 +32,4 @@ handler.post(async (req, res) => {
   }
 });
 
-export default handler;
+export default router.handler();

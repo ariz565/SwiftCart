@@ -1,28 +1,28 @@
-import auth from "@/middleware/auth";
-import { User } from "@/models/User";
+import { createRouter } from "next-connect";
 import db from "@/utils/db";
-import nc from "next-connect";
+import Product from "@/models/Product";
+import User from "@/models/User";
+import Cart from "@/models/Cart";
+import auth from "@/middleware/auth";
 
-const handler = nc().use(auth);
+const router = createRouter().use(auth);
 
-handler.put(async (req, res) => {
+router.put(async (req, res) => {
   try {
-    await db.connectDb();
+    db.connectDb();
     const { paymentMethod } = req.body;
     const user = await User.findById(req.user);
-
     await user.updateOne(
-      { defaultPaymentMethod: paymentMethod },
+      {
+        defaultPaymentMethod: paymentMethod,
+      },
       { returnOriginal: false }
     );
-
-    await db.disConnectDb();
-
-    res.status(200).json({ paymentMethod: user.defaultPaymentMethod });
+    db.disconnectDb();
+    return res.json({ paymentMethod: user.defaultPaymentMethod });
   } catch (error) {
-    await db.disConnectDb();
     return res.status(500).json({ message: error.message });
   }
 });
 
-export default handler;
+export default router.handler();

@@ -1,37 +1,60 @@
-import { Order } from "@/models/Order";
-import db from "@/utils/db";
+import { createRouter } from "next-connect";
+import auth from "../../../../middleware/auth";
+import Order from "../../../../models/Order";
+import db from "../../../../utils/db";
+import User from "../../../../models/User";
+import { sendEmail } from "@/utils/sendEmails";
+import { orderConfirmationTemplate } from "@/emails/orderConfirmationTemplate";
+import { Router, useRouter } from "next/router";
 
-async function handler(req, res) {
-  if (req.method === "PUT") {
-    try {
-      await db.connectDb();
+const router = createRouter().use(auth);
 
-      console.log(req.body);
 
-      const order_id = req.query.id;
-
-      const order = await Order.findById(order_id);
-
-      if (order) {
-        order.isPaid = true;
-        order.paidAt = Date.now();
-        order.paymentResult = {
-          id: req.body.details.id,
-          status: req.body.details.status,
-          email_address: req.body.details.email_address,
-        };
-      }
-
-      const newOrder = await order.save();
-
-      db.disConnectDb();
-
-      res.json({ message: "Order is paid", order: newOrder });
-    } catch (error) {
-      db.disConnectDb();
-      return res.status(500).json({ message: error.message });
+router.put(async (req, res) => {
+  console.log("hello from api");
+  await db.connectDb();
+  const order = await Order.findById(req.query.id).populate({
+    path: "user",
+    model: User,
+  });
+  if (order) {
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      email_address: req.body.email_address,
+    };
+    if (order.paymentMethod === "cash") {
+      order.status = "Processing";
     }
-  }
-}
+    const newOrder = await order.save();
+    await db.disconnectDb();
+    // Send email notification
+    const emailSubject = "Order Payment Confirmation";
+    const emailText = `Hello ${order.user.name},\n\nYour order with ID ${order._id} has been successfully paid.\n\nThank you for your purchase!\n\nBest regards,\nYour Company`;
+    const emailUrl = `${process.env.BASE_URL}/order/${order._id}`; // Adjust the URL as needed
+    sendEmail(
+      order.user.email,
+      emailUrl,
+      emailText,
+      emailSubject,
+      orderConfirmationTemplate
+    );
+    console.log("Email sent.");
 
-export default handler;
+    // res.json({ message: "Order is paid and status updated.", order: newOrder });
+    setTimeout(() => {
+      res.json({
+        message: "Order is paid and status updated.",
+        order: newOrder,
+        redirect: "/complete",
+      });
+    }, 3000);
+  } else {
+    await db.disconnectDb();
+    res.status(404).json({ message: "Order is not found." });
+  }
+});
+
+export default router.handler();

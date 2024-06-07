@@ -1,76 +1,64 @@
-import { Category } from "@/models/Category";
+import { createRouter } from "next-connect";
 import db from "@/utils/db";
-import nextConnect from "next-connect";
-import slugify from "slugify";
 import auth from "../../../middleware/auth";
+import Category from "../../../models/Category";
+import slugify from "slugify";
 import admin from "../../../middleware/admin";
 
-// Dùng middleware auth để xác thực người dùng đã đăng nhập
-// Đồng thời có thể gắn cho req propperty user bằng với id của người dùng gửi request
-const handler = nextConnect().use(auth)
-
-handler.post(async (req, res) => {
+// ------------------- Category Model -------------------
+const router = createRouter().use(auth).use(admin);
+// ------------------- Category Model -------------------
+router.post(async (req, res) => {
   try {
-    await db.connectDb();
     const { name } = req.body;
-
+    db.connectDb();
     const test = await Category.findOne({ name });
-
-    //Nếu category đã tồn tại, trả về lỗi
     if (test) {
       return res
         .status(400)
-        .json({ message: "Category already exists, try a different name." });
+        .json({ message: "Category already exist, Try a different name" });
     }
-
     await new Category({ name, slug: slugify(name) }).save();
 
     db.disconnectDb();
-
-    res.status(201).json({
-      categories: await Category.find({}).sort({ updatedAt: -1 }),
+    res.json({
       message: `Category ${name} has been created successfully.`,
+      categories: await Category.find({}).sort({ updatedAt: -1 }),
     });
   } catch (error) {
+    db.disconnectDb();
     res.status(500).json({ message: error.message });
   }
 });
-
-handler.delete(async (req, res) => {
+// ------------------- Delete Category -------------------
+router.delete(async (req, res) => {
   try {
-    await db.connectDb();
-    const { id } = req.query;
-
+    const { id } = req.body;
+    db.connectDb();
     await Category.findByIdAndDelete(id);
-
     db.disconnectDb();
-
     return res.json({
-      message: "Category has been deleted successfully.",
+      message: "Category has been deleted successfuly",
       categories: await Category.find({}).sort({ updatedAt: -1 }),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-
-handler.put(async (req, res) => {
+// ------------------- Update Category -------------------
+router.put(async (req, res) => {
   try {
     const { id, name } = req.body;
-
-    await db.connectDb();
-
-    await Category.findByIdAndUpdate(id, { name, slug: slugify(name) });
-
-    await db.disconnectDb();
-
+    db.connectDb();
+    await Category.findByIdAndUpdate(id, { name });
+    db.disconnectDb();
     return res.json({
-      message: "Category has been updated successfully.",
+      message: "Category has been updated successfuly",
       categories: await Category.find({}).sort({ createdAt: -1 }),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-
-export default handler;
+// ------------------- Export Handler -------------------
+export default router.handler();

@@ -32,12 +32,12 @@
         width: 20px;
         height: 20px;
         fill: #666;
-        transition: $transition-1;
+        // transition: $transition-1;
       }
 
       &:hover {
         border-color: $blue-color;
-        transition: $transition-1;
+        // transition: $transition-1;
         color: $blue-color;
 
         svg {

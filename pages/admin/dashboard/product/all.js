@@ -1,99 +1,55 @@
-import styled from "@/styles/AllProducts.module.scss";
-import Layout from "@/components/Admin/Layout";
-import { Category } from "@/models/Category";
-import { Product } from "@/models/Product";
+import Layout from "@/components/admin/layout";
+import styles from "@/styles/products.module.scss";
 import db from "@/utils/db";
-import ProductCard from "@/components/Admin/AllProducts/ProductCard";
-import ProductItem from "@/components/Admin/AllProducts/ProductItem";
-import { useMemo } from "react";
+import Product from "@/models/Product";
+import Category from "@/models/Category";
+import ProductCard from "@/components/admin/products/productCard";
+import OverviewCard from "@/components/admin/products/overviewProducts/OverviewCard"; // Correct import
 
-export default function AllProductsPage({ products }) {
-  const statistics = useMemo(() => {
-    const subProductsSizes = products.map((p) =>
-      p.subProducts.map((s) => s.sizes).flat()
-    );
-
-    const itemQty = subProductsSizes.flat().length;
-
-    const outStock = subProductsSizes.filter(
-      (o) => o.reduce((a, c) => a + c.qty, 0) == 0
-    );
-
-    const productCategories = products.map((p) => p.category._id);
-    const productUniqueCategories = [...new Set(productCategories)];
-
-    return { itemQty, outStock, productUniqueCategories };
-  }, [products]);
-
+export default function All({ products, metrics }) {
   return (
     <Layout>
-      <div className={styled.header}>All products</div>
-
-      {/* Statistics */}
-      <div className={styled.products__stats}>
-        <div className={styled.products__stats_item}>
-          <span>Total products</span>
-          <span>{products.length}</span>
-        </div>
-
-        <div className={styled.products__stats_item}>
-          <span>Out of stock</span>
-          <span>{statistics.outStock.length}</span>
-        </div>
-
-        <div className={styled.products__stats_item}>
-          <span>Total item</span>
-          <span>{statistics.itemQty}</span>
-        </div>
-
-        <div className={styled.products__stats_item}>
-          <span>Categories</span>
-          <span>{statistics.productUniqueCategories.length}</span>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className={styled.products__table}>
-        <table className={styled.list}>
-          <thead>
-            <th>Product name</th>
-            <th>Category</th>
-            <th>Styles</th>
-            <th>Inventory</th>
-            <th>Date added</th>
-          </thead>
-          <tbody>
-            {products?.map((product) => (
-              <ProductItem key={product._id} product={product} />
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className={styled.header}>products & styles</div>
-      {/* Swiper */}
-      <div className={styled.products_swiper}>
-        {products.map((product) => (
-          <ProductCard key={product._id} product={product} />
-        ))}
-      </div>
+      <div className={styles.header}>All Products</div>
+      <OverviewCard metrics={metrics} /> {/* Add the OverviewCard component */}
+      {products.map((product) => (
+        <ProductCard product={product} key={product._id} />
+      ))}
     </Layout>
   );
 }
-
-export async function getServerSideProps(context) {
+export async function getServerSideProps(ctx) {
   await db.connectDb();
-
   const products = await Product.find({})
     .populate({ path: "category", model: Category })
     .sort({ createdAt: -1 })
     .lean();
-
   await db.disconnectDb();
+
+  // Calculate metrics and prepare lists
+  const totalProducts = products.length;
+  const outOfStockProducts = products.filter((product) =>
+    product.subProducts.every((subProduct) =>
+      subProduct.sizes.every((size) => size.qty === 0)
+    )
+  );
+  const lowStockProducts = products.filter((product) =>
+    product.subProducts.some((subProduct) =>
+      subProduct.sizes.some((size) => size.qty <= 20 && size.qty > 0)
+    )
+  );
+
+  const metrics = {
+    totalProducts,
+    outOfStockCount: outOfStockProducts.length,
+    lowStockCount: lowStockProducts.length,
+  };
 
   return {
     props: {
       products: JSON.parse(JSON.stringify(products)),
+      metrics,
+      outOfStockProducts: JSON.parse(JSON.stringify(outOfStockProducts)),
+      lowStockProducts: JSON.parse(JSON.stringify(lowStockProducts)),
     },
   };
 }

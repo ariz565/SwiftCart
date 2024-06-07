@@ -1,55 +1,67 @@
-import Layout from "@/components/Profile/Layout";
 import { getSession } from "next-auth/react";
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
+import Layout from "../../components/profile/layout";
+import User from "../../models/User";
+import Payment from "../../components/checkout/payment";
+import styles from "../../styles/profile.module.scss";
+import axios from "axios";
+import { useRouter } from "next/router";
 
-import styled from "@/styles/Profile.module.scss";
-import { User } from "@/models/User";
-import PaymentMethods from "@/components/Checkout/PaymentMethods";
-
-export default function ProfilePayment({ user, tab, defaultPaymentMethod }) {
+export default function Payments({ user, tab, defaultPaymentMethod }) {
+  const router = useRouter();
   const [dbPM, setDbPM] = useState(defaultPaymentMethod);
   const [paymentMethod, setPaymentMethod] = useState(defaultPaymentMethod);
-  const [disabled, setDisabled] = useState(true);
-
-  useEffect(() => {
-    setDisabled(!paymentMethod || dbPM == paymentMethod);
-  }, [paymentMethod, dbPM]);
-
+  const [error, setError] = useState("");
+  // -------------------------Handle payment -----------------------
+  const handlePM = async () => {
+    try {
+      const { data } = await axios.put("/api/user/changePM", {
+        paymentMethod,
+      });
+      setError("");
+      setDbPM(data.paymentMethod);
+      window.location.reload(false);
+    } catch (error) {
+      setError(error.response.data.message);
+    }
+  };
   return (
-    <>
-      <Layout session={user.user} tab={tab}>
-        <div className={styled.payment}>
-          <PaymentMethods
-            paymentMethod={paymentMethod}
-            setPaymentMethod={setPaymentMethod}
-            profile
-            //Khi default PM giống với lựa chọn hiện tại hoặc khi không lựa chọn PM nào thì Disable button
-            disabled={disabled}
-            setDisabled={setDisabled}
-            setDbPM={setDbPM}
-          />
-        </div>
-      </Layout>
-    </>
+    <Layout session={user.user} tab={tab}>
+      <div className={styles.header}>
+        <h1>MY PAYMENT METHODS</h1>
+      </div>
+      <Payment
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+        profile
+      />
+      <button
+        disabled={!paymentMethod || paymentMethod == dbPM}
+        className={`${styles.button} ${
+          !paymentMethod || paymentMethod == dbPM ? styles.disabled : ""
+        }`}
+        onClick={() => handlePM()}
+      >
+        Save
+      </button>
+      {error && <span className={styles.error}>{error}</span>}
+    </Layout>
   );
 }
 
 export async function getServerSideProps(ctx) {
   const { query, req } = ctx;
-  const session = await getSession(ctx);
+  const session = await getSession({ req });
   const tab = query.tab || 0;
-
+  //-----------------
   const user = await User.findById(session.user.id).select(
     "defaultPaymentMethod"
   );
-
   return {
     props: {
       user: session,
       tab,
-      defaultPaymentMethod: JSON.parse(
-        JSON.stringify(user.defaultPaymentMethod)
-      ),
+      defaultPaymentMethod: user.defaultPaymentMethod,
     },
   };
 }

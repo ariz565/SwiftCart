@@ -85,4 +85,3 @@ export const sizesList = [
   "61",
   "62",
 ];
-  

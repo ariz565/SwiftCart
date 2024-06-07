@@ -1,16 +1,14 @@
-import React from "react";
 import Main from "./Main";
-
-import styled from "./styles.module.scss";
+import Ad from "./Ad";
 import Top from "./Top";
+import styles from "./styles.module.scss";
 
-const Header = ({ country, searchHandler }) => {
+export default function Header({ country, searchHandler }) {
   return (
-    <header className={styled.header}>
+    <header className={styles.header}>
+      <Ad />
       <Top country={country} />
-      <Main searchHandler2={searchHandler} />
+      <Main searchHandler={searchHandler} />
     </header>
   );
-};
-
-export default Header;
+}

@@ -1,37 +1,32 @@
-import { User } from "@/models/User";
-import db from "@/utils/db";
+import { createRouter } from "next-connect";
+import db from "../../../utils/db";
+import { validateEmail } from "../../../utils/validation";
+import User from "../../../models/User";
 import bcrypt from "bcrypt";
+import { createActivationToken, createResetToken } from "../../../utils/tokens";
+import { sendEmail } from "../../../utils/sendEmails";
+import { resetEmailTemplate } from "../../../emails/resetEmailTemplate";
 
-async function handler(req, res) {
-  if (req.method === "PUT") {
-    try {
-      // Connect db & extract data
-      await db.connectDb();
-      const { user_id, password } = req.body;
+const router = createRouter();
 
-      const user = await User.findById(user_id);
+router.put(async (req, res) => {
+  try {
+    await db.connectDb();
+    const { user_id, password } = req.body;
 
-      if (!user) {
-        return res
-          .status(400)
-          .json({ message: "This account does not exist in our database." });
-      }
-
-      const cryptedPassword = await bcrypt.hash(password, 12);
-
-      await User.updateOne({
-        password: cryptedPassword,
-      });
-
-      await db.disConnectDb();
-
-      res.json({
-        message: { email: user.email },
-      });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    const user = await User.findById(user_id);
+    if (!user) {
+      return res.status(400).json({ message: "This Account does not exist." });
     }
+    const cryptedPassword = await bcrypt.hash(password, 12);
+    await user.updateOne({
+      password: cryptedPassword,
+    });
+    res.status(200).json({ email: user.email });
+    await db.disconnectDb();
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-}
+});
 
-export default handler;
+export default router.handler();

@@ -1,66 +1,47 @@
-import { useState } from "react";
-import styled from "../styles.module.scss";
-import { FaMinus, FaPlus } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { replaceQuery } from "@/utils/filter";
-import CheckboxItem from "../CheckboxItem";
-import ShowAllBtn from "../ShowAllBtn";
-import useSeeMore from "@/hook/useSeeMore";
-import PlusMinusBtn from "../PlusMinusBtn";
+import { useState } from "react";
+import { BsPlusLg } from "react-icons/bs";
+import { FaMinus } from "react-icons/fa";
+import styles from "../styles.module.scss";
 
 export default function PatternsFilter({
   patterns,
   patternHandler,
-  checkChecked,
+  replaceQuery,
 }) {
-  const [show, setShow] = useState(true);
   const router = useRouter();
-  const { itemsQty, showAllHandler, hideBtn } = useSeeMore(patterns);
-
   const existedPattern = router.query.pattern || "";
-
+  const [show, setShow] = useState(true);
   return (
-    <div className={styled.filter}>
+    <div className={styles.filter}>
       <h3>
-        Patterns{" "}
-        <PlusMinusBtn show={show} onClick={() => setShow((prev) => !prev)} />
+        Pattern <span>{show ? <FaMinus /> : <BsPlusLg />}</span>
       </h3>
-
       {show && (
-        <>
-          <div>
-            {patterns.length > 0 ? (
-              patterns.map((pattern, i) => {
-                const check = checkChecked("pattern", pattern);
-                return (
-                  <CheckboxItem
-                    key={i}
-                    onClick={() => {
-                      replaceQuery(
-                        existedPattern,
-                        check,
-                        pattern,
-                        patternHandler
-                      );
-                    }}
-                    id={pattern}
-                    check={check}
-                    content={pattern}
-                    name="pattern"
-                    type="checkbox"
-                  />
-                );
-              })
-            ) : (
-              <p style={{ padding: "10px 0" }}>Found no patterns</p>
-            )}
-          </div>
-          {patterns.slice(0, itemsQty).length > 5 && (
-            <div className={`${styled.showHideBtn}`}>
-              <ShowAllBtn hideBtn={hideBtn} onClick={showAllHandler} />
-            </div>
-          )}
-        </>
+        <div className={styles.filter__sizes}>
+          {patterns.map((pattern, i) => {
+            const check = replaceQuery("pattern", pattern);
+            return (
+              <label
+                htmlFor={pattern}
+                className={styles.filter__sizes_size}
+                onClick={() => patternHandler(check.result)}
+              >
+                <input
+                  type="checkbox"
+                  name="pattern"
+                  id={pattern}
+                  checked={check.active}
+                />
+                <label htmlFor={pattern}>
+                  {pattern.length > 12
+                    ? `${pattern.substring(0, 12)}...`
+                    : pattern}
+                </label>
+              </label>
+            );
+          })}
+        </div>
       )}
     </div>
   );

@@ -1,79 +1,69 @@
-import { Category } from "@/models/Category";
-import { Coupon } from "@/models/Coupon";
-import { SubCategory } from "@/models/SubCategory";
-import db from "@/utils/db";
-import nextConnect from "next-connect";
+import { createRouter } from "next-connect";
 import auth from "../../../middleware/auth";
+import db from "@/utils/db";
+import Coupon from "@/models/Coupon";
+import slugify from "slugify";
 import admin from "../../../middleware/admin";
 
-const handler = nextConnect().use(auth)
-
-handler.post(async (req, res) => {
+// ------------------- Category Model -------------------
+const router = createRouter().use(auth).use(admin);
+// ------------------- Category Model -------------------
+router.post(async (req, res) => {
   try {
-    await db.connectDb();
     const { coupon, discount, startDate, endDate } = req.body;
-
+    db.connectDb();
     const test = await Coupon.findOne({ coupon });
-
     if (test) {
-      return res.status(400).json({
-        message: "Coupon already exists, try a different coupon.",
-      });
+      return res
+        .status(400)
+        .json({ message: "Coupon already exist, Try a different coupon" });
     }
-
     await new Coupon({ coupon, discount, startDate, endDate }).save();
 
     db.disconnectDb();
-
-    res.status(201).json({
+    res.json({
       message: `Coupon ${coupon} has been created successfully.`,
       coupons: await Coupon.find({}).sort({ updatedAt: -1 }),
     });
   } catch (error) {
+    db.disconnectDb();
     res.status(500).json({ message: error.message });
   }
 });
-
-handler.delete(async (req, res) => {
+// ------------------- Delete Category -------------------
+router.delete(async (req, res) => {
   try {
-    await db.connectDb();
-    const { id } = req.query;
-
-    await Coupon.findByIdAndRemove(id);
-
+    const { id } = req.body;
+    db.connectDb();
+    await Coupon.findByIdAndDelete(id);
     db.disconnectDb();
-
     return res.json({
-      message: "Coupon has been deleted successfully.",
+      message: "Coupon has been deleted successfuly",
       coupons: await Coupon.find({}).sort({ updatedAt: -1 }),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-
-handler.put(async (req, res) => {
+// ------------------- Update Category -------------------
+router.put(async (req, res) => {
   try {
-    const { id, coupon, startDate, endDate, discount } = req.body;
-
-    await db.connectDb();
-
+    const { id, coupon, discount, startDate, endDate } = req.body;
+    db.connectDb();
     await Coupon.findByIdAndUpdate(id, {
       coupon,
-      startDate,
       discount,
+      startDate,
       endDate,
     });
-
-    await db.disconnectDb();
-
-    res.json({
-      message: `Coupon has been updated successfully.`,
-      coupons: await Coupon.find({}).sort({ updatedAt: -1 }),
+    db.disconnectDb();
+    return res.json({
+      message: "Coupon has been updated successfuly",
+      coupons: await Coupon.find({}).sort({ createdAt: -1 }),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-
-export default handler;
+// ------------------- Export Handler -------------------
+export default router.handler();

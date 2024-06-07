@@ -1,4 +1,6 @@
-import mongoose, { model, models } from "mongoose";
+import mongoose from "mongoose";
+
+const { ObjectId } = mongoose.Schema;
 
 const couponSchema = new mongoose.Schema(
   {
@@ -20,11 +22,15 @@ const couponSchema = new mongoose.Schema(
       required: true,
     },
     discount: {
-      type: String,
+      type: Number,
       required: true,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-export const Coupon = models.Coupon || model("Coupon", couponSchema);
+const Coupon = mongoose.models.Coupon || mongoose.model("Coupon", couponSchema);
+
+export default Coupon;

@@ -1,260 +1,129 @@
-import { Button, TextField } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
 import axios from "axios";
 import { useRef } from "react";
 import { useState } from "react";
-import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
-import { GiCancel } from "react-icons/gi";
-import { MdAssignmentAdd } from "react-icons/md";
 import { toast } from "react-toastify";
+import { TextField } from "@material-ui/core";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-
-import styled from "./styles.module.scss";
-import Popup from "@/components/Popup";
-import { format } from "date-fns";
+import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import styles from "./styles.module.scss";
 
 export default function ListItem({ coupon, setCoupons }) {
-  const inputRef = useRef(null);
-
-  const [open, setOpen] = useState("");
+  // ------------------- Update Coupon -------------------
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [discount, setDiscount] = useState("");
-
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
+  const [startDate, setStartDate] = useState(coupon.startDate);
+  const [endDate, setEndDate] = useState(coupon.endDate);
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(tomorrow);
-
-  const changeStartDateHandler = (newValue) => {
+  const handleStartDate = (newValue) => {
     setStartDate(newValue);
   };
-
-  const changeEndDateHandler = (newValue) => {
+  const handleEndDate = (newValue) => {
     setEndDate(newValue);
   };
-
-  const updateHandler = async (id) => {
-    Popup(
-      "Are you sure?",
-      `${coupon.coupon} coupon will be updated after your confirmation.`,
-      "question",
-      "Yes, update it!",
-      async () => {
-        try {
-          const { data } = await axios.put("/api/admin/coupon", {
-            id,
-            coupon: name || coupon.coupon,
-            discount: discount || coupon.discount,
-            startDate: startDate || coupon.startDate,
-            endDate: endDate || coupon.endDate,
-          });
-
-          setCoupons(data.coupons);
-          setOpen(false);
-        } catch (error) {
-          toast.error(error?.response?.data.message);
-        }
-      },
-      "Succesfully!",
-      "Coupon has been updated successfully."
-    );
+  const input = useRef(null);
+  // ------------------- Remove Coupon -------------------
+  const handleRemove = async (id) => {
+    try {
+      const { data } = await axios.delete("/api/admin/coupon", {
+        data: { id },
+      });
+      setCoupons(data.coupons);
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
-
-  const removeHandler = async (id) => {
-    Popup(
-      "Are you sure?",
-      `We'll delete ${coupon.coupon} coupon and you won't be able to revert this.`,
-      "warning",
-      "Yes, delete it!",
-      async () => {
-        try {
-          const { data } = await axios.delete(`/api/admin/coupon?id=${id}`);
-          setCoupons(data.coupons);
-        } catch (error) {
-          toast.error(error?.response?.data.message);
-        }
-      },
-      "Deleted!",
-      `${coupon.coupon} coupon has been deleted.`
-    );
+  // ------------------- Update Coupon -------------------
+  const handleUpdate = async (id) => {
+    try {
+      const { data } = await axios.put("/api/admin/coupon", {
+        id,
+        coupon: name || coupon.coupon,
+        discount: discount || coupon.discount,
+        startDate: startDate,
+        endDate: endDate,
+      });
+      setCoupons(data.coupons);
+      setOpen(false);
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
-
+  // ------------------- JSX -------------------
   return (
-    <tr className={styled.list__item}>
-      <td>
-        <input
-          style={{ borderBottom: open ? "1px dashed #1976d2" : "none" }}
-          className={open ? styled.open : ""}
-          type="text"
-          value={name ? name : coupon?.coupon}
-          onChange={(e) => setName(e.target.value)}
-          //Dựa vào state open để kích hoạt / disable input
-          disabled={!open}
-          ref={inputRef}
-        />
-      </td>
+    <li className={styles.list__item}>
+      <input
+        className={open ? styles.open : ""}
+        type="text"
+        value={name ? name : coupon.coupon}
+        onChange={(e) => setName(e.target.value)}
+        disabled={!open}
+        ref={input}
+      />
 
-      <td>
-        {open ? (
+      {open && (
+        <div className={styles.list__item_expand}>
           <input
-            style={{ borderBottom: open ? "1px dashed #1976d2" : "none" }}
-            className={open ? styled.open : ""}
+            className={open ? styles.open : ""}
             type="text"
-            value={discount ? discount : coupon?.discount}
+            value={discount ? discount : coupon.discount}
             onChange={(e) => setDiscount(e.target.value)}
-            //Dựa vào state open để kích hoạt / disable input
             disabled={!open}
           />
-        ) : (
-          <span>{coupon.discount}%</span>
-        )}
-      </td>
-
-      <td>
-        {open ? (
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
-              label=""
+              label="Start Date"
               inputFormat="MM/dd/yyyy"
               value={startDate}
-              onChange={changeStartDateHandler}
-              renderInputs={(params) => <TextField {...params} />}
-              slotProps={{
-                textField: {
-                  variant: "standard",
-                  inputProps: {
-                    style: {
-                      fontSize: 13,
-                      height: 29,
-                      fontWeight: 600,
-                      color: "#1976d2",
-                      fontFamily: "Poppins",
-                    },
-                  },
-                },
-              }}
-              sx={{
-                width: "90%",
-                fieldset: { color: "#fff" },
-              }}
+              onChange={handleStartDate}
+              renderInput={(params) => <TextField {...params} />}
               minDate={new Date()}
             />
-          </LocalizationProvider>
-        ) : (
-          <span>{format(new Date(coupon.startDate), "MM/dd/yyyy")}</span>
-        )}
-      </td>
-
-      <td>
-        {open ? (
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
-              label=""
+              label="End Date"
               inputFormat="MM/dd/yyyy"
               value={endDate}
-              onChange={changeEndDateHandler}
-              renderInputs={(params) => <TextField {...params} />}
-              slotProps={{
-                textField: {
-                  variant: "standard",
-                  inputProps: {
-                    style: {
-                      fontSize: 13,
-                      height: 29,
-                      fontWeight: 600,
-                      color: "#1976d2",
-                      fontFamily: "Poppins",
-                    },
-                  },
-                },
-              }}
-              sx={{ width: "90%" }}
+              onChange={handleEndDate}
+              renderInput={(params) => <TextField {...params} />}
               minDate={tomorrow}
             />
           </LocalizationProvider>
-        ) : (
-          <span>{format(new Date(coupon.endDate), "MM/dd/yyyy")}</span>
-        )}
-      </td>
-
-      {open ? (
-        <td className={styled.list__item_expand}>
-          <div className={`${styled.btn} ${styled.subCateBtn}`}>
-            <Button
-              onClick={() => updateHandler(coupon?._id)}
-              variant="contained"
-              color="info"
-              startIcon={<MdAssignmentAdd />}
-            >
-              Save
-            </Button>
-          </div>
-
-          <div className={`${styled.btn} ${styled.subCateBtn}`}>
-            <Button
-              onClick={() => {
-                setOpen(false);
-                setName("");
-              }}
-              variant="contained"
-              color="error"
-              startIcon={<GiCancel />}
-            >
-              Cancel
-            </Button>
-          </div>
-        </td>
-      ) : (
-        <td>
-          <span className={styled.list__item_notEdit}>Not editing</span>
-        </td>
-      )}
-
-      <td className={styled.list__item_actions}>
-        {!open ? (
-          <div className={`${styled.btn} ${styled.subCateBtn}`}>
-            <Button
-              onClick={() => {
-                setOpen((prev) => !prev);
-                inputRef.current.focus();
-              }}
-              variant="contained"
-              color="info"
-              startIcon={<AiTwotoneEdit />}
-            >
-              Edit
-            </Button>
-          </div>
-        ) : (
-          <div className={`${styled.btn} ${styled.subLoadingBtn}`}>
-            <LoadingButton
-              variant="contained"
-              color="primary"
-              startIcon={<AiTwotoneEdit />}
-              loading
-              loadingPosition="start"
-              size="small"
-            >
-              Editing
-            </LoadingButton>
-          </div>
-        )}
-
-        <div className={`${styled.btn} ${styled.subCateBtn}`}>
-          <Button
-            onClick={() => {
-              removeHandler(coupon._id);
-            }}
-            variant="contained"
-            color="error"
-            startIcon={<AiFillDelete />}
+          <button
+            className={styles.btn}
+            onClick={() => handleUpdate(coupon._id)}
           >
-            Delete
-          </Button>
+            Save
+          </button>
+          <button
+            className={styles.btn}
+            onClick={() => {
+              setOpen(false);
+              setName("");
+              setDiscount("");
+              setStartDate(new Date());
+              setEndDate(tomorrow);
+            }}
+          >
+            Cancel
+          </button>
         </div>
-      </td>
-    </tr>
+      )}
+      <div className={styles.list__item_actions}>
+        {!open && (
+          <AiTwotoneEdit
+            onClick={() => {
+              setOpen((prev) => !prev);
+              input.current.focus();
+            }}
+          />
+        )}
+        <AiFillDelete onClick={() => handleRemove(coupon._id)} />
+      </div>
+    </li>
   );
 }

@@ -1,32 +1,28 @@
-import React from "react";
-
-import styled from "./styles.module.scss";
-import NextImage from "../NextImage";
-import Link from "next/link";
+import styles from "./styles.module.scss";
+import Image from "next/image";
 
 export default function HeaderCartItem({ item }) {
   return (
-    <Link
-      onClick={(e) => e.stopPropagation()}
-      rel="noopener noreferrer"
-      target="_blank"
-      href={`/product/${item.slug}?style=${item.style}&size=${item.sizeIndex}`}
-      className={styled.cart__item}
-    >
-      <div className={styled.cart__item_image}>
-        <NextImage src={item.images[0].url} />
+    <div className={styles.cart__item}>
+      <div className={styles.cart__item_image}>
+        <Image
+          src={item.images[0].url}
+          height={50}
+          width={1500}
+          alt={item.name}
+        />
         <p>{item.qty}</p>
       </div>
-      <div className={styled.cart__item_info}>
+      <div className={styles.cart__item_info}>
         <p>{item.name.substring(0, 40) + "..."}</p>
         <p>
-          <span>${item.price?.toFixed(2)}</span>
-          <strike>${item.priceBefore?.toFixed(2)}</strike>
+          <span>₹{item.price?.toFixed(2)}</span>
+          <strike>₹{item.priceBefore?.toFixed(2)}</strike>
         </p>
       </div>
-      <div className={styled.cart__item_amount}>
-        ${(item.qty * item.price).toFixed(2)}
+      <div className={styles.cart__item_amount}>
+        ₹{(item.qty * item.price).toFixed(2)}
       </div>
-    </Link>
+    </div>
   );
 }

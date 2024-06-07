@@ -1,0 +1,23 @@
+.overviewCard {
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.metric {
+  text-align: center;
+}
+
+.metricLabel {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.metricValue {
+  font-size: 1.5rem;
+  color: #333;
+}

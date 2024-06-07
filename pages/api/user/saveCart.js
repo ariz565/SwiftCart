@@ -1,7 +1,7 @@
-import Cart from "@/models/Cart";
-import { Product } from "@/models/Product";
-import { User } from "@/models/User";
 import db from "@/utils/db";
+import Product from "@/models/Product";
+import User from "@/models/User";
+import Cart from "@/models/Cart";
 
 async function handler(req, res) {
   if (req.method === "POST") {
@@ -12,13 +12,10 @@ async function handler(req, res) {
       const products = [];
       let cartTotal = 0;
 
-      //Tìm user
       let user = await User.findById(user_id);
 
-      //Tìm dữ liệu Cart hiện có của user
       let existing_cart = await Cart.findOne({ user: user._id });
 
-      //Nếu có dữ liệU cart thì remove toàn bộ
       if (existing_cart) {
         await Cart.deleteOne(existing_cart);
       }
@@ -26,7 +23,6 @@ async function handler(req, res) {
       for (let i = 0; i < cart.length; i++) {
         let dbProduct = await Product.findById(cart[i]._id).lean();
 
-        //Style lưu dưới dạng number
         let subProduct = dbProduct.subProducts[cart[i].style];
         let tempProduct = {};
         tempProduct.name = dbProduct.name;

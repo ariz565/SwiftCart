@@ -1,19 +1,20 @@
-/* eslint-disable @next/next/no-img-element */
+// /* eslint-disable @next/next/no-img-element */
 import React, { useState } from "react";
 import Head from "next/head";
 import NextImage from "@/components/NextImage";
 import { getSession } from "next-auth/react";
 import { Button } from "@mui/material";
 import { FaTrash } from "react-icons/fa";
-
-import styled from "@/styles/Profile.module.scss";
-import { User } from "@/models/User";
-import Layout from "@/components/Profile/Layout";
-import { addToCartHandler, priceAfterDiscount } from "@/utils/productUltils";
+import db from "@/utils/db";
+import { addToCartHandler } from "@/utils/productUtils";
+import styled from "@/styles/profile.module.scss";
+import User from "@/models/User";
+import Layout from "@/components/profile/layout";
+// import { addToCartHandler, priceAfterDiscount } from "@/utils/productUltils";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Popup from "@/components/Popup";
-import StyledDotLoader from "@/components/Loaders/DotLoader";
+import DotLoaderSpinner from "@/components/loaders/dotLoader";
 import Link from "next/link";
 
 export default function Wishlist({ user, tab }) {
@@ -22,7 +23,7 @@ export default function Wishlist({ user, tab }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const removeFromWishlistHandler = (id) => {
+  const removeFromWishlistHandler = async (id) => {
     Popup(
       "Are you sure?",
       `This item will be removed from your wishlist.`,
@@ -30,9 +31,24 @@ export default function Wishlist({ user, tab }) {
       "Yes, remove it!",
       async () => {
         setLoading(true);
-        const { data } = await axios.patch(`/api/user/wishlist/${id}`);
-        setProducts(data);
-        setLoading(false);
+        try {
+          // Send request to remove item from the server
+          await axios.delete(`/api/user/bag/${id}`);
+
+          // Remove the item from the local state
+          setProducts(products.filter((product) => product._id !== id));
+
+          setLoading(false);
+          Popup(
+            "Success!",
+            "Removed item from wishlist successfully.",
+            "success"
+          );
+        } catch (error) {
+          setLoading(false);
+          Popup("Error!", "Could not remove item from wishlist.", "error");
+          console.error("Error removing item from wishlist:", error);
+        }
       },
       "Succesfully!",
       "Removed item from wishlist successfully."
@@ -41,7 +57,7 @@ export default function Wishlist({ user, tab }) {
 
   return (
     <Layout session={{ name: user.name, image: user.image }} tab={tab}>
-      {loading && <StyledDotLoader />}
+      {loading && <DotLoaderSpinner />}
       <Head>
         <title>Wishlist</title>
       </Head>
@@ -125,7 +141,7 @@ export default function Wishlist({ user, tab }) {
                               <span>Size : </span>
                               {
                                 product.product.subProducts[product.style]
-                                  .sizes[product.size].size
+                                  .sizes[product.size]?.size
                               }
                             </p>
                           </div>
@@ -142,10 +158,10 @@ export default function Wishlist({ user, tab }) {
                                 $
                                 {
                                   product.product.subProducts[product.style]
-                                    .sizes[product.size].price
+                                    .sizes[product.size]?.price
                                 }
                               </span>
-                              <span
+                              {/* <span
                                 className={styled.wishlist__products_afterPrice}
                               >
                                 $
@@ -155,7 +171,7 @@ export default function Wishlist({ user, tab }) {
                                   product.product.subProducts[product.style]
                                     .discount
                                 )}
-                              </span>
+                              </span> */}
                             </>
                           ) : (
                             <span
@@ -164,31 +180,31 @@ export default function Wishlist({ user, tab }) {
                               $
                               {
                                 product.product.subProducts[product.style]
-                                  .sizes[product.size].price
+                                  .sizes[product.size]?.price
                               }
                             </span>
                           )}
                         </div>
                       </td>
-                      <td>
+                      {/* <td>
                         {product.product.subProducts[product.style].sizes[
                           product.size
                         ].qty > 0
                           ? "In stock"
                           : "Out stock"}
-                      </td>
+                      </td> */}
                       <td className={`${styled.btn} ${styled.wishlist__btn}`}>
                         <Button
-                          onClick={(e) =>
-                            addToCartHandler(
-                              e,
-                              product.product._id,
-                              product.style,
-                              product.size,
-                              cart,
-                              dispatch
-                            )
-                          }
+                          // onClick={(e) =>
+                          //   addToCartHandler(
+                          //     e,
+                          //     product.product._id,
+                          //     product.style,
+
+                          //     cart,
+                          //     dispatch
+                          //   )
+                          // }
                           variant="contained"
                         >
                           Add to cart
@@ -219,16 +235,31 @@ export default function Wishlist({ user, tab }) {
 }
 
 export async function getServerSideProps(ctx) {
-  const { query, req } = ctx;
-
-  const tab = query.tab || 2;
+  const { query } = ctx;
   const session = await getSession(ctx);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
+  }
+
+  db.connectDb();
+
   const user = await User.findById(session.user.id)
     .select("image name wishlist")
-    .populate("wishlist.product")
+    .populate({
+      path: "wishlist.product",
+      select: "name subProducts slug",
+    })
     .lean();
 
+  db.disconnectDb();
+
   return {
-    props: { user: JSON.parse(JSON.stringify(user)), tab },
+    props: { user: JSON.parse(JSON.stringify(user)), tab: query.tab || 2 },
   };
 }

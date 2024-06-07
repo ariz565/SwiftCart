@@ -1,35 +1,91 @@
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import Main from "@/components/Home/Main";
-
-import { Product } from "@/models/Product";
-import db from "@/utils/db";
-
-import styled from "../styles/Home.module.scss";
-import AllProducts from "@/components/Home/AllProducts";
-import AnimateWrapper from "@/components/AnimateWrapper";
+import Image from "next/image";
+import styles from "@/styles/Home.module.scss";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import { parseCookies } from "nookies"; // To parse cookies
+import { useSession, signIn, signOut } from "next-auth/react";
+import Main from "@/components/home/main";
+import FlashDeals from "@/components/home/flashDeals";
+import Category from "@/components/home/category";
+import { BsArrowRight } from "react-icons/bs";
+import {
+  homeImprovSwiper,
+  women_accessories,
+  women_dresses,
+  women_shoes,
+  women_swiper,
+  gamingSwiper,
+} from "@/data/home";
 import axios from "axios";
+import db from "@/utils/db";
+import Product from "@/models/Product";
 
-export default function Home({
-  country,
-  products,
-  flashDeals,
-  featuredProducts,
-  freeShippingProducts,
-}) {
+import { useMediaQuery } from "react-responsive";
+import ProductsSwiper from "@/components/productsSwiper";
+import ProductCard from "@/components/productCard";
+import RecentlyViewed from "@/components/home/recentlyviewed/RecentlyViewed";
+
+export default function Home({ country, products, recentlyViewedProducts }) {
+  // console.log(products);
+  const { data: session } = useSession();
+  const isMedium = useMediaQuery({ query: "(max-width:850px)" });
+  const isMobile = useMediaQuery({ query: "(max-width:550px)" });
   return (
     <>
       <Header country={country} />
-      <div className={styled.home}>
-        <div className={styled.container}>
-          <Main
-            flashDeals={flashDeals}
-            featuredProducts={featuredProducts}
-            freeShippingProducts={freeShippingProducts}
+      <div className={styles.home}>
+        <div className={styles.container}>
+          <Main />
+          <FlashDeals />
+
+          {session && <RecentlyViewed products={recentlyViewedProducts} />}
+
+          <ProductsSwiper header="All Products" products={women_swiper} />
+
+          <div className={styles.products}>
+            {products.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+
+          <div className={styles.home__category}>
+            <Category
+              header="Dresses"
+              products={women_dresses}
+              background="linear-gradient(120deg, #ffb6c1 0%, #ffd1dc 100%)"
+            />
+            {!isMedium && (
+              <Category
+                header="Shoes"
+                products={women_shoes}
+                background="linear-gradient(120deg, #a0a0a0 0%, #d3d3d3 100%)"
+              />
+            )}
+            {isMobile && (
+              <Category
+                header="Shoes"
+                products={women_shoes}
+                background="linear-gradient(120deg, #b8de6f 0%, #f9f871 100%)"
+              />
+            )}
+            <Category
+              header="Accessories"
+              products={women_accessories}
+              background="linear-gradient(120deg, #7f7fd5 0%, #86a8e7 100%)"
+            />
+          </div>
+
+          <ProductsSwiper
+            products={gamingSwiper}
+            header="For Gamers"
+            bg="linear-gradient(120deg, #000000 0%, #ff0000 100%)"
           />
-          <AnimateWrapper>
-            <AllProducts products={products} />
-          </AnimateWrapper>
+          <ProductsSwiper
+            products={homeImprovSwiper}
+            header="House Improvement"
+            bg=""
+          />
+          {/* {session && <RecentlyViewed products={recentlyViewedProducts} />} */}
         </div>
       </div>
       <Footer country={country} />
@@ -37,78 +93,36 @@ export default function Home({
   );
 }
 
-export async function getStaticProps() {
-  await db.connectDb();
-
-  //lean method trả về các document dưới dạng plain Object chứ không phải Mongoose document thông thường
-  let products = await Product.find()
-    .sort({ createdAt: -1 })
-    .select("category name rating slug subProducts _id shipping")
-    .lean();
-
-  //Giảm số lượng ảnh để giảm dung lượng load của getServerSideProps
-  const reduceImagesProducts = products.map((p) => {
-    const newSubProducts = p.subProducts.map((s) => {
-      return { ...s, images: s.images.slice(0, 2) };
+export async function getServerSideProps(context) {
+  db.connectDb();
+  let products = await Product.find().sort({ createdAt: -1 }).lean();
+  let data = await axios
+    .get(`https://api.ipregistry.co/?key=${process.env.IP_REGISTRY_API_KEY}`)
+    .then((res) => {
+      return res.data.location.country;
+    })
+    .catch((err) => {
+      // console.log(err);
     });
-
-    return { ...p, subProducts: newSubProducts };
-  });
-
-  //Lọc mảng gồm các subProduct có discout cho Component FlashDeals
-  const leanProducts = reduceImagesProducts.map((p) => ({
-    parentId: p._id,
-    name: p.name,
-    slug: p.slug,
-    subProducts: p.subProducts,
-  }));
-
-  const flashDealsArray = [];
-  leanProducts.forEach((p) => {
-    for (let i = 0; i < p.subProducts.length; i++) {
-      if (p.subProducts[i].discount > 0) {
-        const childProduct = {
-          name: p.name,
-          slug: `${p.slug}?style=${i}`,
-          ...p.subProducts[i],
-          parentId: p.parentId,
-          style: i,
-        };
-
-        flashDealsArray.push(childProduct);
-      }
-    }
-  });
-
-  // const featuredProducts = await Product.find()
-  //   .sort({ rating: -1, "subProducts.sold": -1 })
-  //   .lean();
-
-  const featuredProducts = reduceImagesProducts
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 10);
-
-  const freeShippingProducts = reduceImagesProducts
-    .filter((p) => p.shipping === 0)
-    .slice(0, 10);
-
-  let country;
-  try {
-    let data = await axios.get(
-      `https://api.ipregistry.co/?key=${process.env.IP_REGISTRY_API_KEY}`
-    );
-    country = data?.data.location?.country;
-  } catch (err) {
-    console.log(err);
-  }
+  // Fetch recently viewed products
+  const { req } = context;
+  const cookies = parseCookies({ req });
+  let recentIds = JSON.parse(cookies["recent-ids"] || "[]");
+  recentIds = recentIds.reverse(); // Reverse the order of IDs
+  const recentlyViewedProducts = await Product.find({ _id: { $in: recentIds } })
+    .lean()
+    .select("brand name slug images price");
 
   return {
     props: {
-      products: JSON.parse(JSON.stringify(reduceImagesProducts)),
-      flashDeals: JSON.parse(JSON.stringify(flashDealsArray)),
-      featuredProducts: JSON.parse(JSON.stringify(featuredProducts)),
-      freeShippingProducts: JSON.parse(JSON.stringify(freeShippingProducts)),
-      country: { name: country.name, flag: country.flag.emojitwo },
+      products: JSON.parse(JSON.stringify(products)),
+      recentlyViewedProducts: JSON.parse(
+        JSON.stringify(recentlyViewedProducts)
+      ),
+      country: {
+        name: "India",
+        flag: "https://cdn.ipregistry.co/flags/emojitwo/in.svg",
+      },
     },
   };
 }

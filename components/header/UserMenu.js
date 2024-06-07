@@ -1,36 +1,33 @@
-/* eslint-disable @next/next/no-img-element */
+import styles from "./styles.module.scss";
 import Link from "next/link";
-import React from "react";
 import { signOut, signIn } from "next-auth/react";
-import { BiLogOut } from "react-icons/bi";
+import Image from "next/image";
 
-import styled from "./styles.module.scss";
-import { RevealWrapper } from "next-reveal";
-
-const UserMenu = ({ session }) => {
+export default function UserMenu({ session }) {
   return (
-    <div className={styled.menu}>
-      <h4>Welcome to ShopPay!</h4>
+    <div className={styles.menu}>
+      <h4>Welcome to SwiftCart !</h4>
       {session ? (
-        <div className={styled.userInfo}>
-          <img
+        <div className={styles.flex}>
+          <Image
             src={session.user.image}
             alt="Avatar"
-            className={styled.menu__img}
+            width={500}
+            height={50}
+            className={styles.menu__img}
           />
-          <div className={styled.col}>
+          <div className={styles.col}>
+            <span>Welcome Back,</span>
             <h3>{session.user.name}</h3>
-            <span onClick={() => signOut()}>
-              <BiLogOut /> Sign out
-            </span>
+            <span onClick={() => signOut()}>Sign Out</span>
           </div>
         </div>
       ) : (
-        <div className={styled.flex}>
-          <button className={styled.btn__primary} onClick={() => signIn()}>
+        <div className={styles.flex}>
+          <button className={styles.btn_primary} onClick={() => signIn()}>
             Register
           </button>
-          <button className={styled.btn__outline} onClick={() => signIn()}>
+          <button className={styles.btn_outlined} onClick={() => signIn()}>
             Login
           </button>
         </div>
@@ -54,6 +51,4 @@ const UserMenu = ({ session }) => {
       </ul>
     </div>
   );
-};
-
-export default UserMenu;
+}

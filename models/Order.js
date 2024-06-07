@@ -1,37 +1,69 @@
-import mongoose, { model, models } from "mongoose";
+import mongoose from "mongoose";
 
 const { ObjectId } = mongoose.Schema;
 
 const orderSchema = new mongoose.Schema(
   {
-    user: { type: ObjectId, ref: "User", require: true },
+    user: {
+      type: ObjectId,
+      ref: "User",
+      required: true,
+    },
     products: [
       {
         product: {
           type: ObjectId,
           ref: "Product",
         },
-        name: { type: String },
-        image: { type: String },
-        size: { type: String },
-        qty: { type: Number },
+        name: {
+          type: String,
+        },
+        image: {
+          type: String,
+        },
+        size: {
+          type: String,
+        },
+        qty: {
+          type: Number,
+        },
         color: {
           color: String,
           image: String,
         },
-        price: { type: Number },
+        price: {
+          type: Number,
+        },
       },
     ],
     shippingAddress: {
-      firstName: { type: String },
-      lastName: { type: String },
-      phoneNumber: { type: String },
-      address1: { type: String },
-      address2: { type: String },
-      city: { type: String },
-      state: { type: String },
-      zipCode: { type: String },
-      country: { type: String },
+      firstName: {
+        type: String,
+      },
+      lastName: {
+        type: String,
+      },
+      phoneNumber: {
+        type: String,
+      },
+      address1: {
+        type: String,
+      },
+      address2: {
+        type: String,
+      },
+      city: {
+        type: String,
+      },
+      state: {
+        type: String,
+      },
+      zipCode: {
+        type: String,
+      },
+      country: {
+        type: String,
+      },
     },
     paymentMethod: {
       type: String,
@@ -67,13 +99,12 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "Not processed",
-      //enum chỉ cho phép 1 trong các value thuộc mảng
+      default: "Not Processed",
       enum: [
-        "Not processed",
+        "Not Processed",
         "Processing",
         "Dispatched",
-        "Canceled",
+        "Cancelled",
         "Completed",
       ],
     },
@@ -84,7 +115,11 @@ const orderSchema = new mongoose.Schema(
       type: Date,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-export const Order = models?.Order || model("Order", orderSchema);
+const Order = mongoose.models.Order || mongoose.model("Order", orderSchema);
+
+export default Order;

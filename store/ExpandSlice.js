@@ -4,7 +4,7 @@ const initialState = {
   expandSidebar: true,
 };
 
-export const expandSlice = createSlice({
+export const ExpandSlice = createSlice({
   name: "expandSidebar",
   initialState,
   reducers: {
@@ -14,6 +14,5 @@ export const expandSlice = createSlice({
   },
 });
 
-export const { toggleSidebar } = expandSlice.actions;
-
-export default expandSlice.reducer;
+export const { toggleSidebar } = ExpandSlice.actions;
+export default ExpandSlice.reducer;

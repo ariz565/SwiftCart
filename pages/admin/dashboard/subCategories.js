@@ -1,37 +1,37 @@
-import React from "react";
+import db from "../../../utils/db";
 import { useState } from "react";
 
-import db from "@/utils/db";
-import Layout from "../../../components/Admin/Layout";
-import { Category } from "@/models/Category";
-import { SubCategory } from "@/models/SubCategory";
-import SubCreate from "@/components/Admin/SubCategories/SubCreate";
-import SubList from "@/components/Admin/SubCategories/SubList";
+import Layout from "../../../components/admin/layout";
+import Create from "../../../components/admin/subCategories/Create";
+import List from "../../../components/admin/subCategories/List";
 
-export default function SubCategoriesPage({ categories, subCategories }) {
+import Category from "../../../models/Category";
+import SubCategory from "../../../models/SubCategory";
+
+export default function SubCategories({ categories, subCategories }) {
   const [data, setData] = useState(subCategories);
+  console.log(data);
   return (
     <Layout>
-      <SubCreate setSubCategories={setData} categories={categories} />
-      <SubList
-        subCategories={data}
-        setSubCategories={setData}
-        categories={categories}
-      />
+      <div>
+        <Create setSubCategories={setData} categories={categories} />
+        <List
+          categories={categories}
+          subCategories={data}
+          setSubCategories={setData}
+        />
+      </div>
     </Layout>
   );
 }
 
 export async function getServerSideProps(context) {
-  await db.connectDb();
-
+  db.connectDb();
   const categories = await Category.find({}).sort({ updatedAt: -1 }).lean();
   const subCategories = await SubCategory.find({})
     .populate({ path: "parent", model: Category })
-    .lean()
     .sort({ updatedAt: -1 })
     .lean();
-
   return {
     props: {
       categories: JSON.parse(JSON.stringify(categories)),

@@ -1,44 +1,37 @@
 import { useState } from "react";
-import styled from "../styles.module.scss";
-import { FaMinus, FaPlus } from "react-icons/fa";
-import { useRouter } from "next/router";
-import { replaceQuery } from "@/utils/filter";
-import CheckboxItem from "../CheckboxItem";
-import PlusMinusBtn from "../PlusMinusBtn";
+import { BsPlusLg } from "react-icons/bs";
+import { FaMinus } from "react-icons/fa";
+import styles from "../styles.module.scss";
 
-export default function GenderFilter({ genderHandler, checkChecked }) {
+export default function GenderFilter({ genderHandler, replaceQuery }) {
   const genders = ["Men", "Women", "Unisex"];
-
-  const router = useRouter();
-  const existedGender = router.query.gender || "";
-
   const [show, setShow] = useState(true);
   return (
-    <div className={styled.filter}>
+    <div className={styles.filter}>
       <h3>
-        Gender
-        <PlusMinusBtn show={show} onClick={() => setShow((prev) => !prev)} />
+        Gender <span>{show ? <FaMinus /> : <BsPlusLg />}</span>
       </h3>
-
       {show && (
-        <>
+        <div className={styles.filter__sizes}>
           {genders.map((gender, i) => {
-            const check = checkChecked("gender", gender);
+            const check = replaceQuery("gender", gender);
             return (
-              <CheckboxItem
-                key={i}
-                onClick={() => {
-                  replaceQuery(existedGender, check, gender, genderHandler);
-                }}
-                id={gender}
-                check={check}
-                content={gender}
-                name="gender"
-                type="checkbox"
-              />
+              <label
+                htmlFor={gender}
+                className={styles.filter__sizes_size}
+                onClick={() => genderHandler(check.result)}
+              >
+                <input
+                  type="checkbox"
+                  name="gender"
+                  id={gender}
+                  checked={check.active}
+                />
+                <label htmlFor={gender}>{gender}</label>
+              </label>
             );
           })}
-        </>
+        </div>
       )}
     </div>
   );
