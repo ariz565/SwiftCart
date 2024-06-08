@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import styles from "./styles.module.scss";
 import { IoArrowDown } from "react-icons/io5";
 import { useState } from "react";

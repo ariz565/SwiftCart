@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useRef } from "react";
 import { useState } from "react";
 

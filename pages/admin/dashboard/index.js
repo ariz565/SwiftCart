@@ -12,6 +12,7 @@ import { SlHandbag, SlEye } from "react-icons/sl";
 import { SiProducthunt } from "react-icons/si";
 import { GiTakeMyMoney } from "react-icons/gi";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Dashboard({ users, orders, products }) {
   const { data: session } = useSession();
@@ -101,9 +102,19 @@ export default function Dashboard({ users, orders, products }) {
                     <td>{order.total} ₹</td>
                     <td>
                       {order.isPaid ? (
-                        <img src="../../../images/verified.webp" alt="" />
+                        <Image
+                          src="/images/verified.webp"
+                          alt="verified"
+                          height={20}
+                          width={44}
+                        />
                       ) : (
-                        <img src="../../../images/unverified1.png" alt="" />
+                        <Image
+                          src="/images/unverified1.png"
+                          alt="unverified"
+                          height={20}
+                          width={4400}
+                        />
                       )}
                     </td>
                     <td>

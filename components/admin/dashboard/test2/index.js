@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useRef } from "react";
 import { useState } from "react";
 import styles from "./styles.module.scss";

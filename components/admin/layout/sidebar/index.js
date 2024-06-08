@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
@@ -19,6 +20,7 @@ import { RiCoupon3Fill } from "react-icons/ri";
 import { RiSettingsLine } from "react-icons/ri";
 import { IoNotificationsSharp } from "react-icons/io5";
 import { RiLogoutCircleFill } from "react-icons/ri";
+import { signOut } from "next-auth/react";
 
 export default function Sidebar() {
   // ------------------------------------------------------------
@@ -27,6 +29,7 @@ export default function Sidebar() {
   const route = router.pathname.split("/admin/dashboard/")[1];
   // *******
   // console.log(route);
+
   // ------------------------------------------------------------
   const { data: session } = useSession();
   const { expandSidebar } = useSelector((state) => ({ ...state }));
@@ -34,6 +37,10 @@ export default function Sidebar() {
   const expand = expandSidebar.expandSidebar;
   const handleExpand = () => {
     dispatch(toggleSidebar());
+  };
+  const handleSignOut = (e) => {
+    e.preventDefault();
+    signOut();
   };
   // ------------------------------------------------------------
   return (
@@ -195,7 +202,7 @@ export default function Sidebar() {
             </li>
             <li>
               <Link href="" legacyBehavior>
-                <a>
+                <a onClick={handleSignOut}>
                   <RiLogoutCircleFill />
                 </a>
               </Link>

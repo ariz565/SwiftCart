@@ -25,25 +25,41 @@ router.post(async (req, res) => {
       const product = await Product.findById(item.product);
       if (!product) {
         await db.disconnectDb();
-        return res.status(404).json({ message: `Product with ID ${item.product} not found` });
+        return res
+          .status(404)
+          .json({ message: `Product with ID ${item.product} not found` });
       }
 
-      const subProduct = product.subProducts.find(sub => sub.color.color === item.color.color);
+      const subProduct = product.subProducts.find(
+        (sub) => sub.color.color === item.color.color
+      );
       if (!subProduct) {
         await db.disconnectDb();
-        return res.status(404).json({ message: `Sub-product with color ${item.color.color} not found` });
+        return res
+          .status(404)
+          .json({
+            message: `Sub-product with color ${item.color.color} not found`,
+          });
       }
 
-      const size = subProduct.sizes.find(size => size.size === item.size);
+      const size = subProduct.sizes.find((size) => size.size === item.size);
       if (!size) {
         await db.disconnectDb();
-        return res.status(404).json({ message: `Size ${item.size} not found for color ${item.color.color}` });
+        return res
+          .status(404)
+          .json({
+            message: `Size ${item.size} not found for color ${item.color.color}`,
+          });
       }
 
       // Check if enough stock is available
       if (size.qty < item.qty) {
         await db.disconnectDb();
-        return res.status(400).json({ message: `Not enough stock for ${item.name}, size ${item.size}` });
+        return res
+          .status(400)
+          .json({
+            message: `Not enough stock for ${item.name}, size ${item.size}`,
+          });
       }
 
       // Update the stock quantity
