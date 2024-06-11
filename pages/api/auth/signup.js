@@ -5,6 +5,7 @@ import User from "../../../models/User";
 import bcrypt from "bcrypt";
 import { createActivationToken } from "../../../utils/tokens";
 import { sendEmail } from "../../../utils/sendEmails";
+import { activateEmailTemplate } from "@/emails/activateEmailTemplate";
 
 const router = createRouter();
 
@@ -38,13 +39,7 @@ router.post(async (req, res) => {
       id: addedUser._id.toString(),
     });
     const url = `${process.env.BASE_URL}/activate/${activation_token}`;
-    sendEmail(
-      email,
-      url,
-      "",
-      "Activate your account!",
-      activationEmailTemplate
-    );
+    sendEmail(email, url, "", "Activate your account!", activateEmailTemplate);
     await db.disconnectDb();
     res.json({
       message:

@@ -23,7 +23,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { RiDeleteBin7Fill } from "react-icons/ri";
-
+import axios from "axios";
 
 
 function descendingComparator(a, b, orderBy) {
@@ -277,6 +277,21 @@ export default function EnhancedTable({ rows }) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  const handleDelete = async () => {
+    try {
+      const deletePromises = selected.map(async (name) => {
+        const user = rows.find((row) => row.name === name);
+        await axios.delete(`/api/admin/users/${user._id}`);
+      });
+      await Promise.all(deletePromises);
+      // Update the state after deletion
+      setSelected([]);
+      // You may need to fetch the rows again from your server to get the updated list
+    } catch (error) {
+      console.error("Error deleting users:", error);
+    }
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -370,7 +385,7 @@ export default function EnhancedTable({ rows }) {
                         )}
                       </TableCell>
                       <TableCell align="right">
-                        <RiDeleteBin7Fill />
+                        <RiDeleteBin7Fill onClick={handleDelete} />
                       </TableCell>
                     </TableRow>
                   );

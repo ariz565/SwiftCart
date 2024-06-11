@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import styles from "./styles.module.scss";
 import ReactImageMagnify from "react-image-magnify";
 import { useState } from "react";

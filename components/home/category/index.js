@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { BsArrowRightCircle } from "react-icons/bs";
 import styles from "./styles.module.scss";
 import { useMediaQuery } from "react-responsive";

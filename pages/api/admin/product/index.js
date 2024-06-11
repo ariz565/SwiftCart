@@ -63,5 +63,8 @@ router.post(async (req, res) => {
   }
 });
 
+// Edit product by id................................................................................
+
+
 
 export default router.handler();

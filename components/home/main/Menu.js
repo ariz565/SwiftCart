@@ -1,11 +1,10 @@
 import styles from "./styles.module.scss";
-import { menuArray } from "../../../data/home";
+import { menuArray } from "@/data/home";
 import Link from "next/link";
 //-------
 import {
   GiLargeDress,
   GiClothes,
-  Gi3DHammer,
   GiWatch,
   GiBallerinaShoes,
   GiHeadphones,
@@ -33,6 +32,8 @@ export default function Menu() {
         <div className={styles.menu__list}>
           {menuArray.map((item, i) => (
             <li key={i}>
+              {" "}
+              {/* Added key prop */}
               <Link href={item.link} legacyBehavior>
                 <a>
                   {i == 0 ? (
@@ -66,7 +67,7 @@ export default function Menu() {
                   ) : i == 14 ? (
                     <BiGift />
                   ) : i == 15 ? (
-                    <Gi3DHammer />
+                    <GiWatch />
                   ) : i == 16 ? (
                     <AiOutlineSecurityScan />
                   ) : (

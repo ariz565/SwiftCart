@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import styles from "./styles.module.scss";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -7,6 +8,7 @@ import Link from "next/link";
 import { TbEdit } from "react-icons/tb";
 import { AiOutlineEye } from "react-icons/ai";
 import { RiDeleteBin2Line } from "react-icons/ri";
+
 export default function ProductCard({ product }) {
   return (
     <div className={styles.product}>
@@ -44,7 +46,7 @@ export default function ProductCard({ product }) {
                 <img src={p.images[0].url} alt="" />
               </div>
               <div className={styles.product__actions}>
-                <Link href={`/admin/dashboard/product/${product._id}`}>
+                <Link href={`/admin/dashboard/product/${product._id}/edit`}>
                   <TbEdit />
                 </Link>
                 <Link href={`/product/${product.slug}?style=${i}`}>

@@ -35,3 +35,21 @@
     height: 80px;
   }
 }
+.lowStockDetails,
+.outOfStockDetails {
+  margin-top: 20px;
+}
+
+.lowStockDetails ul,
+.outOfStockDetails ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.lowStockDetails li,
+.outOfStockDetails li {
+  margin: 5px 0;
+  padding: 5px;
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+}

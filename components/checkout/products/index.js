@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { FaStaylinked } from "react-icons/fa";
 import styles from "./styles.module.scss";
 
@@ -14,7 +15,7 @@ export default function Products({ cart }) {
       </div>
       <div className={styles.products__wrap}>
         {cart.products.map((product) => (
-          <div className={styles.product}>
+          <div className={styles.product} key ={i}>
             <div className={styles.product__img}>
               <img src={product.image} alt="" />
               <div className={styles.product__infos}>

@@ -1,5 +1,6 @@
 import Header from "./Header";
 import Menu from "./Menu";
+
 import User from "./User";
 import Offers from "./offers";
 import styles from "./styles.module.scss";

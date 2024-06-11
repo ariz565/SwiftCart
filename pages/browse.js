@@ -11,7 +11,7 @@ import CategoryFilter from "@/components/browse/categoryFilter";
 import SizesFilter from "@/components/browse/sizesFilter";
 import ColorsFilter from "@/components/browse/colorsFilter";
 import BrandsFilter from "@/components/browse/brandsFilter";
-import StylesFilter from "@/components/browse/stylesFilter.js";
+import StylesFilter from "@/components/browse/stylesFilter/index.js";
 import PatternsFilter from "@/components/browse/patternsFilter";
 import MaterialsFilter from "@/components/browse/materialsFilter";
 import GenderFilter from "@/components/browse/genderFilter";
