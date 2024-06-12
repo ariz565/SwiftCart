@@ -194,7 +194,6 @@ export default function Signin({ providers, callbackUrl, csrfToken }) {
                     </div>
                   );
                 })}
-                ;
               </div>
             </div>
           </div>
