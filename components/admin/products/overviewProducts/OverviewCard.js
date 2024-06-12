@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "./OverviewCard.module.scss";
+import styles from "./overviewCard.module.scss";
 
 export default function OverviewCard({ metrics }) {
   return (
