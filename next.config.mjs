@@ -32,6 +32,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "assets.myntassets.com",
       },
+      {
+        protocol: "https",
+        hostname: "s.gravatar.com",
+      },
     ],
   },
 };
