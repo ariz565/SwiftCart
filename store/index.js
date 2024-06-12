@@ -6,10 +6,16 @@ import { persistReducer } from "redux-persist";
 import cart from "./cartSlice";
 import expandSidebar from "./ExpandSlice";
 import dialog from "./DialogSlice";
-// import user from "./userSlice";
+import showMobileCate from "./mobileCateSlice";
 import userSlice from "./userSlice";
 
-const reducers = combineReducers({ cart, expandSidebar, dialog, userSlice });
+const reducers = combineReducers({
+  cart,
+  expandSidebar,
+  dialog,
+  userSlice,
+  showMobileCate,
+});
 
 const config = {
   key: "root",
