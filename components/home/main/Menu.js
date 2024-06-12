@@ -17,6 +17,7 @@ import { BiCameraMovie, BiGift, BiCategory } from "react-icons/bi";
 import { FaBaby } from "react-icons/fa";
 import { HiOutlineHome } from "react-icons/hi";
 import { AiOutlineSecurityScan } from "react-icons/ai";
+import { MdDashboard } from "react-icons/md";
 import { BsPhoneVibrate } from "react-icons/bs";
 //-------
 export default function Menu() {
@@ -25,8 +26,8 @@ export default function Menu() {
       <ul>
         <li>
           <a className={styles.menu__header}>
-            <BiCategory />
-            <b>Categories</b>
+            <MdDashboard size={25} />
+            Categories
           </a>
         </li>
         <div className={styles.menu__list}>

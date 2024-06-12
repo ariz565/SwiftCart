@@ -32,6 +32,14 @@
       }
     }
   }
+  &__cateMobile {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    bottom: 0;
+    z-index: 99;
+    transition: all 0.5s ease;
+  }
   .menu {
     grid-area: menu;
     height: 580px;
@@ -57,7 +65,10 @@
     &__header {
       width: 100%;
       height: 35px;
-      background: $grey-color;
+      background-color: $admin-text;
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
       border-bottom: 1px solid $grey-color;
       box-shadow: $shadow-2;
       @media (max-width: 990px) {
