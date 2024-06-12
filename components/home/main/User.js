@@ -21,7 +21,7 @@ export default function User() {
   return (
     <div className={styles.user}>
       <Image
-        src="/images/userHeader.jpg"
+        src="/images/userheader.jpg"
         alt="Default Img"
         width={500}
         height={140}
