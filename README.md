@@ -1,4 +1,100 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Swiftcart: Simplifying E-Commerce & Content Management
+
+**Swiftcart** is a comprehensive e-commerce platform integrated with seamless content management capabilities. It is designed to simplify online shopping for customers and provide powerful tools for administrators to manage products, orders, and promotions efficiently.
+
+## Project Overview
+
+Swiftcart combines the best of e-commerce functionalities and a content management system (CMS) to create a seamless shopping experience. The platform allows users to browse products, make secure purchases, and receive personalized recommendations based on their browsing habits. Administrators can manage products, categories, orders, users, and promotions through a comprehensive dashboard.
+
+This project leverages modern technologies like **Next.js** for the frontend, **Node.js** with **Express** for the backend, and **MongoDB** as the database. Additionally, the platform integrates **Amazon Personalize** for AI-driven product recommendations and **Cloudinary** for product image storage.
+
+## Features
+
+### **Features**
+
+1. **User Authentication**
+   - Registration with email verification and social login (Google, GitHub, etc.).
+   - Secure authentication using **NextAuth**.
+   - Password reset and session management.
+
+2. **User Profile**
+   - Update personal details and profile picture.
+   - View and manage orders with order status and cancellation options.
+   - Manage shipping addresses and payment methods.
+
+3. **Shopping Catalogue**
+   - Browse products with advanced search and filtering (category, size, color, price, etc.).
+   - Sort products by price, popularity, ratings, etc.
+   - View product details, reviews, and ratings.
+
+4. **Shopping Cart**
+   - Add products to cart, update quantities, and view cart summary.
+   - Remove products and proceed to checkout.
+
+5. **Checkout**
+   - Review cart summary, select a shipping address, and choose payment methods (Stripe, Razorpay, etc.).
+   - Apply coupons and place orders.
+
+6. **Order Tracking**
+   - View order history and track the status of current orders.
+
+7. **Reviews & Ratings**
+   - Leave reviews and ratings for purchased products.
+   - View and filter product reviews.
+
+8. **Newsletter Subscription**
+   - Subscribe to newsletters for promotional emails and updates.
+
+9. **Location Detection**
+   - Detect user's location and display relevant products.
+
+10. **Guest Access**
+    - Browse products without logging in, preview flash deals, and view ratings.
+
+## Technology Stack
+
+- **Frontend:**  
+  - Next.js (React-based framework for SSR)
+  - Tailwind CSS (Styling)
+  - Axios (API requests)
+  
+- **Backend:**  
+  - Next js (Backend logic)
+  - MongoDB (Database)
+  - Amazon Services
+  - Cloudinary 
+  
+- **Authentication & Session Management:**  
+  - NextAuth.js for user authentication and session management
+
+- **Payment Integration:**  
+  - Razorpay and Stripe for secure payments
+
+- **Deployment:**  
+  - Vercel (Frontend deployment)
+  - AWS Amplify
+  - MongoDB Atlas (Database hosting)
+
+## Installation
+
+To run the project locally, follow these steps:
+
+### Prerequisites
+- Node.js (v14.x or higher)
+- MongoDB
+- Stripe and Razorpay accounts for payment integrations
+
+### Steps
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ariz565/swiftcart.git
+   cd swiftcart
+2 . Install the dependencies:
+npm install
+# or
+yarn install
+
 
 ## Getting Started
 
