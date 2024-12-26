@@ -1,5 +1,7 @@
 # Swiftcart: Simplifying E-Commerce & Content Management
 
+<img src="https://raw.githubusercontent.com/ariz565/SwiftCart/refs/heads/main/public/images/user%20login.png" alt="Project Screenshot" style="width:100%; height:auto;">
+
 **Swiftcart** is a comprehensive e-commerce platform integrated with seamless content management capabilities. It is designed to simplify online shopping for customers and provide powerful tools for administrators to manage products, orders, and promotions efficiently.
 
 ## Project Overview
