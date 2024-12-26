@@ -8,7 +8,7 @@
 
 Swiftcart combines the best of e-commerce functionalities and a content management system (CMS) to create a seamless shopping experience. The platform allows users to browse products, make secure purchases, and receive personalized recommendations based on their browsing habits. Administrators can manage products, categories, orders, users, and promotions through a comprehensive dashboard.
 
-This project leverages modern technologies like **Next.js** for the frontend, **Node.js** with **Express** for the backend, and **MongoDB** as the database. Additionally, the platform integrates **Amazon Personalize** for AI-driven product recommendations and **Cloudinary** for product image storage.
+This project leverages modern technologies like **Next.js** for frontend and backend, and **MongoDB** as the database. Additionally, the platform integrates **Amazon Personalize** for AI-driven product recommendations and **Cloudinary** for product image storage.
 
 ## Features
 
